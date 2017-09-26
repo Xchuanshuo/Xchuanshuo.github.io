@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Python3爬取百科词条+导入MySQL数据库 | legend＇s blogs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="从面向过程到面向对象 本质就是思想的改变">
+<meta name="keywords" content="Python,爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python3爬取百科词条+导入MySQL数据库">
+<meta property="og:url" content="http://blog.cspojie.cn/2017/09/26/Python3爬取百科词条-导入MySQL数据库/index.html">
+<meta property="og:site_name" content="legend＇s blogs">
+<meta property="og:description" content="从面向过程到面向对象 本质就是思想的改变">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-16b3ea4e79331a51.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-cbdc37c7db75ebb6.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-7c60d96232fb634c.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-0b35e7537de61174.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1920/q/50">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-8955d550362615fe.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-8790462784c0c825.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1920/q/50">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-dce3048fcc9085e7.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1920/q/50">
+<meta property="og:updated_time" content="2017-09-26T03:07:01.961Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python3爬取百科词条+导入MySQL数据库">
+<meta name="twitter:description" content="从面向过程到面向对象 本质就是思想的改变">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3110248-16b3ea4e79331a51.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+  
+    <link rel="alternative" href="/atom.xml" title="legend＇s blogs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">Legend</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/works">作品展示</a></li>
+                        
+                            <li><a href="/about">留言打卡</a></li>
+                        
+                            <li><a href="/FrontEndGuide">极客导航</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=OK8iFuAgSKNruTZv&r=024e4aadbd98bb6db7379b26a745c172" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="#" title="weibo">weibo</a>
+                            
+                                <a class="fl google" target="_blank" href="#" title="google">google</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.jikedaohang.com/">极客导航</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">纯海迷、爱运动、爱交友、爱旅行、喜欢接触新鲜事物、迎接新的挑战，更爱游离于错综复杂的编码与逻辑中</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">Legend</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">Legend</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/works">作品展示</a></li>
+                
+                    <li><a href="/about">留言打卡</a></li>
+                
+                    <li><a href="/FrontEndGuide">极客导航</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=OK8iFuAgSKNruTZv&r=024e4aadbd98bb6db7379b26a745c172" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+                    
+                        <a class="google" target="_blank" href="#" title="google">google</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Python3爬取百科词条-导入MySQL数据库" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/" class="article-date">
+      <time datetime="2017-09-26T03:03:33.000Z" itemprop="datePublished">2017-09-26</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python3爬取百科词条+导入MySQL数据库
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/爬虫/">爬虫</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>从面向过程到面向对象 本质就是思想的改变</p>
+<a id="more"></a>
+<p>本文主要介绍使用Python爬虫爬取Python百度词条的信息 主要参考慕课网的<a href="http://m.imooc.com/learn/563" target="_blank" rel="external">《开发简单爬虫》</a>以及一些数据库操作</p>
+<p>##开发工具</p>
+<p>#####—工欲善其事 必先利其器<br>首先 这里开发工具用的Python3.6+Pycharm+MySQL5.7+SQLyog<br>前面2个的安装直接网上搜下教程一大堆 而且免去了配置环境变量的操作，MySQL数据库(安装教程也一大堆)现在最新版是5.7 它的安装与之前的有点不同<br><img src="http://upload-images.jianshu.io/upload_images/3110248-16b3ea4e79331a51.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="图片发自简书App"></p>
+<p>注意到没 安装时多了一个必须选项 安装InnoDB时设置password 然后再填入即可 其它步骤和一般软件没什么区别<br>然后去搜索引擎下载SQLyog工具(用Pycharm自带的dataBase应该也可以 有兴趣的小伙伴可以去试试 )  连接数据库<br><img src="http://upload-images.jianshu.io/upload_images/3110248-cbdc37c7db75ebb6.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="图片发自简书App"><br>点击连接 出错的可以看看 进入控制面板→管理工具→服务→看MySQL service是否打开 连接好后创建数据库baikeurl 然后建url表<br>再建立4个栏位 分别是 id  urlname urlhref urlcontent<img src="http://upload-images.jianshu.io/upload_images/3110248-7c60d96232fb634c.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="图片发自简书App"></p>
+<p>##爬虫的架构及具体流程<br>1.传入目标url后调用URL管理器<br>2.URL管理器对URL进行具体的判断与检索后传入网页下载器<br>3.网页下载器工作后将网页传入网页解析器<br>4.将解析后的内容(url，title，content等)传入输出器<br>5.最后输出器进行数据操作(写入文件 导入数据库等)<br>整个过程采用了严格的面向对象思想 每一过程具体的函数都封装在相应文件中<br><img src="http://upload-images.jianshu.io/upload_images/3110248-0b35e7537de61174.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1920/q/50" alt="图片发自简书App"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3110248-8955d550362615fe.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="图片发自简书App"></p>
+<p>##实例分析<br>要爬取的链接:<a href="http://baike.baidu.com/item/Python" target="_blank" rel="external">http://baike.baidu.com/item/Python</a><br>通过浏览器的开发者工具分析可知 百度百科的词条<br>链接:/item/……的形式<br>标题: <dd class="lemmaWgt-lemmaTitle-title"><h1>……</h1> 内容:<div class="lemma-summary">……</div></dd></p>
+<p>废话不多说 直接上代码 关键地方带注释 一个包括5个文件</p>
+<p>###爬虫调度端(主页)<br>spider.py文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">import html_downloader</div><div class="line">import html_outputer</div><div class="line">import html_parser</div><div class="line">import url_manager</div><div class="line"></div><div class="line">#爬虫主函数</div><div class="line">class SpiderMain(object):</div><div class="line">    def __init__(self):</div><div class="line">        self.urls = url_manager.UrlManager()</div><div class="line">        self.downloader = html_downloader.HtmlDownloader()</div><div class="line">        self.parser = html_parser.HtmlParser()</div><div class="line">        self.outputer = html_outputer.HtmlOutputer()</div><div class="line">#抓取过程函数</div><div class="line">    def craw(self, root_url):</div><div class="line">        count = 1</div><div class="line">        self.urls.add_new_url(root_url)</div><div class="line">        while self.urls.has_new_url():</div><div class="line">            try:</div><div class="line">                new_url = self.urls.get_new_url()</div><div class="line">                print(&apos;craw %d : %s&apos; % (count, new_url))</div><div class="line">                html_cont = self.downloader.download(new_url)</div><div class="line">                new_urls, new_data = self.parser.parse(new_url, html_cont)</div><div class="line">                self.urls.add_new_urls(new_urls)</div><div class="line">                self.outputer.collect_data(new_data)</div><div class="line">                if count == 1000:</div><div class="line">                    break</div><div class="line">                count = count+1</div><div class="line">            except:</div><div class="line">                print(&apos;craw failed&apos;)</div><div class="line"></div><div class="line">        self.outputer.into_mysql()</div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    rooturl = &apos;http://baike.baidu.com/item/Python&apos;</div><div class="line">    obj_spider = SpiderMain()</div><div class="line">    obj_spider.craw(rooturl)</div></pre></td></tr></table></figure></p>
+<p>url管理器<br>url_manager.py文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"># -*- coding: utf-8 -*-</div><div class="line">class UrlManager(object):</div><div class="line">    def __init__(self):</div><div class="line">        self.new_urls = set()</div><div class="line">        self.old_urls = set()</div><div class="line">    def add_new_url(self, root_url):</div><div class="line">        if root_url is None:</div><div class="line">            return</div><div class="line">        if root_url not in self.new_urls and root_url not in self.old_urls:</div><div class="line">            self.new_urls.add(root_url)</div><div class="line">    def has_new_url(self):</div><div class="line">        return len(self.new_urls) != 0</div><div class="line">    def get_new_url(self):</div><div class="line">        new_url = self.new_urls.pop()</div><div class="line">        self.old_urls.add(new_url)</div><div class="line">        return new_url</div><div class="line">    def add_new_urls(self, new_urls):</div><div class="line">        if new_urls is None or len(new_urls) == 0:</div><div class="line">            return</div><div class="line">        for url in new_urls:</div><div class="line">            self.add_new_url(url)</div></pre></td></tr></table></figure></p>
+<p>网页下载器<br>html_downloader.py文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import urllib.request</div><div class="line">class HtmlDownloader(object):</div><div class="line">    def download(self, new_url):</div><div class="line">        if new_url is None:</div><div class="line">            return None</div><div class="line">        response =  urllib.request.urlopen(new_url)</div><div class="line">        if response.getcode() != 200:</div><div class="line">            return None</div><div class="line">        return response.read()</div></pre></td></tr></table></figure></p>
+<p>网页解析器<br>html_parse.py文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">import re</div><div class="line">import urllib</div><div class="line">from urllib import parse</div><div class="line"></div><div class="line">from bs4 import BeautifulSoup</div><div class="line"></div><div class="line">class HtmlParser(object):</div><div class="line">    def parse(self, new_url, html_cont):</div><div class="line">        if new_url is None or html_cont is None:</div><div class="line">            return</div><div class="line">        soup = BeautifulSoup(html_cont,&apos;html.parser&apos;	)</div><div class="line">        new_urls = self._get_new_urls(new_url,soup)</div><div class="line">        new_data = self._get_new_data(new_url,soup)</div><div class="line">        return new_urls,new_data</div><div class="line"></div><div class="line">    def _get_new_urls(self, new_url, soup):</div><div class="line">        new_urls = set()</div><div class="line">#获取要爬取的链接</div><div class="line">        links = soup.find_all(&apos;a&apos;,href=re.compile(r&apos;/item/\w+&apos;))</div><div class="line">        for link in links:</div><div class="line">            new_url1 = link[&apos;href&apos;]</div><div class="line">            new_full_url = parse.urljoin(new_url, new_url1)</div><div class="line">            new_urls.add(new_full_url)</div><div class="line">        return new_urls</div><div class="line">    def _get_new_data(self, new_url, soup):</div><div class="line">        res_data = &#123;&#125;</div><div class="line">        res_data[&apos;url&apos;] = new_url</div><div class="line">#&lt;dd class=&quot;lemmaWgt-lemmaTitle-title&quot;&gt;&lt;h1&gt;Python&lt;/h1&gt;</div><div class="line">#获取词条的标题</div><div class="line">        title_node = soup.find(&apos;dd&apos;,class_=&apos;lemmaWgt-lemmaTitle-title&apos;).find(&apos;h1&apos;)</div><div class="line">        res_data[&apos;title&apos;] = title_node.get_text()</div><div class="line">#获取词条的内容</div><div class="line">        summary_node = soup.find(&apos;div&apos;,class_=&apos;lemma-summary&apos;)</div><div class="line">        res_data[&apos;summary&apos;] = summary_node.get_text()</div><div class="line">        return res_data</div></pre></td></tr></table></figure></p>
+<p>###输出器<br>html_outputer.py文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">class HtmlOutputer(object):</div><div class="line">    def __init__(self):</div><div class="line">        self.datas = []</div><div class="line">    def collect_data(self, new_data):</div><div class="line">        if new_data is None:</div><div class="line">            return</div><div class="line">        print(new_data[&apos;summary&apos;])</div><div class="line">        self.datas.append(new_data)</div><div class="line">#数据库操作函数</div><div class="line">    def into_mysql(self):</div><div class="line">        i = 0</div><div class="line">        for data in self.datas:</div><div class="line">            conn = pymysql.Connect(</div><div class="line">                host=&apos;127.0.0.1&apos;,</div><div class="line">                user=&apos;你的用户名&apos;,</div><div class="line">                password=&apos;你的密码&apos;,</div><div class="line">                db=&apos;数据库名称&apos;,</div><div class="line">                port=3306,</div><div class="line">                charset=&apos;utf8mb4&apos;</div><div class="line">            )</div><div class="line">            try:</div><div class="line">                cursor = conn.cursor()</div><div class="line">                i += 1</div><div class="line">                sql = &apos;insert into `urls`(`id`,`urlname`,`urlhref`,`urlcontent`)values(%s,%s,%s,%s)&apos;</div><div class="line">#执行上面的sql语句 并传入4个参数</div><div class="line">#分别是id，title，url，content</div><div class="line">                cursor.execute(sql, (i, data[&apos;title&apos;],data[&apos;url&apos;],data[&apos;summary&apos;]))</div><div class="line">                conn.commit()</div><div class="line">            finally:</div><div class="line"></div><div class="line">                conn.close()</div></pre></td></tr></table></figure></p>
+<p>注:关于编码问题 因为该网页就是采用的utf-8编码 所以无需调用encode()方法编码  直接data[‘summary’]的内容就是正常显示 若将数据写入文件 则需要第二个参数传入encoding=’’ 指定文件编码方式  测试时尽量不用Windows系统自带的IE浏览器 由于默认编码问题 会导致显示乱码(当时就是被这个问题困扰) 换用记事本或其它浏览器就正常显示了<br>最后点击运行<br><img src="http://upload-images.jianshu.io/upload_images/3110248-8790462784c0c825.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1920/q/50" alt="图片发自简书App"><br>运行 爬取网页正常 然后我们去看看数据库<br><img src="http://upload-images.jianshu.io/upload_images/3110248-dce3048fcc9085e7.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1920/q/50" alt="图片发自简书App"><br>数据库也导入成功了  到此 我们的需求就完成了 最后附上<a href="https://github.com/Xchuanshuo/bdbkSpider" target="_blank" rel="external">github</a>地址</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/">Python3爬取百科词条+导入MySQL数据库</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
+        <p><span>发布时间:</span>2017年09月26日 - 11时03分</p>
+        <p><span>最后更新:</span>2017年09月26日 - 11时07分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/" title="Python3爬取百科词条+导入MySQL数据库">http://blog.cspojie.cn/2017/09/26/Python3爬取百科词条-导入MySQL数据库/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2017/09/26/Python3爬取百科词条-导入MySQL数据库/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2017/09/26/面向对象思想/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">面向对象思想</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#undefined"><span class="toc-number">1.</span> <span class="toc-text">……</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'legend',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2017/09/26/面向对象思想/" title="下一篇: 面向对象思想">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/">Python3爬取百科词条+导入MySQL数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/面向对象思想/">面向对象思想</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/25/玩转Python装饰器/">玩转Python装饰器</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2017 Legend
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
