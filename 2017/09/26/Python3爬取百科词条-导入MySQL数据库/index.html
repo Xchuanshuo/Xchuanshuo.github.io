@@ -5,13 +5,14 @@
   
   <title>Python3爬取百科词条+导入MySQL数据库 | legend＇s blogs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从面向过程到面向对象 本质就是思想的改变">
+  <meta name="description" content="本文主要介绍使用Python爬虫爬取Python百度词条的信息 主要参考慕课网的《开发简单爬虫》以及一些数据库操作 ##开发工具 #####—工欲善其事 必先利其器首先 这里开发工具用的Python3.6+Pycharm+MySQL5.7+SQLyog前面2个的安装直接网上搜下教程一大堆 而且免去了配置环境变量的操作，MySQL数据库(安装教程也一大堆)现在最新版是5.7 它的安装与之前的有点不同">
 <meta name="keywords" content="Python,爬虫">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python3爬取百科词条+导入MySQL数据库">
 <meta property="og:url" content="http://blog.cspojie.cn/2017/09/26/Python3爬取百科词条-导入MySQL数据库/index.html">
 <meta property="og:site_name" content="legend＇s blogs">
-<meta property="og:description" content="从面向过程到面向对象 本质就是思想的改变">
+<meta property="og:description" content="本文主要介绍使用Python爬虫爬取Python百度词条的信息 主要参考慕课网的《开发简单爬虫》以及一些数据库操作 ##开发工具 #####—工欲善其事 必先利其器首先 这里开发工具用的Python3.6+Pycharm+MySQL5.7+SQLyog前面2个的安装直接网上搜下教程一大堆 而且免去了配置环境变量的操作，MySQL数据库(安装教程也一大堆)现在最新版是5.7 它的安装与之前的有点不同">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-16b3ea4e79331a51.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-16b3ea4e79331a51.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-cbdc37c7db75ebb6.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-7c60d96232fb634c.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
@@ -19,10 +20,10 @@
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-8955d550362615fe.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-8790462784c0c825.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1920/q/50">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-dce3048fcc9085e7.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1920/q/50">
-<meta property="og:updated_time" content="2017-09-26T03:07:01.961Z">
+<meta property="og:updated_time" content="2017-09-26T03:10:06.237Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python3爬取百科词条+导入MySQL数据库">
-<meta name="twitter:description" content="从面向过程到面向对象 本质就是思想的改变">
+<meta name="twitter:description" content="本文主要介绍使用Python爬虫爬取Python百度词条的信息 主要参考慕课网的《开发简单爬虫》以及一些数据库操作 ##开发工具 #####—工欲善其事 必先利其器首先 这里开发工具用的Python3.6+Pycharm+MySQL5.7+SQLyog前面2个的安装直接网上搜下教程一大堆 而且免去了配置环境变量的操作，MySQL数据库(安装教程也一大堆)现在最新版是5.7 它的安装与之前的有点不同">
 <meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3110248-16b3ea4e79331a51.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
   
     <link rel="alternative" href="/atom.xml" title="legend＇s blogs" type="application/atom+xml">
@@ -279,7 +280,9 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>从面向过程到面向对象 本质就是思想的改变</p>
+        <p>本文主要介绍使用Python爬虫爬取Python百度词条的信息 主要参考慕课网的<a href="http://m.imooc.com/learn/563" target="_blank" rel="external">《开发简单爬虫》</a>以及一些数据库操作</p>
+<p>##开发工具</p>
+<p>#####—工欲善其事 必先利其器<br>首先 这里开发工具用的Python3.6+Pycharm+MySQL5.7+SQLyog<br>前面2个的安装直接网上搜下教程一大堆 而且免去了配置环境变量的操作，MySQL数据库(安装教程也一大堆)现在最新版是5.7 它的安装与之前的有点不同<br><img src="http://upload-images.jianshu.io/upload_images/3110248-16b3ea4e79331a51.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="图片发自简书App"></p>
 <a id="more"></a>
 <p>本文主要介绍使用Python爬虫爬取Python百度词条的信息 主要参考慕课网的<a href="http://m.imooc.com/learn/563" target="_blank" rel="external">《开发简单爬虫》</a>以及一些数据库操作</p>
 <p>##开发工具</p>
@@ -353,7 +356,7 @@
         <p><span>本文标题:</span><a href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/">Python3爬取百科词条+导入MySQL数据库</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
         <p><span>发布时间:</span>2017年09月26日 - 11时03分</p>
-        <p><span>最后更新:</span>2017年09月26日 - 11时07分</p>
+        <p><span>最后更新:</span>2017年09月26日 - 11时10分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/" title="Python3爬取百科词条+导入MySQL数据库">http://blog.cspojie.cn/2017/09/26/Python3爬取百科词条-导入MySQL数据库/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2017/09/26/Python3爬取百科词条-导入MySQL数据库/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
