@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>面向对象思想 | legend＇s blog</title>
+  <title>二叉堆与优先队列 | legend＇s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从面向过程到面向对象 本质就是思想的改变">
-<meta name="keywords" content="编程思想">
+  <meta name="description" content="###一、优先队列 ####1.简单介绍优先队列是一种抽象的数据结构，它与我们生活中的许多场景息息相关。比如我们的电脑或者手机，很多时候我们后台会运行多个程序，当程序过多导致内存急剧减少时，如果没有相关权限的设置，处理器会优先关闭挂在后台比较久的">
+<meta name="keywords" content="算法与数据结构">
 <meta property="og:type" content="article">
-<meta property="og:title" content="面向对象思想">
-<meta property="og:url" content="http://blog.cspojie.cn/2017/09/26/面向对象思想/index.html">
+<meta property="og:title" content="二叉堆与优先队列">
+<meta property="og:url" content="http://blog.cspojie.cn/2017/10/13/二叉堆与优先队列/index.html">
 <meta property="og:site_name" content="legend＇s blog">
-<meta property="og:description" content="从面向过程到面向对象 本质就是思想的改变">
-<meta property="og:updated_time" content="2017-09-28T11:40:16.695Z">
+<meta property="og:description" content="###一、优先队列 ####1.简单介绍优先队列是一种抽象的数据结构，它与我们生活中的许多场景息息相关。比如我们的电脑或者手机，很多时候我们后台会运行多个程序，当程序过多导致内存急剧减少时，如果没有相关权限的设置，处理器会优先关闭挂在后台比较久的">
+<meta property="og:updated_time" content="2017-10-13T14:08:44.158Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="面向对象思想">
-<meta name="twitter:description" content="从面向过程到面向对象 本质就是思想的改变">
+<meta name="twitter:title" content="二叉堆与优先队列">
+<meta name="twitter:description" content="###一、优先队列 ####1.简单介绍优先队列是一种抽象的数据结构，它与我们生活中的许多场景息息相关。比如我们的电脑或者手机，很多时候我们后台会运行多个程序，当程序过多导致内存急剧减少时，如果没有相关权限的设置，处理器会优先关闭挂在后台比较久的">
   
     <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
   
@@ -231,11 +231,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-面向对象思想" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-二叉堆与优先队列" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/09/26/面向对象思想/" class="article-date">
-      <time datetime="2017-09-25T23:22:34.000Z" itemprop="datePublished">2017-09-26</time>
+      <a href="/2017/10/13/二叉堆与优先队列/" class="article-date">
+      <time datetime="2017-10-13T14:06:27.000Z" itemprop="datePublished">2017-10-13</time>
 </a>
     </div>
   
@@ -248,7 +248,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      面向对象思想
+      二叉堆与优先队列
     </h1>
   
 
@@ -256,10 +256,14 @@
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/java/">java</a>
+    </div>
+
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编程思想/">编程思想</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法与数据结构/">算法与数据结构</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -269,37 +273,49 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>  从面向过程到面向对象 本质就是思想的改变</p>
-<a id="more"></a>
-<p>“上帝创造了人，并给了人思想，而思想是决定万物的根本尺度”  ——引</p>
-<hr>
-<p>  面向对象的概念<br>    面向对象指面向客观规律之间的关系，人类平常的思维方式就是面向对象的，自然界的事物与事物之间是对象与对象之间的关系。我们要解决一个问题时，这个问题就变成了对象，而这个过程就变成了面向对象。</p>
-<p>  一切都是对象<br>    (1) 所有东西都是对象。可将对象想象成一种新型变量；它保存着数据，但可要求它对自身进行操作。理论上讲，可从要解决的问题身上提出所有概念性的组件，然后在程序中将其表达为一个对象。</p>
-<p>  (2) 程序是一大堆对象的组合；通过消息传递，各对象知道自己 该做些什么。为了向对象发出请求，需向那个对象“发送一条消息”。更具体地讲，可将消息想象为一个调用请求，它调用的是从属于目标对象的一个子例程或函数。</p>
-<p>  (3) 每个对象都有自己的存储空间，可容纳其他对象。或者说，通过封装现有对象，可制作出新型对象。所以，尽管对象的概念非常简单，但在程序中却可达到任意高的复杂程度。</p>
-<p>  (4) 每个对象都有一种类型。根据语法，每个对象都是某个“类”的一个“实例”。其中，“类”（ Class ）是“类型”（ Type ）的同义词。一个类最重要的特征就是“能将什么消息发给它？”。</p>
-<p>  (5) 同一类 所有对象都能接收相同的消息。这实际是别有含义的一种说法，大家不久便能理解。由于类型为“圆”（ Circle ）的一个对象也属于类型为“形状”（ Shape ）的一个对象，所以一个圆完全能接收形状消息。这意味着可让程序代码统一指挥“形状”，令其自动控制所有符合“形状”描述的对象，其中自然包括“圆”。这一特性称为对象的“可替换性”，是 面向对象最重要的概念之一。<br>   面向对象给我们带来了极大的灵活性，面向对象编程中我们更加关注的是对象与对象的关系，整体的架构也就是各个对象之间的关系。<br>  面向对象语言的主要特性<br>     这里用java语言来描述<br>   【1】封装性<br>  封装体现的是软件的内部有更好的模块性基础，<br>  强调的是“高内聚、低耦合”，防止程序因相互依赖性而带来的变动影响。面向对象封装的基本单位是对象，它比传统的语言更为清晰，封装的主要内容是对象的属性以及行为。在一个类中，对象的属性用变量或常量来表示，行为用方法来定义，方法可以直接访问对象中的一个或多个属性。把对同一个对象的进行操作的方法和相关的方法放在同一个类中，把同一个对象的操作和数据放在同一个类中。<br>    例如：一个女孩想用手机进行自拍然后分享出去 这个过程就涉及到女孩、手机、自拍照几个对象，而女孩本身是不能直接生成照片的 拍照是手机里面的功能 所以女孩是使用手机去拍照的 拍照以及分享照片的功能就相当于手机里面封装的方法，女孩不需要知道它是怎么实现的，而是直接调用手机→拍照这个对象的方法来实现自拍。<br>    这就是面向对象的封装性。这个例子应该比较形象了……<br>   【2】抽象性<br>  抽象就是找出一些事物的相似和共性之处，然后把它们归类到一类事物中去，只考虑这些事物<br>  的共性之处，忽略与这些事物无关的东西。<br>  例如：每个人都有自己的年龄、名字和生日 这些东西是人共同拥有的。<br>   如:  定义一个Person类</p>
-<pre><code>class Person{
-  String name;
-  int age;
-  String birthday；
- }
-</code></pre><p>  人是有多个方面属性的事物，而当前只需了解人的这些最基本的信息，就把它们归到一个类中，<br>  这就是一种抽象。当我们需要时，就根据不同的对象来传入对应的参数，而不需要为每个对象都去重新定义属性。抽象就是根据当前需要的东西去将他们归类，而不必考虑与它无关的事情。<br>  【3】继承性<br>  在定义和实现一个类时，可以在一个已经存在的类的基础上来进行，把这个已经存在的类所定义的内容作为自己的内容，并且可以继续添加新的内容，或者根据自己的需要进行修改，这就是继承。<br>  举个很简单的例子：<br>     定义一个父类</p>
-<pre><code>     class Father{
- public   abstract void property()；
- }
-然后 定义一个子类
-
-    class Son extends Father{
-   public   void property()；
-  }
-</code></pre><p>  这里定义了一个父类和一个子类，儿子在父亲死后要继承父亲的财产。因为不是和父亲做同一种行业，所以可以把继承的财产用来自己做生意。<br>  面向对象中的继承类似于此。<br>   【4】多态性<br>  多态（也称作动态绑定、后期绑定或运行时绑定）是指程序中定义的引用变量所指向的具体类型和通过该引用变量发出的方法调用在编程时并不确定，而是在程序运行期间才能够确定。多态通过分离做什么和怎么做，从另一个角度将接口和实现分离开来。多态不但能够改善代码的组织结构和可读性，还能够创建可扩展的程序——即无论在项目最初创建时还是在需要加新功能时都可以“生长”的程序。多态方法调用允许一种类型表现出与其它类型相似的区别，只要他们都是从同一个父类导出的。不修改原程序代码，就可以改变程序运行时所绑定的具体代码，让程序可以选择多个运行状态，极大的增强了程序的灵活性。<br>   例子：假设在节假日，和朋友聚在一起，这时突然有人提出一个抽牌游戏。……于是我们多态性就开始了，首先拿来一副扑克牌，你和朋友一人抽一张牌，然后把抽出的牌摊开来比较大小。<br>  先看看如下代码</p>
-<pre><code>Board play=playfactory.getBoard()；
-player.openBoard(player1)；
-</code></pre><p>  我们抽扑克牌时是随机的，调用getBoard方法抽取到牌后我们并不知道这张牌数字是多大。每个人抽到的牌都是不一样的，也就是说这个过程所得到的对象是不一样的，而每个人抽牌以及摊开牌的流程都是一样的，最后在使用openBoard方法分别翻开抽到的牌时才知道自己抽到的牌真正的数字……（这就类似于动态绑定  运行时才知道结果)</p>
-<hr>
-<p>  从世界的角度来看，不同对象之间的相互作用与通信构成了完整的世界，世界因本孤立的对象的相互影响而变得丰富，对面向对象的理解也是对现实世界的理解，只有这样才能更好地与现实世界结合。</p>
-<p>  从面向过程到面向对象主要改变与提升的是人的思想与思考方式，因此应该用面向对象的本质去看世界，面向对象的思想、技术能帮助我们构建与现实世界相适应的问题模型，并保持着他们的结构、关系和行为模式。</p>
+        <p>###一、优先队列</p>
+<p>####1.简单介绍<br>优先队列是一种抽象的数据结构，它与我们生活中的许多场景息息相关。比如我们的电脑或者手机，很多时候我们后台会运行多个程序，当程序过多导致内存急剧减少时，如果没有相关权限的设置，处理器会优先关闭挂在后台比较久的<a id="more"></a>，然后继续往后台加入程序。和基本的数据结构队列和栈类似，不过优先队列对元素的操作是有优先级的，和上面描述的一样，它的核心是删除最大元素和插入元素。</p>
+<p>####2.基本实现<br>优先队列的实现有很多方式，常见的初级实现有基于有序数组和无序数组的，以及基于链表的，都能达到优先队列的核心操作。但这些实现平均效率不高。这里就重点描述下基于堆的优先队列的实现。</p>
+<p>###二、二叉堆</p>
+<p>###1.简单介绍<br>二叉堆是一组能够用堆有序的完全二叉树排序的元素，并在数组中按层级储存（不使用数组的第一个元素）。且根结点是堆有序的二叉树中最大的节点。在一个二叉堆中，如果一个节点的位置为k，则它的父结点的位置为k/2，左右子节点的位置分别为2k、2k+1。</p>
+<p>###2.基本实现</p>
+<p>####①比较和交换<br>这个比较简单，这里就不多说了，直接上代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 比较两个元素大小</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> pq[i].compareTo(pq[j]) &lt; <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"><span class="comment">// 交换两个元素</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span> </span>&#123;</div><div class="line">        Key t = pq[i];</div><div class="line">        pq[i] = pq[j];</div><div class="line">        pq[j] = t;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>####②插入和删除最大元素<br>插入元素就直接将元素增加到堆的末尾，然后进行上浮操作，使二叉堆有序。</p>
+<p>删除最大元素就直接从二叉堆顶端删除，然后进行下沉操作。</p>
+<p>所以接下来2个将堆有序化的操作是比较重要的，因为不管是删除最大元素还是插入元素后，都要继续保持二叉堆的有序性。</p>
+<p>####③由下至上的堆的有序化<br>这个也称上浮。如果二叉堆的有序化因为某个结点变得比它的父结点更加大而打破，就需要进行不断的上浮操作,也就是把当前结点与父结点交换位置直到二叉堆有序为止。看看下面的代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (k &gt; <span class="number">1</span>&amp;&amp;less(k/<span class="number">2</span>,k)) &#123;</div><div class="line">            exch(k/<span class="number">2</span>,k);</div><div class="line">            k = k/<span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这里循环的条件判断了只有当父结点比子结点更加小时交换才会继续进行。</p>
+<p>####④由上至下的堆有序化<br>这个也称下沉。与上浮类似，如果二叉堆的有序化因为某个结点变得比它的某个子结点更加小而打破，就需要进行不断的下沉操作，把当前结点与其子结点中较大的部分进行交换（注意：二叉堆的左右结点是不需要按大小来排序的，但都比父结点小）。下面来看看代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="number">2</span>*k &lt;= N) &#123;</div><div class="line">            <span class="keyword">int</span> j = <span class="number">2</span>*k;</div><div class="line">            <span class="keyword">if</span> (j &lt; N&amp;&amp;less(j,j+<span class="number">1</span>)) &#123;</div><div class="line">                j++;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!less(k,j)) <span class="keyword">break</span>;</div><div class="line">            exch(k,j);</div><div class="line">            k = j;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这里注意一下第一个判断，如果当前结点的左结点比右结点小，就进行++操作,这样j就变成了右结点。继续往下，如果当前结点比j结点大，就结束循环。否则就以j结点为当前结点继续进行下一轮循环。</p>
+<p>最后附上基于堆的优先队列的全部代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment"> * 基于堆的优先队列</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MaxPQ</span>&lt;<span class="title">Key</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">Key</span>&gt;&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Key[] pq;   <span class="comment">//基于堆的完全二叉树</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> N = <span class="number">0</span>;  <span class="comment">// 在数组中储存的范围是[1...N] 不包括pq[0]</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MaxPQ</span><span class="params">(<span class="keyword">int</span> MaxN)</span> </span>&#123;</div><div class="line">        pq = (Key[]) <span class="keyword">new</span> Comparable[MaxN+<span class="number">1</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 判断数组是否为空</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> N == <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 数组大小</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> N;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 插入元素</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(Key v)</span> </span>&#123;</div><div class="line">        pq[++N] = v;</div><div class="line">        swim(N);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 删除最大元素</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">delMax</span><span class="params">()</span> </span>&#123;</div><div class="line">        Key max = pq[<span class="number">1</span>];</div><div class="line">        exch(<span class="number">1</span>,N--);</div><div class="line">        pq[N+<span class="number">1</span>] = <span class="keyword">null</span>; <span class="comment">//防止对象游离</span></div><div class="line">        sink(<span class="number">1</span>);</div><div class="line">        <span class="keyword">return</span> max;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 上浮操作</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (k &gt; <span class="number">1</span>&amp;&amp;less(k/<span class="number">2</span>,k)) &#123;</div><div class="line">            exch(k/<span class="number">2</span>,k);</div><div class="line">            k = k/<span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 下沉操作</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="number">2</span>*k &lt;= N) &#123;</div><div class="line">            <span class="keyword">int</span> j = <span class="number">2</span>*k;</div><div class="line">            <span class="keyword">if</span> (j &lt; N&amp;&amp;less(j,j+<span class="number">1</span>)) &#123;</div><div class="line">                j++;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!less(k,j)) <span class="keyword">break</span>;</div><div class="line">            exch(k,j);</div><div class="line">            k = j;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 比较两个元素大小</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> pq[i].compareTo(pq[j]) &lt; <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 交换两个元素</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span> </span>&#123;</div><div class="line">        Key t = pq[i];</div><div class="line">        pq[i] = pq[j];</div><div class="line">        pq[j] = t;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>然后看看优先队列的各种实现的算法复杂度</p>
+<table>
+<thead>
+<tr>
+<th>数据结构</th>
+<th style="text-align:center">插入元素</th>
+<th style="text-align:right">删除最大元素</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>有序数组</td>
+<td style="text-align:center">N</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td>无序数组</td>
+<td style="text-align:center">1</td>
+<td style="text-align:right">N</td>
+</tr>
+<tr>
+<td>堆</td>
+<td style="text-align:center">logN</td>
+<td style="text-align:right">logN</td>
+</tr>
+</tbody>
+</table>
+<p>相信对排序算法了解的朋友，可以看出基于堆的优先队列就等同于堆排序，这里就不多说了，最后说一句题外话，不管算法与数据结构有关的学习资料多么全，关键还是在于自己的多思考，多花时间，行动是理想最高贵的表达，梅花香自苦寒来，太急于求成只会得不偿失，这句话也是给我自己的一个提醒。</p>
 
       
       
@@ -355,13 +371,13 @@ player.openBoard(player1)；
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/09/26/面向对象思想/">面向对象思想</a></p>
+        <p><span>本文标题:</span><a href="/2017/10/13/二叉堆与优先队列/">二叉堆与优先队列</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
-        <p><span>发布时间:</span>2017年09月26日 - 07时22分</p>
-        <p><span>最后更新:</span>2017年09月28日 - 19时40分</p>
+        <p><span>发布时间:</span>2017年10月13日 - 22时06分</p>
+        <p><span>最后更新:</span>2017年10月13日 - 22时08分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/09/26/面向对象思想/" title="面向对象思想">http://blog.cspojie.cn/2017/09/26/面向对象思想/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2017/09/26/面向对象思想/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/10/13/二叉堆与优先队列/" title="二叉堆与优先队列">http://blog.cspojie.cn/2017/10/13/二叉堆与优先队列/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2017/10/13/二叉堆与优先队列/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -374,18 +390,9 @@ player.openBoard(player1)；
 
 <nav id="article-nav">
   
-    <a href="/2017/09/26/常用的正则表达式整理/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          常用的正则表达式整理
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/09/25/玩转Python装饰器/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">玩转Python装饰器</div>
+    <a href="/2017/10/06/Ubuntu下常用命令汇总/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Ubuntu下常用命令汇总</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -462,13 +469,11 @@ player.openBoard(player1)；
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/09/26/常用的正则表达式整理/" title="上一篇: 常用的正则表达式整理">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2017/09/25/玩转Python装饰器/" title="下一篇: 玩转Python装饰器">
+            <a href="/2017/10/06/Ubuntu下常用命令汇总/" title="下一篇: Ubuntu下常用命令汇总">
                 <i class="fa fa-angle-right"></i>
             </a>
         
