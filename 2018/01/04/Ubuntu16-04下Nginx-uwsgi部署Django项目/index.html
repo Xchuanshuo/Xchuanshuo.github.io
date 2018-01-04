@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="legend＇s blog">
 <meta property="og:description" content="之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-1a3ca5f9c1478e9b.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-01-04T11:41:51.991Z">
+<meta property="og:updated_time" content="2018-01-04T11:52:17.047Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ubuntu16.04下Nginx+uwsgi部署Django项目">
 <meta name="twitter:description" content="之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，">
@@ -271,7 +271,7 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，<a id="more"></a>一路搭建环境和部署过程搞了2天多，可以说是神坑无数，最有意思的网上的很多博客是交踩坑记录，结果照着这些方式去搞出现了很多奇怪的问题，估计也和版本不同有关。这里为了避免少走一些弯路，我就来记录一下整个过程(这里都是默认root用户远程登录下进行操作,项目名为DjangoTest)。</p>
+        <p>之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，<a id="more"></a>一路搭建环境和部署过程搞了2天多，可以说是神坑无数，最有意思的网上的很多博客是叫踩坑记录，结果照着这些方式去搞出现了很多奇怪的问题，估计也和版本不同有关。这里为了避免少走一些弯路，我就来记录一下整个过程(这里都是默认root用户远程登录下进行操作,项目名为DjangoTest)。</p>
 <h3 id="Python环境的配置"><a href="#Python环境的配置" class="headerlink" title="Python环境的配置"></a>Python环境的配置</h3><p>因为Python环境都是Linux系统上面自带的，我这里项目用的设Python3.6，安装的过程就不多说了，这里基本没什么问题，安装好后只需把安装目录链接到系统自带的python3（系统自带的是Python3.5）即可。本来这里应该没什么问题的，但刚这个项目需要请求https的链接，因为在本地的时候会这里是不会出问题的，但是一旦放到服务器端，坑也就来了。请求时直接返回这么一句异常<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SSLError(&quot;Can`t connect to HTTTPS URL because the SSL module is not available&quot;))</div></pre></td></tr></table></figure></p>
 <p>可以看到用到是python中的ssl模块不存在，直接去安装好相应的openssl模块后，还是抛出这个异常。于是不停的去Google和百度，过程中也是按照类似的答案，结果还是没能解决这个问题。最后我就卸载了Python3.6, 直接用3.5的环境去运行，这个问题才得以解决。<br>具体应该是因为系统默认的是加载已存在的ssl模块，用3.6版本的虽然也依赖了，但是并不会识别，发现不是来自默认Python环境中自带的，就无法加载。这里感觉也是能配置的，但事实就是我不知道多少次的卸载重装，按照各种方式去安装和依赖，还是出现同样的问题，好在3.6版本的项目在3.5上还是基本兼容的，虽然暴力，但不失为一种办法。（如果哪位有更好的解决办法，欢迎给我留言）</p>
 <p>这里完成后就是Python虚拟环境容器的安装和环境变量的配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install virtualenvwrapper</div></pre></td></tr></table></figure></p>
@@ -358,7 +358,7 @@
         <p><span>本文标题:</span><a href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/">Ubuntu16.04下Nginx+uwsgi部署Django项目</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
         <p><span>发布时间:</span>2018年01月04日 - 19时38分</p>
-        <p><span>最后更新:</span>2018年01月04日 - 19时41分</p>
+        <p><span>最后更新:</span>2018年01月04日 - 19时52分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/" title="Ubuntu16.04下Nginx+uwsgi部署Django项目">http://blog.cspojie.cn/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
