@@ -3,21 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Ubuntu16.04下Nginx+uwsgi部署Django项目 | legend＇s blog</title>
+  <title>Android第三方登录与服务器端验证过程 | legend＇s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，">
-<meta name="keywords" content="Python,Linux">
+  <meta name="description" content="开篇随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力">
+<meta name="keywords" content="Android">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ubuntu16.04下Nginx+uwsgi部署Django项目">
-<meta property="og:url" content="http://blog.cspojie.cn/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/index.html">
+<meta property="og:title" content="Android第三方登录与服务器端验证过程">
+<meta property="og:url" content="http://blog.cspojie.cn/2018/01/21/Android第三方登录与服务器端验证过程/index.html">
 <meta property="og:site_name" content="legend＇s blog">
-<meta property="og:description" content="之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-1a3ca5f9c1478e9b.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-01-04T11:52:17.047Z">
+<meta property="og:description" content="开篇随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力">
+<meta property="og:updated_time" content="2018-01-21T11:30:32.228Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ubuntu16.04下Nginx+uwsgi部署Django项目">
-<meta name="twitter:description" content="之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，">
-<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3110248-1a3ca5f9c1478e9b.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:title" content="Android第三方登录与服务器端验证过程">
+<meta name="twitter:description" content="开篇随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力">
   
     <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
   
@@ -229,11 +227,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-Ubuntu16-04下Nginx-uwsgi部署Django项目" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Android第三方登录与服务器端验证过程" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/" class="article-date">
-      <time datetime="2018-01-04T11:38:22.000Z" itemprop="datePublished">2018-01-04</time>
+      <a href="/2018/01/21/Android第三方登录与服务器端验证过程/" class="article-date">
+      <time datetime="2018-01-21T09:47:56.000Z" itemprop="datePublished">2018-01-21</time>
 </a>
     </div>
   
@@ -246,7 +244,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Ubuntu16.04下Nginx+uwsgi部署Django项目
+      Android第三方登录与服务器端验证过程
     </h1>
   
 
@@ -254,14 +252,10 @@
       
       <div class="article-info article-info-post">
         
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/环境部署/">环境部署</a>
-    </div>
-
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -271,35 +265,11 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，<a id="more"></a>一路搭建环境和部署过程搞了2天多，可以说是神坑无数，最有意思的网上的很多博客是叫踩坑记录，结果照着这些方式去搞出现了很多奇怪的问题，估计也和版本不同有关。这里为了避免少走一些弯路，我就来记录一下整个过程(这里都是默认root用户远程登录下进行操作,项目名为DjangoTest)。</p>
-<h3 id="Python环境的配置"><a href="#Python环境的配置" class="headerlink" title="Python环境的配置"></a>Python环境的配置</h3><p>因为Python环境都是Linux系统上面自带的，我这里项目用的设Python3.6，安装的过程就不多说了，这里基本没什么问题，安装好后只需把安装目录链接到系统自带的python3（系统自带的是Python3.5）即可。本来这里应该没什么问题的，但刚这个项目需要请求https的链接，因为在本地的时候会这里是不会出问题的，但是一旦放到服务器端，坑也就来了。请求时直接返回这么一句异常<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SSLError(&quot;Can`t connect to HTTTPS URL because the SSL module is not available&quot;))</div></pre></td></tr></table></figure></p>
-<p>可以看到用到是python中的ssl模块不存在，直接去安装好相应的openssl模块后，还是抛出这个异常。于是不停的去Google和百度，过程中也是按照类似的答案，结果还是没能解决这个问题。最后我就卸载了Python3.6, 直接用3.5的环境去运行，这个问题才得以解决。<br>具体应该是因为系统默认的是加载已存在的ssl模块，用3.6版本的虽然也依赖了，但是并不会识别，发现不是来自默认Python环境中自带的，就无法加载。这里感觉也是能配置的，但事实就是我不知道多少次的卸载重装，按照各种方式去安装和依赖，还是出现同样的问题，好在3.6版本的项目在3.5上还是基本兼容的，虽然暴力，但不失为一种办法。（如果哪位有更好的解决办法，欢迎给我留言）</p>
-<p>这里完成后就是Python虚拟环境容器的安装和环境变量的配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install virtualenvwrapper</div></pre></td></tr></table></figure></p>
-<p>这里的话，因为之前写过，就不多说了，可以参考我的之前的一篇博客<a href="http://blog.cspojie.cn/2017/12/25/Pycahrm远程调试Django项目/#more">Pycharm远程调试Django项目</a>。</p>
-<h3 id="Mariadb的配置"><a href="#Mariadb的配置" class="headerlink" title="Mariadb的配置"></a>Mariadb的配置</h3><p>本来不想写数据库的，但这里我也是第一次用Mariadb，并且在配置文件方面发生了一些变化，也踩了一些坑。<br>Mariadb是MySQL的一个分支，开发者也是MySQL的作者，所以Mariadb是完全兼容MySQL的基本命令的。<br>安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-get install mariadb-server</div></pre></td></tr></table></figure></p>
-<p>如果报本地不存在，就先更新下源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-get update</div></pre></td></tr></table></figure></p>
-<p>安装完成后直接启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/etc/init.d/mysql start  </div><div class="line">/etc/init.d/mysql stop</div><div class="line">/etc/init.d/mysql restart</div></pre></td></tr></table></figure></p>
-<p>然后直接输入mysql进入数据库后<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">use mysql</div></pre></td></tr></table></figure></p>
-<p>更改mysql密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">update user set Password = PASSWORD(&apos;你的密码&apos;) where User =&apos;root&apos;;</div></pre></td></tr></table></figure></p>
-<p>然后设置外部ip访问权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GRANT ALL PRIVILEGES ON *.* TO &apos;root&apos;@&apos;%&apos; IDENTIFIED BY &apos;你的密码&apos; WITH GRANT OPTION;</div><div class="line">FLUSH PRIVILEGES;</div></pre></td></tr></table></figure></p>
-<p>这里完成后 重启一下 ，然后还需要修改一下配置文件中绑定的地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/mysql/mariadb.conf.d/50-server.cnf</div></pre></td></tr></table></figure></p>
-<p>找到这一行<br><img src="http://upload-images.jianshu.io/upload_images/3110248-1a3ca5f9c1478e9b.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>直接注释掉就可以了。最后需要注意一下，如果是用的阿里云的服务器就需要配置一下安全组规则，开放3306端口。<br>这样就能完成数据库的远程连接了。<br>注意:<br>如果Django项目中用到Mysql的话，需要在服务器端的Python虚拟环境下安装一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install mysqlclient</div></pre></td></tr></table></figure></p>
-<p>可能会安装出错，因为缺少一些依赖包，安装一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-get install libmysqlclient-dev</div></pre></td></tr></table></figure></p>
-<p>然后重新安装mysqlclient，这样配置就完成了。</p>
-<h3 id="uwsgi的安装和配置"><a href="#uwsgi的安装和配置" class="headerlink" title="uwsgi的安装和配置"></a>uwsgi的安装和配置</h3><p>uwsgi也是一种web服务器，这里就不多介绍了，直接开始安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install uwsgi</div></pre></td></tr></table></figure></p>
-<p>可以先来测试一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">uwsgi --http 0:80 --module DjangoTest.wsgi</div></pre></td></tr></table></figure></p>
-<p>然后使用配置文件的方式来启动django项目,可以直接在项目的目录下新建一个uwsgi.ini文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"># mysite_uwsgi.ini file</div><div class="line">[uwsgi]</div><div class="line"># Django-related settings</div><div class="line"># 项目根目录的路径</div><div class="line">chdir           = /你的路径/DjangoTest</div><div class="line"># Django&apos;s wsgi file</div><div class="line">module          = DjangoTest.wsgi</div><div class="line"># the virtualenv (full path)</div><div class="line"></div><div class="line"># process-related settings</div><div class="line"># master</div><div class="line">master          = true</div><div class="line"># maximum number of worker processes</div><div class="line">processes       = 10</div><div class="line"># the socket (use the full path to be safe</div><div class="line">socket          = :8000</div><div class="line"># ... with appropriate permissions - may be needed</div><div class="line"># chmod-socket    = 664</div><div class="line"># clear environment on exit</div><div class="line">vacuum          = true</div><div class="line"># 虚拟环境的目录</div><div class="line">pythonpath = /你的虚拟环境的路径/lib/python3.6/site-packages/</div></pre></td></tr></table></figure></p>
-<p>配置文件写好后，其实我们是可以直接用uwsgi就能完成部署的，使用命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">uwsgi -i uwsgi.ini</div></pre></td></tr></table></figure></p>
-<p>如果端口号被占用，就直接使用命令查看占用情况<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lsof -i :8000</div></pre></td></tr></table></figure></p>
-<p>然后使用命令，销毁这些进程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">killall -9 uwsgi</div></pre></td></tr></table></figure></p>
-<p>但是为了提高扩展性，我们继续下面的步骤</p>
-<h3 id="Nginx的安装与配置"><a href="#Nginx的安装与配置" class="headerlink" title="Nginx的安装与配置"></a>Nginx的安装与配置</h3><p>nginx是一个强大的中间件，我们直接把它作为对外的服务接口。<br>开始安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-get install nginx</div></pre></td></tr></table></figure></p>
-<p>然后看看启动、停止和重启命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/etc/init.d/nginx start</div><div class="line">/etc/init.d/nginx stop</div><div class="line">/etc/init.d/nginx reload</div></pre></td></tr></table></figure></p>
-<p>这里注意，其它配置文件不要乱改！如果安装完成不能正常启动的话可以重启服务器看看。没问题的话，我们可以在项目目录下新建一个nginx.conf文件，然后按照下面的方式配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"># the upstream component nginx needs to connect to</div><div class="line">upstream django &#123;</div><div class="line">#django项目的端口号 和uwsgi里面的端口号保存一致</div><div class="line">server 0.0.0.0:8000; # for a web port socket (we&apos;ll use this first)</div><div class="line">&#125;</div><div class="line"># configuration of the server</div><div class="line"></div><div class="line">server &#123;</div><div class="line"># nginx服务的端口号 不用修改</div><div class="line">listen 80;</div><div class="line"># the domain name it will serve for</div><div class="line"># 这里可以填写你的ip地址或者域名</div><div class="line">server_name www.test.com;</div><div class="line">charset     utf-8;</div><div class="line"></div><div class="line"># max upload size</div><div class="line">client_max_body_size 75M;   # adjust to taste</div><div class="line"></div><div class="line"># Django media</div><div class="line">location /media  &#123;</div><div class="line">    alias /你的路径/DjangoTest/media;  # 指向django的media目录</div><div class="line">&#125;</div><div class="line"></div><div class="line">location /static &#123;</div><div class="line">    alias /你的路径/DjangoTest/static; # 指向django的static目录</div><div class="line">&#125;</div><div class="line"></div><div class="line"># Finally, send all non-media requests to the Django server.</div><div class="line">location / &#123;</div><div class="line">    uwsgi_pass  django;</div><div class="line">    include     uwsgi_params; # the uwsgi_params file you installed</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>配置写好后，就需要把它链接到Nginx的启动配置文件中，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ln -s /你的目录/DjangoTest/nginx.conf  /etc/nginx/conf.d/</div></pre></td></tr></table></figure></p>
-<p>配置完成后，再去加载一下uwsgi文件。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>配置好后，直接输入IP地址或者解析到该IP的域名就能成功访问到Django项目了，这样你也会发现，通过nginx我们可以轻松地配置和部署多个环境不同的站点，只需要把配置文件写好后放入nginx的启动文件中。<br>最后来整理一下整个访问的过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1.使用nginx作为外部接口，直接处理发送过来的请求，如果是静态请求，就直接根据配置的静态文件目录，返回相应的静态资源。</div><div class="line">2.如果是动态请求，就通过配置文件将请求转移到uwsgi，uwsgi又会将接受到的请求传递给wsgi（Django项目默认通过wsgi启动服务的），wsgi就会根据请求来调用Django项目中的逻辑来处理请求。</div><div class="line">3.处理完成后，又将结果返回给uwsgi，然后uwsgi又继续将结果返回给nginx</div><div class="line">4.最后Nginx将处理后的结果返回给用户</div></pre></td></tr></table></figure></p>
-<p>虽然过程中遇到很多坑，但在多次的尝试中更能加深自己的经验和理解。<br>最后，祝大家在新的一年里，技术节节高升！！！</p>
+        <h3 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h3><p>随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力<a id="more"></a>。说到交互，就必需要求我们访问网络，进行数据的交互。因为需要用户的信息，又少不了注册和登录的功能，而现在五花八门的账号，使得一些用户不想再又去注册一个，这里对于开发人员或者中小企业来说最好的选择就是直接使用第三方账号了，这里虽然标题是android，但其实这个过程和什么平台是没有什么关系的。</p>
+<h3 id="第三方账号与后台的绑定"><a href="#第三方账号与后台的绑定" class="headerlink" title="第三方账号与后台的绑定"></a>第三方账号与后台的绑定</h3><p>这里主要讲讲最常见的QQ登录，首先我们需要的是去腾讯的开放平台去申请，以及读取官方文档，这些东西就不重复了。这里我们的重点是如何将用户<br>信息与后台进行相应的绑定，之前我没自己写过后台，刚开始面对这些时也是很模糊的，去百度搜出来的第三方登录，基本上都是讲OAuth协议的，也正是因为这一点，更加不清晰了。其实我们在移动端的登录与web端还是有较大的区别的，很重要的，就是登录后的回调。<br>既然要与后台进行绑定，肯定是需要唯一的标识符作为标准，因为保证安全性，所以我们在移动端进行登录后，并不能直接获取QQ账号，于是腾讯给我们提供了32位的OPEN_ID用来作为唯一标识，并且不同的应用OPEN_ID是不同的，但对于一个应用而言，这是唯一的标识符。<br>所以后台进行注册时<br>1.需要在服务器端判断数据库中中是否存在这个OPEN_ID 如果存在，就说明用户已经存在了，无需再进行注册。<br>2.如果不存在， 就从客户端向服务器端传递Access_Token和OPEN_ID,服务器端接收后就在这个地址进行验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https://graph.qq.com/user/get_user_info?access_token=客户端传来的access_token&amp;oauth_consumer_key=你申请到的appkey&amp;openid=客户端传来的OPEN_ID&amp;</div></pre></td></tr></table></figure></p>
+<p>请求后，这里会有一个返回一个键ret，值为0表示返回用户信息成功,这里进行下判断就可以了。<br>3.这样通过这两步就能与客户端登录的账号进行绑定。这里注意，登录其实就只是做一个验证而已。</p>
+<h3 id="使用JWT方式进行验证"><a href="#使用JWT方式进行验证" class="headerlink" title="使用JWT方式进行验证"></a>使用JWT方式进行验证</h3><p>上面说了与客户端与服务器端之间的绑定（其实就是类似于注册过程，不过用户不知道而已，过程都是交给后台去完成）。<br>注册成功后，可以使用一种比较安全，并且快速的验证方式，也就是JSON WEB TOKEN方式进行验证，对前端了解的朋友应该很熟悉这种方式，不熟悉的可以去网上搜一下，用这种方式进行请求验证，无需携带敏感信息。<br>1.首先用账号密码进行请求，服务器端返回给我们一个加密后的值。<br>（这里如果我们用Open_Id作为用户的唯一标识符的话，可以把用户信息的其它字段当作参数传递，这里就要结合具体的语言去进行修改了)<br>2.获取这个值后，可以保存在本地，等某些请求需要进行身份验证时，在把该值加入到请求头中。<br>3.请求时，还需要再加密后的这段值前面加上自定义的字符串。<br>这样一来即使服务器端返回的这个值被泄漏，用户的敏感信息照样能得到安全保证。在移动端进行请求时，直接携带请求头，就能快速的完成身份验证，实现单点登录。</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>因为这里这是阐述这个过程，没有具体的代码，所以就暂时到这里了。因为我觉得，对一门语言基本的东西解了，关键就是搞清楚这些业务逻辑，了解交互的过程，不局限于某一种语言，结合具体的框架去做相应的调整。经验无非也是更加理解整个过程，才能得来的。</p>
 
       
       
@@ -355,13 +325,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/">Ubuntu16.04下Nginx+uwsgi部署Django项目</a></p>
+        <p><span>本文标题:</span><a href="/2018/01/21/Android第三方登录与服务器端验证过程/">Android第三方登录与服务器端验证过程</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
-        <p><span>发布时间:</span>2018年01月04日 - 19时38分</p>
-        <p><span>最后更新:</span>2018年01月04日 - 19时52分</p>
+        <p><span>发布时间:</span>2018年01月21日 - 17时47分</p>
+        <p><span>最后更新:</span>2018年01月21日 - 19时30分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/" title="Ubuntu16.04下Nginx+uwsgi部署Django项目">http://blog.cspojie.cn/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2018/01/21/Android第三方登录与服务器端验证过程/" title="Android第三方登录与服务器端验证过程">http://blog.cspojie.cn/2018/01/21/Android第三方登录与服务器端验证过程/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/01/21/Android第三方登录与服务器端验证过程/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -374,18 +344,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2018/01/10/Django查错配置/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Django查错配置
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/12/31/回首2017-展望未来/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">回首2017 展望未来</div>
+    <a href="/2018/01/10/Django查错配置/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Django查错配置</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -396,7 +357,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Python环境的配置"><span class="toc-number">1.</span> <span class="toc-text">Python环境的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mariadb的配置"><span class="toc-number">2.</span> <span class="toc-text">Mariadb的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#uwsgi的安装和配置"><span class="toc-number">3.</span> <span class="toc-text">uwsgi的安装和配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx的安装与配置"><span class="toc-number">4.</span> <span class="toc-text">Nginx的安装与配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#开篇"><span class="toc-number">1.</span> <span class="toc-text">开篇</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#第三方账号与后台的绑定"><span class="toc-number">2.</span> <span class="toc-text">第三方账号与后台的绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用JWT方式进行验证"><span class="toc-number">3.</span> <span class="toc-text">使用JWT方式进行验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结尾"><span class="toc-number">4.</span> <span class="toc-text">结尾</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -462,13 +423,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2018/01/10/Django查错配置/" title="上一篇: Django查错配置">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2017/12/31/回首2017-展望未来/" title="下一篇: 回首2017 展望未来">
+            <a href="/2018/01/10/Django查错配置/" title="下一篇: Django查错配置">
                 <i class="fa fa-angle-right"></i>
             </a>
         
