@@ -3,19 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>二叉堆与优先队列 | legend＇s blog</title>
+  <title>Java内存区域与内存溢出 | legend＇s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、优先队列1.简单介绍优先队列是一种抽象的数据结构，它与我们生活中的许多场景息息相关。比如我们的电脑或者手机，很多时候我们后台会运行多个程序，当程序过多导致内存急剧减少时，如果没有相关权限的设置，处理器会优先关闭挂在后台比较久的">
-<meta name="keywords" content="算法与数据结构">
+  <meta name="description" content="前言最近在读周志明老师的《深入理解Java虚拟机》,感觉一下换了一个角度来看待Java代码，有必要整理一些内容，更清楚实际的流程">
+<meta name="keywords" content="JVM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="二叉堆与优先队列">
-<meta property="og:url" content="http://blog.cspojie.cn/2017/10/13/二叉堆与优先队列/index.html">
+<meta property="og:title" content="Java内存区域与内存溢出">
+<meta property="og:url" content="http://blog.cspojie.cn/2018/03/29/Java内存区域与内存溢出/index.html">
 <meta property="og:site_name" content="legend＇s blog">
-<meta property="og:description" content="一、优先队列1.简单介绍优先队列是一种抽象的数据结构，它与我们生活中的许多场景息息相关。比如我们的电脑或者手机，很多时候我们后台会运行多个程序，当程序过多导致内存急剧减少时，如果没有相关权限的设置，处理器会优先关闭挂在后台比较久的">
-<meta property="og:updated_time" content="2017-10-20T14:08:56.876Z">
+<meta property="og:description" content="前言最近在读周志明老师的《深入理解Java虚拟机》,感觉一下换了一个角度来看待Java代码，有必要整理一些内容，更清楚实际的流程">
+<meta property="og:image" content="http://img.mukewang.com/5abcd667000181f410050590.png">
+<meta property="og:updated_time" content="2018-03-29T13:48:57.471Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="二叉堆与优先队列">
-<meta name="twitter:description" content="一、优先队列1.简单介绍优先队列是一种抽象的数据结构，它与我们生活中的许多场景息息相关。比如我们的电脑或者手机，很多时候我们后台会运行多个程序，当程序过多导致内存急剧减少时，如果没有相关权限的设置，处理器会优先关闭挂在后台比较久的">
+<meta name="twitter:title" content="Java内存区域与内存溢出">
+<meta name="twitter:description" content="前言最近在读周志明老师的《深入理解Java虚拟机》,感觉一下换了一个角度来看待Java代码，有必要整理一些内容，更清楚实际的流程">
+<meta name="twitter:image" content="http://img.mukewang.com/5abcd667000181f410050590.png">
   
     <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
   
@@ -227,11 +229,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-二叉堆与优先队列" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Java内存区域与内存溢出" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/10/13/二叉堆与优先队列/" class="article-date">
-      <time datetime="2017-10-13T14:06:27.000Z" itemprop="datePublished">2017-10-13</time>
+      <a href="/2018/03/29/Java内存区域与内存溢出/" class="article-date">
+      <time datetime="2018-03-29T11:45:55.000Z" itemprop="datePublished">2018-03-29</time>
 </a>
     </div>
   
@@ -244,7 +246,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      二叉堆与优先队列
+      Java内存区域与内存溢出
     </h1>
   
 
@@ -259,7 +261,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法与数据结构/">算法与数据结构</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -269,46 +271,29 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h3 id="一、优先队列"><a href="#一、优先队列" class="headerlink" title="一、优先队列"></a>一、优先队列</h3><h4 id="1-简单介绍"><a href="#1-简单介绍" class="headerlink" title="1.简单介绍"></a>1.简单介绍</h4><p>优先队列是一种抽象的数据结构，它与我们生活中的许多场景息息相关。比如我们的电脑或者手机，很多时候我们后台会运行多个程序，当程序过多导致内存急剧减少时，如果没有相关权限的设置，处理器会优先关闭挂在后台比较久的<a id="more"></a>，然后继续往后台加入程序。和基本的数据结构队列和栈类似，不过优先队列对元素的操作是有优先级的，和上面描述的一样，它的核心是删除最大元素和插入元素。</p>
-<h4 id="2-基本实现"><a href="#2-基本实现" class="headerlink" title="2.基本实现"></a>2.基本实现</h4><p>优先队列的实现有很多方式，常见的初级实现有基于有序数组和无序数组的，以及基于链表的，都能达到优先队列的核心操作。但这些实现平均效率不高。这里就重点描述下基于堆的优先队列的实现。</p>
-<h3 id="二、二叉堆"><a href="#二、二叉堆" class="headerlink" title="二、二叉堆"></a>二、二叉堆</h3><h4 id="1-简单介绍-1"><a href="#1-简单介绍-1" class="headerlink" title="1.简单介绍"></a>1.简单介绍</h4><p>二叉堆是一组能够用堆有序的完全二叉树排序的元素，并在数组中按层级储存（不使用数组的第一个元素）。且根结点是堆有序的二叉树中最大的节点。在一个二叉堆中，如果一个节点的位置为k，则它的父结点的位置为k/2，左右子节点的位置分别为2k、2k+1。</p>
-<h4 id="2-基本实现-1"><a href="#2-基本实现-1" class="headerlink" title="2.基本实现"></a>2.基本实现</h4><p>①比较和交换<br>这个比较简单，这里就不多说了，直接上代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 比较两个元素大小</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> pq[i].compareTo(pq[j]) &lt; <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"><span class="comment">// 交换两个元素</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span> </span>&#123;</div><div class="line">        Key t = pq[i];</div><div class="line">        pq[i] = pq[j];</div><div class="line">        pq[j] = t;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>②插入和删除最大元素<br>插入元素就直接将元素增加到堆的末尾，然后进行上浮操作，使二叉堆有序。</p>
-<p>删除最大元素就直接从二叉堆顶端删除，然后进行下沉操作。</p>
-<p>所以接下来2个将堆有序化的操作是比较重要的，因为不管是删除最大元素还是插入元素后，都要继续保持二叉堆的有序性。</p>
-<p>③由下至上的堆的有序化<br>这个也称上浮。如果二叉堆的有序化因为某个结点变得比它的父结点更加大而打破，就需要进行不断的上浮操作,也就是把当前结点与父结点交换位置直到二叉堆有序为止。看看下面的代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (k &gt; <span class="number">1</span>&amp;&amp;less(k/<span class="number">2</span>,k)) &#123;</div><div class="line">            exch(k/<span class="number">2</span>,k);</div><div class="line">            k = k/<span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>这里循环的条件判断了只有当父结点比子结点更加小时交换才会继续进行。</p>
-<p>④由上至下的堆有序化<br>这个也称下沉。与上浮类似，如果二叉堆的有序化因为某个结点变得比它的某个子结点更加小而打破，就需要进行不断的下沉操作，把当前结点与其子结点中较大的部分进行交换（注意：二叉堆的左右结点是不需要按大小来排序的，但都比父结点小）。下面来看看代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="number">2</span>*k &lt;= N) &#123;</div><div class="line">            <span class="keyword">int</span> j = <span class="number">2</span>*k;</div><div class="line">            <span class="keyword">if</span> (j &lt; N&amp;&amp;less(j,j+<span class="number">1</span>)) &#123;</div><div class="line">                j++;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!less(k,j)) <span class="keyword">break</span>;</div><div class="line">            exch(k,j);</div><div class="line">            k = j;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>这里注意一下第一个判断，如果当前结点的左结点比右结点小，就进行++操作,这样j就变成了右结点。继续往下，如果当前结点比j结点大，就结束循环。否则就以j结点为当前结点继续进行下一轮循环。</p>
-<p>最后附上基于堆的优先队列的全部代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment"> * 基于堆的优先队列</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MaxPQ</span>&lt;<span class="title">Key</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">Key</span>&gt;&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Key[] pq;   <span class="comment">//基于堆的完全二叉树</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> N = <span class="number">0</span>;  <span class="comment">// 在数组中储存的范围是[1...N] 不包括pq[0]</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MaxPQ</span><span class="params">(<span class="keyword">int</span> MaxN)</span> </span>&#123;</div><div class="line">        pq = (Key[]) <span class="keyword">new</span> Comparable[MaxN+<span class="number">1</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 判断数组是否为空</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> N == <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 数组大小</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> N;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 插入元素</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(Key v)</span> </span>&#123;</div><div class="line">        pq[++N] = v;</div><div class="line">        swim(N);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 删除最大元素</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">delMax</span><span class="params">()</span> </span>&#123;</div><div class="line">        Key max = pq[<span class="number">1</span>];</div><div class="line">        exch(<span class="number">1</span>,N--);</div><div class="line">        pq[N+<span class="number">1</span>] = <span class="keyword">null</span>; <span class="comment">//防止对象游离</span></div><div class="line">        sink(<span class="number">1</span>);</div><div class="line">        <span class="keyword">return</span> max;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 上浮操作</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (k &gt; <span class="number">1</span>&amp;&amp;less(k/<span class="number">2</span>,k)) &#123;</div><div class="line">            exch(k/<span class="number">2</span>,k);</div><div class="line">            k = k/<span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 下沉操作</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="number">2</span>*k &lt;= N) &#123;</div><div class="line">            <span class="keyword">int</span> j = <span class="number">2</span>*k;</div><div class="line">            <span class="keyword">if</span> (j &lt; N&amp;&amp;less(j,j+<span class="number">1</span>)) &#123;</div><div class="line">                j++;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!less(k,j)) <span class="keyword">break</span>;</div><div class="line">            exch(k,j);</div><div class="line">            k = j;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 比较两个元素大小</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> pq[i].compareTo(pq[j]) &lt; <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 交换两个元素</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exch</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span> </span>&#123;</div><div class="line">        Key t = pq[i];</div><div class="line">        pq[i] = pq[j];</div><div class="line">        pq[j] = t;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>然后看看优先队列的各种实现的算法复杂度</p>
-<table>
-<thead>
-<tr>
-<th>数据结构</th>
-<th style="text-align:center">插入元素</th>
-<th style="text-align:right">删除最大元素</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>有序数组</td>
-<td style="text-align:center">N</td>
-<td style="text-align:right">1</td>
-</tr>
-<tr>
-<td>无序数组</td>
-<td style="text-align:center">1</td>
-<td style="text-align:right">N</td>
-</tr>
-<tr>
-<td>堆</td>
-<td style="text-align:center">logN</td>
-<td style="text-align:right">logN</td>
-</tr>
-</tbody>
-</table>
-<p>相信对排序算法了解的朋友，可以看出基于堆的优先队列就等同于堆排序，这里就不多说了，最后说一句题外话，不管算法与数据结构有关的学习资料多么全，关键还是在于自己的多思考，多花时间，行动是理想最高贵的表达，梅花香自苦寒来，太急于求成只会得不偿失，这句话也是给我自己的一个提醒。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在读周志明老师的《深入理解Java虚拟机》,感觉一下换了一个角度来看待Java代码，有必要整理一些内容，更清楚实际的流程<a id="more"></a>,这一篇就记录下Java内存区域与相关的一些内存溢出的异常。</p>
+<h2 id="内存区域"><a href="#内存区域" class="headerlink" title="内存区域"></a>内存区域</h2><p>Java虚拟机在执行Java程序的过程会把它管理的内存划分为各个不同的区域，这些区域都有着各自的生命周期，总的来说Java虚拟机管理的内存将会包括一下的数据区域<br><img src="//img.mukewang.com/5abcd667000181f410050590.png" alt="运行时数据区域"></p>
+<p>图中可以很清晰的看出区域里面各个实体的关系，然后简单介绍一3下各个实体。</p>
+<h3 id="1-程序计数器"><a href="#1-程序计数器" class="headerlink" title="1.程序计数器"></a>1.程序计数器</h3><p>线程私有，可以看作是当前线程所执行的字节码的行号指示器，字节码解释器的工作就是通过改变计数器的值来进行后续的操作。</p>
+<h3 id="2-虚拟机栈"><a href="#2-虚拟机栈" class="headerlink" title="2.虚拟机栈"></a>2.虚拟机栈</h3><p>线程私有，描述的是Java方法执行的内存模型，每个方法在执行的同时会创建一个栈帧用于储存局部变量表、操作数栈、动态链接、方法出口等信息。</p>
+<h3 id="3-本地方法栈"><a href="#3-本地方法栈" class="headerlink" title="3.本地方法栈"></a>3.本地方法栈</h3><p>与虚拟机栈发挥的作用类似，但虚拟机栈主要是为执行Java方法服务，而本地方法栈则为虚拟机使用到的native方法服务。</p>
+<h3 id="4-Java堆"><a href="#4-Java堆" class="headerlink" title="4.Java堆"></a>4.Java堆</h3><p>是Java虚拟机所管理的内存中最大的一块，也是被所有线程共享的一块内存区域，在虚拟机启动时创建，此区域唯一目的是存放对象实例。</p>
+<h3 id="5-方法区"><a href="#5-方法区" class="headerlink" title="5.方法区"></a>5.方法区</h3><p>也是各个线程共享，用于储存已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，为堆的一个逻辑部分。其中的<strong>运行时常量池</strong>相对于Class文件常量池而言具备动态性，运行期间也可将新的常量放入池中。<br>除了这些以外，<strong>直接内存</strong>的不合理分配也会影响到Java虚拟机动态扩展内存时出现内存溢出。</p>
+<h2 id="从JVM看对象"><a href="#从JVM看对象" class="headerlink" title="从JVM看对象"></a>从JVM看对象</h2><p>Java对象的创建我们无时无刻都在使用着，这里从虚拟机层面来看待对象的创建。</p>
+<hr>
+<h3 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h3><p>1.当虚拟机收到一条new指令时，首先去检查这个指令的参数能否在常量池中定位到对应的符号引用，并且检查符号引用代表的类是否加载过、解析和初始化过，没有则进行对应的类加载过程。</p>
+<p>2.在类检查通过后，虚拟机为新生对象从Java堆中分配内存。而内存的分配又有两种方式。一种是<strong>指针碰撞</strong>，就是把空闲和正在使用的内存中间放一个指针隔开，所以这种方式实际就是把指针进行移动，当内存出现相互交错时。该方式自然就行不通了；另一种方式是<strong>空闲列表</strong>，由虚拟机维护一个列表，分配内存后就更新这个列表的记录。至于使用哪种方式就要看是基于何种垃圾回收器而言。除了怎么划分可用空间之外，还需要考虑虚拟机分配内存的频率，分配频率就会涉及到并发中的一些问题了。JVM采用CAS（比较并交换）方式进行失败重试保证操作的原子性；另一种是每个线程在Java堆中预先分配一小块内存，也就是<strong>本地线程分配缓冲(TLAB)</strong></p>
+<p>3.内存分配完成后，虚拟机将分配到的内存空间都初始化为零值，使用TLAB，则可以提前到分配时进行。</p>
+<p>4.虚拟机对对象进行必要的设置，也就是把该对象相关的信息存储在对象头之中,这些工作都完成后，一个新的对象已经产生了，接下来就是对象的初始化了。</p>
+<h3 id="对象的访问定位"><a href="#对象的访问定位" class="headerlink" title="对象的访问定位"></a>对象的访问定位</h3><p>对象的访问目前主流的方式有<strong>句柄</strong>和直接<strong>指针</strong>两种。<br>1.使用句柄访问，Java堆会划分出一块内存作为句柄池，对象的引用中存储的就是其句柄的地址，句柄包含了对象实例数据和类型数据的具体地址信息。<br>2.使用直接指针，堆就要考虑如何放置访问类型数据相关的信息，引用中存储的直接就是对象地址。<br>很显然，因为是直接指向地址，所以直接指针的方式更加快，但对象访问在Java中太过频繁，积少成多后也会造成较高的执行成本。</p>
+<h2 id="内存溢出异常"><a href="#内存溢出异常" class="headerlink" title="内存溢出异常"></a>内存溢出异常</h2><h3 id="1-Java堆溢出"><a href="#1-Java堆溢出" class="headerlink" title="1.Java堆溢出"></a>1.Java堆溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeapOOM</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OOMObject</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        List&lt;OOMObject&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">            list.add(<span class="keyword">new</span> OOMObject());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里可以设置下虚拟机相关的参数,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8</div></pre></td></tr></table></figure></p>
+<h3 id="2-虚拟机和本地方法栈溢出"><a href="#2-虚拟机和本地方法栈溢出" class="headerlink" title="2.虚拟机和本地方法栈溢出"></a>2.虚拟机和本地方法栈溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaVMStackSOF</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> stackLength = <span class="number">1</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stackLeak</span><span class="params">()</span> </span>&#123;</div><div class="line">        stackLength++;</div><div class="line">        stackLeak();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        JavaVMStackSOF stackSOF = <span class="keyword">new</span> JavaVMStackSOF();</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            stackSOF.stackLeak();</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">            System.out.println(<span class="string">"Stack length: "</span>+stackSOF.stackLength );</div><div class="line">            <span class="keyword">throw</span> e;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-创建线程导致的内存溢出"><a href="#3-创建线程导致的内存溢出" class="headerlink" title="3.创建线程导致的内存溢出"></a>3.创建线程导致的内存溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaVMStackOOM</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doStop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stackLeakByThread</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">            Thread thread = <span class="keyword">new</span> Thread(()-&gt;&#123;</div><div class="line">               doStop();</div><div class="line">            &#125;);</div><div class="line">            thread.start();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        JavaVMStackOOM oom = <span class="keyword">new</span> JavaVMStackOOM();</div><div class="line">        oom.stackLeakByThread();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里的话,在Windows平台的虚拟机中，Java的线程是映射到操作系统的内核线程上，这里可能导致机器假死。</p>
+<h3 id="4-方法和运行时常量池溢出"><a href="#4-方法和运行时常量池溢出" class="headerlink" title="4.方法和运行时常量池溢出"></a>4.方法和运行时常量池溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RuntimeConstantPoolOOM</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">            list.add(String.valueOf(i++).intern());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="5-本机直接内存溢出"><a href="#5-本机直接内存溢出" class="headerlink" title="5.本机直接内存溢出"></a>5.本机直接内存溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DirectMemoryOOM</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> _1MB = <span class="number">1024</span> * <span class="number">1024</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        Field unsafeField = Unsafe.class.getDeclaredFields()[<span class="number">0</span>];</div><div class="line">        unsafeField.setAccessible(<span class="keyword">true</span>);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Unsafe unsafe = (Unsafe) unsafeField.get(<span class="keyword">null</span>);</div><div class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">                unsafe.allocateMemory(_1MB);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>了解了这些不得不佩服设计者，一个看似简单的东西底层要解决的问题、处理的细节也是非常多的，从Java虚拟机层面看到了不一样的东西，也是非常有意思的，理解底层实现的原理有助于写成更健壮的代码，更快速的debug，就到这里了。</p>
 
       
       
@@ -364,13 +349,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/10/13/二叉堆与优先队列/">二叉堆与优先队列</a></p>
+        <p><span>本文标题:</span><a href="/2018/03/29/Java内存区域与内存溢出/">Java内存区域与内存溢出</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
-        <p><span>发布时间:</span>2017年10月13日 - 22时06分</p>
-        <p><span>最后更新:</span>2017年10月20日 - 22时08分</p>
+        <p><span>发布时间:</span>2018年03月29日 - 19时45分</p>
+        <p><span>最后更新:</span>2018年03月29日 - 21时48分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/10/13/二叉堆与优先队列/" title="二叉堆与优先队列">http://blog.cspojie.cn/2017/10/13/二叉堆与优先队列/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2017/10/13/二叉堆与优先队列/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2018/03/29/Java内存区域与内存溢出/" title="Java内存区域与内存溢出">http://blog.cspojie.cn/2018/03/29/Java内存区域与内存溢出/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/03/29/Java内存区域与内存溢出/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -383,18 +368,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2017/10/20/图论-基础篇/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          图论 基础篇
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/10/06/Ubuntu下常用命令汇总/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Ubuntu下常用命令汇总</div>
+    <a href="/2018/03/13/仿MIUI实现带弹性的ScrollView/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">仿MIUI实现带弹性的ScrollView</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -405,7 +381,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、优先队列"><span class="toc-number">1.</span> <span class="toc-text">一、优先队列</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-简单介绍"><span class="toc-number">1.1.</span> <span class="toc-text">1.简单介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-基本实现"><span class="toc-number">1.2.</span> <span class="toc-text">2.基本实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、二叉堆"><span class="toc-number">2.</span> <span class="toc-text">二、二叉堆</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-简单介绍-1"><span class="toc-number">2.1.</span> <span class="toc-text">1.简单介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-基本实现-1"><span class="toc-number">2.2.</span> <span class="toc-text">2.基本实现</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存区域"><span class="toc-number">2.</span> <span class="toc-text">内存区域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-程序计数器"><span class="toc-number">2.1.</span> <span class="toc-text">1.程序计数器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-虚拟机栈"><span class="toc-number">2.2.</span> <span class="toc-text">2.虚拟机栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-本地方法栈"><span class="toc-number">2.3.</span> <span class="toc-text">3.本地方法栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Java堆"><span class="toc-number">2.4.</span> <span class="toc-text">4.Java堆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-方法区"><span class="toc-number">2.5.</span> <span class="toc-text">5.方法区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从JVM看对象"><span class="toc-number">3.</span> <span class="toc-text">从JVM看对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对象的创建"><span class="toc-number">3.1.</span> <span class="toc-text">对象的创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#对象的访问定位"><span class="toc-number">3.2.</span> <span class="toc-text">对象的访问定位</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存溢出异常"><span class="toc-number">4.</span> <span class="toc-text">内存溢出异常</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Java堆溢出"><span class="toc-number">4.1.</span> <span class="toc-text">1.Java堆溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-虚拟机和本地方法栈溢出"><span class="toc-number">4.2.</span> <span class="toc-text">2.虚拟机和本地方法栈溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-创建线程导致的内存溢出"><span class="toc-number">4.3.</span> <span class="toc-text">3.创建线程导致的内存溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-方法和运行时常量池溢出"><span class="toc-number">4.4.</span> <span class="toc-text">4.方法和运行时常量池溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-本机直接内存溢出"><span class="toc-number">4.5.</span> <span class="toc-text">5.本机直接内存溢出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -471,13 +447,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/10/20/图论-基础篇/" title="上一篇: 图论 基础篇">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2017/10/06/Ubuntu下常用命令汇总/" title="下一篇: Ubuntu下常用命令汇总">
+            <a href="/2018/03/13/仿MIUI实现带弹性的ScrollView/" title="下一篇: 仿MIUI实现带弹性的ScrollView">
                 <i class="fa fa-angle-right"></i>
             </a>
         
