@@ -3,19 +3,22 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Android第三方登录与服务器端验证过程 | legend＇s blog</title>
+  <title>JVM中的类加载机制 | legend＇s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="开篇随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力">
-<meta name="keywords" content="Android">
+  <meta name="description" content="一、前言这篇博客主要总结一下Java虚拟机中的类加载机制，刚开始学习Java时，相信大多数人第一步都是使用的java c的命令去编译.Java的文件">
+<meta name="keywords" content="JVM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android第三方登录与服务器端验证过程">
-<meta property="og:url" content="http://blog.cspojie.cn/2018/01/21/Android第三方登录与服务器端验证过程/index.html">
+<meta property="og:title" content="JVM中的类加载机制">
+<meta property="og:url" content="http://blog.cspojie.cn/2018/04/15/JVM中的类加载机制/index.html">
 <meta property="og:site_name" content="legend＇s blog">
-<meta property="og:description" content="开篇随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力">
-<meta property="og:updated_time" content="2018-01-21T11:30:32.228Z">
+<meta property="og:description" content="一、前言这篇博客主要总结一下Java虚拟机中的类加载机制，刚开始学习Java时，相信大多数人第一步都是使用的java c的命令去编译.Java的文件">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-2e5264548ece59cf.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-4c85cfa8817a4cba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-04-15T08:50:57.793Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android第三方登录与服务器端验证过程">
-<meta name="twitter:description" content="开篇随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力">
+<meta name="twitter:title" content="JVM中的类加载机制">
+<meta name="twitter:description" content="一、前言这篇博客主要总结一下Java虚拟机中的类加载机制，刚开始学习Java时，相信大多数人第一步都是使用的java c的命令去编译.Java的文件">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3110248-2e5264548ece59cf.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
   
@@ -227,11 +230,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-Android第三方登录与服务器端验证过程" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-JVM中的类加载机制" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2018/01/21/Android第三方登录与服务器端验证过程/" class="article-date">
-      <time datetime="2018-01-21T09:47:56.000Z" itemprop="datePublished">2018-01-21</time>
+      <a href="/2018/04/15/JVM中的类加载机制/" class="article-date">
+      <time datetime="2018-04-15T08:33:40.000Z" itemprop="datePublished">2018-04-15</time>
 </a>
     </div>
   
@@ -244,7 +247,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Android第三方登录与服务器端验证过程
+      JVM中的类加载机制
     </h1>
   
 
@@ -252,10 +255,14 @@
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/java/">java</a>
+    </div>
+
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -265,11 +272,26 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h3 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h3><p>随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力<a id="more"></a>。说到交互，就必需要求我们访问网络，进行数据的交互。因为需要用户的信息，又少不了注册和登录的功能，而现在五花八门的账号，使得一些用户不想再又去注册一个，这里对于开发人员或者中小企业来说最好的选择就是直接使用第三方账号了，这里虽然标题是android，但其实这个过程和什么平台是没有什么关系的。</p>
-<h3 id="第三方账号与后台的绑定"><a href="#第三方账号与后台的绑定" class="headerlink" title="第三方账号与后台的绑定"></a>第三方账号与后台的绑定</h3><p>这里主要讲讲最常见的QQ登录，首先我们需要的是去腾讯的开放平台去申请，以及读取官方文档，这些东西就不重复了。这里我们的重点是如何将用户<br>信息与后台进行相应的绑定，之前我没自己写过后台，刚开始面对这些时也是很模糊的，去百度搜出来的第三方登录，基本上都是讲OAuth协议的，也正是因为这一点，更加不清晰了。其实我们在移动端的登录与web端还是有较大的区别的，很重要的，就是登录后的回调。<br>既然要与后台进行绑定，肯定是需要唯一的标识符作为标准，因为保证安全性，所以我们在移动端进行登录后，并不能直接获取QQ账号，于是腾讯给我们提供了32位的OPEN_ID用来作为唯一标识，并且不同的应用OPEN_ID是不同的，但对于一个应用而言，这是唯一的标识符。<br>所以后台进行注册时<br>1.需要在服务器端判断数据库中中是否存在这个OPEN_ID 如果存在，就说明用户已经存在了，无需再进行注册。<br>2.如果不存在， 就从客户端向服务器端传递Access_Token和OPEN_ID,服务器端接收后就在这个地址进行验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https://graph.qq.com/user/get_user_info?access_token=客户端传来的access_token&amp;oauth_consumer_key=你申请到的appkey&amp;openid=客户端传来的OPEN_ID&amp;</div></pre></td></tr></table></figure></p>
-<p>请求后，这里会有一个返回一个键ret，值为0表示返回用户信息成功,这里进行下判断就可以了。<br>3.这样通过这两步就能与客户端登录的账号进行绑定。这里注意，登录其实就只是做一个验证而已。</p>
-<h3 id="使用JWT方式进行验证"><a href="#使用JWT方式进行验证" class="headerlink" title="使用JWT方式进行验证"></a>使用JWT方式进行验证</h3><p>上面说了与客户端与服务器端之间的绑定（其实就是类似于注册过程，不过用户不知道而已，过程都是交给后台去完成）。<br>注册成功后，可以使用一种比较安全，并且快速的验证方式，也就是JSON WEB TOKEN方式进行验证，对前端了解的朋友应该很熟悉这种方式，不熟悉的可以去网上搜一下，用这种方式进行请求验证，无需携带敏感信息。<br>1.首先用账号密码进行请求，服务器端返回给我们一个加密后的值。<br>（这里如果我们用Open_Id作为用户的唯一标识符的话，可以把用户信息的其它字段当作参数传递，这里就要结合具体的语言去进行修改了)<br>2.获取这个值后，可以保存在本地，等某些请求需要进行身份验证时，在把该值加入到请求头中。<br>3.请求时，还需要再加密后的这段值前面加上自定义的字符串。<br>这样一来即使服务器端返回的这个值被泄漏，用户的敏感信息照样能得到安全保证。在移动端进行请求时，直接携带请求头，就能快速的完成身份验证，实现单点登录。</p>
-<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>因为这里这是阐述这个过程，没有具体的代码，所以就暂时到这里了。因为我觉得，对一门语言基本的东西解了，关键就是搞清楚这些业务逻辑，了解交互的过程，不局限于某一种语言，结合具体的框架去做相应的调整。经验无非也是更加理解整个过程，才能得来的。</p>
+        <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>这篇博客主要总结一下Java虚拟机中的类加载机制，刚开始学习Java时，相信大多数人第一步都是使用的java c的命令去编译.Java的文件<a id="more"></a>,，编译后产生了一个class文件，而类文件又是被JVM进行怎样的操作才能运行？读完这篇博客，相信你能有一个整体的了解。</p>
+<h2 id="二、加载过程概述"><a href="#二、加载过程概述" class="headerlink" title="二、加载过程概述"></a>二、加载过程概述</h2><p>类从被加载到虚拟机的内存开始一直到被卸载出内存，生命周期一共包括了：加载、验证、准备、解析、初始化、使用、卸载7个阶段。如下图所示<br><img src="https://upload-images.jianshu.io/upload_images/3110248-2e5264548ece59cf.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="生命周期"><br>其中验证、准备、解析统称为连接阶段，这里来一一介绍加载过程中每个阶段需要进行的操作。</p>
+<h3 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h3><p>这个阶段，需要完成以下三件事：<br>1.通过一个类的<strong>全限定名</strong>(绝对路径)来获取定义此类的二进制流。<br>2.将这个字节流所代表的静态存储结构转化为方法区运行时的数据结构。<br>3.在内存中生成一个代表此类的java.lang.Class对象，作为方法区该类的各种数据的访问接口。<br>对Java内存区域不太了解的可以去看看我前面一篇博客<a href="http://blog.cspojie.cn/2018/03/29/Java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA/">Java内存区域</a>。<br>这里由第一点，可以看出获取类的二进制流可以有多种不同的途径，正是如此，Java虚拟机给开发人员提高了很大的扩展性。这里注意，数组类不通过加载器创建，而是由Java虚拟机直接创建，但是数组的元素类型（去除维度后）最终还是由类加载器去加载。<br>加载阶段完成后，就开始连接阶段，注意加载阶段与连接阶段的部分内容（如一部分字节码文件格式验证操作）是交叉进行的，接下来就介绍一下连接阶段。</p>
+<hr>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>验证阶段是连接的第一步，这一步目的是为了确保Class文件的字节流中包含的信息符合当前虚拟机的要求。验证阶段要遵循的具体规范比较多，这里没必要写出来了，有兴趣的朋友可以去JVM的官网去看，这里重点是大体上了解整个流程。整体上看。验证阶段分为以下几个步骤：</p>
+<h4 id="1-文件格式验证"><a href="#1-文件格式验证" class="headerlink" title="1.文件格式验证"></a>1.文件格式验证</h4><h4 id="2-元数据验证"><a href="#2-元数据验证" class="headerlink" title="2.元数据验证"></a>2.元数据验证</h4><h4 id="3-字节码验证"><a href="#3-字节码验证" class="headerlink" title="3.字节码验证"></a>3.字节码验证</h4><h4 id="4-符号引用验证"><a href="#4-符号引用验证" class="headerlink" title="4.符号引用验证"></a>4.符号引用验证</h4><h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>准备阶段是正式为类变量分配内存并设置变量初始值的阶段，这里注意一下，这个初始值不是开发人员给某个变量赋的值，而是不同的类型对应的<strong>“零值”</strong>。这些变量所使用的内存都将在方法区中进行分配，这时候进行内存分配的变量仅仅包括类变量（被static修饰的变量），实例变量将会在对象实例化时随着对象一起分配在Java堆中。</p>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><p>解析阶段是虚拟机将常量池内的符号引用替换为直接引用的过程，这里还是先来简单的介绍一下符号引用于直接引用。<br><strong>符号引用：</strong>符号引用以一组符号来描述所引用的目标，符号可以是任何形式的字面量（如我们常说的变量名），只要准确无误的能定位到目标就可以，与虚拟机的内存布局无关。<br><strong>直接引用：</strong>直接引用可以是直接指向目标的指针、相对偏移量或是一个能间接定位到目标的句柄，与虚拟机的内存布局相关。<br> 因为在程序中对同一个符号引用进行多次解析请求是常见的，所以虚拟机实现了对第一次解析的结果进行缓存（在运行时常量池中记录直接引用，并且把常量标识为已解析状态）。这里也是，具体的解析规范不多写，具体解析的步骤如下：</p>
+<h4 id="1-类或接口的解析"><a href="#1-类或接口的解析" class="headerlink" title="1.类或接口的解析"></a>1.类或接口的解析</h4><h4 id="2-字段解析"><a href="#2-字段解析" class="headerlink" title="2.字段解析"></a>2.字段解析</h4><h4 id="3-类方法解析"><a href="#3-类方法解析" class="headerlink" title="3.类方法解析"></a>3.类方法解析</h4><h4 id="4-接口方法解析"><a href="#4-接口方法解析" class="headerlink" title="4.接口方法解析"></a>4.接口方法解析</h4><hr>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>该阶段是类加载过程中的最后一步，前面的类加载过程中，除了开发人员可以通过自定义类加载器参与加载阶段外，其余动作都是都是完全由虚拟机主导和控制，到了这个阶段，才真正开始执行类中的程序代码。<br>之前在准备阶段，变量已经赋过一次初始值，而初始化阶段将根据开发人员定义的去进行赋值，换个角度看，初始化阶段是执行类构造器<clinit>()方法的过程。接下来就来详细的介绍一下该方法。</clinit></p>
+<blockquote>
+<p>1.<clinit>()方法是由编译器自动收集类中的所有变量的赋值动作和static语句块中的语句合并产生的，编译器收集的顺序是由语句在源文件中出现的顺序决定的，并且金静态语句块只能访问到定义在静态语句块之前的变量。<br>2.<clinit>()方法与类的构造方法不同，不需要显示的调用父类构造器，但虚拟机会保证在子类的<clinit>()方法执行之前，父类的该方法已经执行完，所以第一个被执行的该方法肯定是Object类。<br>3.如果一个类中没有静态语句块，也没有变量的赋值操作，编译器可以不为这个类生成<clinit>()方法。这里注意，执行接口的<clinit>()方法不需要先执行父接口的该方法，并且接口的实现类在初始化时也不会执行接口的该方法。<br>4.虚拟机保证一个类的<clinit>()方法在多线程环境中被正确的加锁、同步，并且通一个类加载器下，一个类型只会初始化一次。</clinit></clinit></clinit></clinit></clinit></clinit></p>
+</blockquote>
+<p>初始化时，虚拟机还要遵守几条必须立即对类进行初始化的规范规范，也就是对类进行主动引用</p>
+<blockquote>
+<p>1.使用new关键字实例化对象、读取或设置一个类的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外），以及调用一个类的静态方法的时候，类没有进行过初始化，则需要触发其初始化。<br>2.对类进行反射调用的时候。<br>3.初始化一个类时，其父类还没被初始化，则需要先触发其父类的初始化。<br>4.虚拟机启动时，优先初始化含main()方法的类。</p>
+</blockquote>
+<h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2><p>前面也多次提到了类加载器，这里来专门总结一下相关的知识，每一个类加载器都拥有一个独立的类名称空间，所以比较两个类是否相等，首先要比较的不是类名，而是是否来自同一个类加载器。说到类加载器。就离不开类加载器之间的关系模型。</p>
+<h3 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h3><p>类加载器从虚拟机的角度讲，一种是启动类加载器，一种是其它所有的类加载器。<br>先看看下图<br><img src="https://upload-images.jianshu.io/upload_images/3110248-4c85cfa8817a4cba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="双亲委派模型"><br>双亲委派模型要求除了顶层的启动类加载器外，其余的类加载器都需要有自身的父类加载器，并且类加载器之间的关系是以组合的关系来复用加载器代码。</p>
+<h4 id="工作过程"><a href="#工作过程" class="headerlink" title="工作过程"></a>工作过程</h4><p>如果一个类的加载器收到了类加载的请求，首先不会自己去加载这个类，而是把这个请求委派给父类加载器去完成，层层递进，因此所有的加载请求最终都被传送的顶层的启动类加载器中，只有当父类加载器无法完成请求时，子加载器才会自己去进行下载。<br>可以看出，双亲委派模型保证了Java程序的稳定运作，不会因为混乱的加载方式使程序无法正常加载运行。<br>最后说一下，现在很多的新技术都不是双亲委派模型中的树状结构，而是发展为更复杂的网状结构，这里还了解的不够多，就不必多说了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇博客系统的总结了一下JVM中的类加载机制，但更多的细节还是没有讲明，有兴趣了解更多的朋友的还是去读读《深入理解JVM虚拟机》，就暂时到这里了。</p>
 
       
       
@@ -325,13 +347,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2018/01/21/Android第三方登录与服务器端验证过程/">Android第三方登录与服务器端验证过程</a></p>
+        <p><span>本文标题:</span><a href="/2018/04/15/JVM中的类加载机制/">JVM中的类加载机制</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
-        <p><span>发布时间:</span>2018年01月21日 - 17时47分</p>
-        <p><span>最后更新:</span>2018年01月21日 - 19时30分</p>
+        <p><span>发布时间:</span>2018年04月15日 - 16时33分</p>
+        <p><span>最后更新:</span>2018年04月15日 - 16时50分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/01/21/Android第三方登录与服务器端验证过程/" title="Android第三方登录与服务器端验证过程">http://blog.cspojie.cn/2018/01/21/Android第三方登录与服务器端验证过程/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/01/21/Android第三方登录与服务器端验证过程/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2018/04/15/JVM中的类加载机制/" title="JVM中的类加载机制">http://blog.cspojie.cn/2018/04/15/JVM中的类加载机制/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/04/15/JVM中的类加载机制/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -344,18 +366,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2018/01/23/随机模拟算法求解圆周率/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          随机模拟算法求解圆周率
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/01/10/Django查错配置/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Django查错配置</div>
+    <a href="/2018/04/08/坦白说解密/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">坦白说解密</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -366,7 +379,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#开篇"><span class="toc-number">1.</span> <span class="toc-text">开篇</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#第三方账号与后台的绑定"><span class="toc-number">2.</span> <span class="toc-text">第三方账号与后台的绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用JWT方式进行验证"><span class="toc-number">3.</span> <span class="toc-text">使用JWT方式进行验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结尾"><span class="toc-number">4.</span> <span class="toc-text">结尾</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、前言"><span class="toc-number">1.</span> <span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、加载过程概述"><span class="toc-number">2.</span> <span class="toc-text">二、加载过程概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#加载"><span class="toc-number">2.1.</span> <span class="toc-text">加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#验证"><span class="toc-number">2.2.</span> <span class="toc-text">验证</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-文件格式验证"><span class="toc-number">2.2.1.</span> <span class="toc-text">1.文件格式验证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-元数据验证"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.元数据验证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-字节码验证"><span class="toc-number">2.2.3.</span> <span class="toc-text">3.字节码验证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-符号引用验证"><span class="toc-number">2.2.4.</span> <span class="toc-text">4.符号引用验证</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#准备"><span class="toc-number">2.3.</span> <span class="toc-text">准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解析"><span class="toc-number">2.4.</span> <span class="toc-text">解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-类或接口的解析"><span class="toc-number">2.4.1.</span> <span class="toc-text">1.类或接口的解析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-字段解析"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.字段解析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-类方法解析"><span class="toc-number">2.4.3.</span> <span class="toc-text">3.类方法解析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-接口方法解析"><span class="toc-number">2.4.4.</span> <span class="toc-text">4.接口方法解析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化"><span class="toc-number">2.5.</span> <span class="toc-text">初始化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类加载器"><span class="toc-number">3.</span> <span class="toc-text">类加载器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#双亲委派模型"><span class="toc-number">3.1.</span> <span class="toc-text">双亲委派模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#工作过程"><span class="toc-number">3.1.1.</span> <span class="toc-text">工作过程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -432,13 +445,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2018/01/23/随机模拟算法求解圆周率/" title="上一篇: 随机模拟算法求解圆周率">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2018/01/10/Django查错配置/" title="下一篇: Django查错配置">
+            <a href="/2018/04/08/坦白说解密/" title="下一篇: 坦白说解密">
                 <i class="fa fa-angle-right"></i>
             </a>
         
