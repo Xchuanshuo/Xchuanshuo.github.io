@@ -3,19 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>回首2017 展望未来 | legend＇s blog</title>
+  <title>Manacher算法求解最长回文子串 | legend＇s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="第一次写这种年终总结的博客，心里有点忐忑，不过感觉还是有点要写些什么东西的必要。时间过得很快，一转眼功夫一年就过去了，还依稀的记得去年">
-<meta name="keywords" content="随笔">
+  <meta name="description" content="##　一、背景最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了，后面看讨论区时发现了一个比较有意思的算法，也就是今天的主题－－Manacher算法，用这个算法可以只需要O(n)级别的时间复杂度，花时间去学习了一下，感觉确实是挺好的一种思路，这里就来记录一下。 二、算法过程1.简介Manacher算法">
+<meta name="keywords" content="算法与数据结构">
 <meta property="og:type" content="article">
-<meta property="og:title" content="回首2017 展望未来">
-<meta property="og:url" content="http://blog.cspojie.cn/2017/12/31/回首2017-展望未来/index.html">
+<meta property="og:title" content="Manacher算法求解最长回文子串">
+<meta property="og:url" content="http://blog.cspojie.cn/2018/06/16/Manacher算法求解最长回文子串/index.html">
 <meta property="og:site_name" content="legend＇s blog">
-<meta property="og:description" content="第一次写这种年终总结的博客，心里有点忐忑，不过感觉还是有点要写些什么东西的必要。时间过得很快，一转眼功夫一年就过去了，还依稀的记得去年">
-<meta property="og:updated_time" content="2017-12-31T16:16:52.447Z">
+<meta property="og:description" content="##　一、背景最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了，后面看讨论区时发现了一个比较有意思的算法，也就是今天的主题－－Manacher算法，用这个算法可以只需要O(n)级别的时间复杂度，花时间去学习了一下，感觉确实是挺好的一种思路，这里就来记录一下。 二、算法过程1.简介Manacher算法">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-775b7aac953c4b36.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-06-16T14:22:50.292Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="回首2017 展望未来">
-<meta name="twitter:description" content="第一次写这种年终总结的博客，心里有点忐忑，不过感觉还是有点要写些什么东西的必要。时间过得很快，一转眼功夫一年就过去了，还依稀的记得去年">
+<meta name="twitter:title" content="Manacher算法求解最长回文子串">
+<meta name="twitter:description" content="##　一、背景最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了，后面看讨论区时发现了一个比较有意思的算法，也就是今天的主题－－Manacher算法，用这个算法可以只需要O(n)级别的时间复杂度，花时间去学习了一下，感觉确实是挺好的一种思路，这里就来记录一下。 二、算法过程1.简介Manacher算法">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3110248-775b7aac953c4b36.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
   
@@ -227,11 +229,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-回首2017-展望未来" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Manacher算法求解最长回文子串" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/12/31/回首2017-展望未来/" class="article-date">
-      <time datetime="2017-12-31T13:15:25.000Z" itemprop="datePublished">2017-12-31</time>
+      <a href="/2018/06/16/Manacher算法求解最长回文子串/" class="article-date">
+      <time datetime="2018-06-16T14:21:08.000Z" itemprop="datePublished">2018-06-16</time>
 </a>
     </div>
   
@@ -244,7 +246,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      回首2017 展望未来
+      Manacher算法求解最长回文子串
     </h1>
   
 
@@ -253,13 +255,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/随笔/">随笔</a>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随笔/">随笔</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法与数据结构/">算法与数据结构</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -269,16 +271,13 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>第一次写这种年终总结的博客，心里有点忐忑，不过感觉还是有点要写些什么东西的必要。时间过得很快，一转眼功夫一年就过去了，还依稀的记得去年<a id="more"></a>跨年的时候还是在抱着Bruce Eckel的《Thinking in Java》。虽说这只是短短一年的时间，但这一年确实我人生中从未度过的如此有意义的一年，这一年经历过很多的事，心境也与之前发生了很大的变化。成长的过程确实是比较痛苦的，但是确实很值得的，相信以后的我也一定会感谢现在的自己，整理了一下这一年读过的书<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">《Thinking in Java》</div><div class="line">《第一行代码第2版》</div><div class="line">《算法与数据结构 Java语言描述》</div><div class="line">《黑客与画家》</div><div class="line">《Python核心编程》</div><div class="line">《算法第四版》</div><div class="line">《智能革命》</div><div class="line">《浪潮之巅》</div><div class="line">《数学之美》</div><div class="line">《程序员的数学》</div><div class="line">《进化：从孤单极客到高效团队》</div><div class="line">《Fluent Python》</div></pre></td></tr></table></figure></p>
-<p>应该说才半年多的时间，看到堆积的书我自己也有点不敢相信的，因为在之前我也一直没有读书的习惯；我也开始写博客，虽然写一篇得花不少的时间，并且可能没几个人看；多次debug的那种感觉，有时就一个小的错误可能花上数小时或者更加久…..无时无刻它好像都在对你说，放弃吧，但越是如此，越要有向前的动力<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">因为有梦，所以一切的不可能都将变为可能。</div></pre></td></tr></table></figure></p>
-<p>记得以前小的时候，老师都会教我们读书的重要性，但其实大部分都是带有功利性的，也正因为不是我自己想去做的，所以一直没有真正理解。直到今天，才真正领悟到了”书籍是人类进步的阶梯”，且对于各行各业而言，都是十分必要的。但其实问题就出在，我们很多的人都根本不知道自己到底想做什么，没有发自内心的兴趣或者说是梦想。有一句话，“干一行，爱一行”，但我觉得对于我们还很年轻的时候，应该是努力扩大自己的视野，多去尝试一些没有尝试的东西，以培养出自己的兴趣爱好，而不是安逸于眼前。对于我自己而言，长期在这样一个圈子里面，也是受到了很多前辈的影响，以前看多了伟人的故事，确不知道还有这么多默默无闻的人也同样的奋斗着，是他们让我看到了什么叫做与现实做斗争，什么叫做拼搏。也使得我更加相信自己将要从事的是很崇高的一个职业。<br><strong>心中有那么一个信仰，所以在迷茫的前方亮着那么一盏灯，指引着我前行。</strong><br>    说到迷茫这个问题，我相信不管是谁，也没办法做到一直不迷茫，对于大多数人而言，前方都是有着太多的不确定，但我们要做的是不停下脚步，风雨兼程。我记得当时即使是充满了满满的斗志与决心，即使也曾奋战过很多的凌晨，甚至一段时间每天编码过10几个小时，最后当我决定去修一下算法的时候，是真的被它虐到怀疑人生，让我感到努力究竟有没有意义，那时为了激励自己我还写了这么一篇日志</p>
-<blockquote>
-<p>现实纵然是残酷的 但翻滚的热血怎么能因为如此小的风浪就开始退缩 年轻时的我们没有那么多需要的顾虑 这不正是我们最好的条件吗? 每个时代有每个时代的迷茫 经历过生活万般打击的人 又有几个能在黑暗中看到黎明?不过机遇总是会留给那些有准备的头脑 生活总有无尽的美好等着我们 年轻的时候有着为梦想执着的激情这就是最大的幸运 能做到这样 回首往事时又还有多少的遗憾呢? 所以仍要抱着”驾长车 踏破贺兰山缺”斗志 永不言弃的走下去 不管世界最后能否为你的梦想和远见让路 不忘初心 更多的是为了让自己的人生更有意义 让时间带来的皱纹不刻在我们的心上  让我们自己有一天能帮助更多的人  让坚守的价值观一直长存下去!</p>
-</blockquote>
-<p>因为这些东西一直是自学，所以越学的多越觉得不知道的东西多，也看不到自己闪光的地方。来到这个学校后，给我的感觉是根本教不了我什么东西，在这样的环境下确会产生优越感，但在我碰到几位学长后，懂得了<br><strong>对于未知的事物要充满敬畏之心</strong> 。虽然这里不是我想象中的环境，但这也不应该成为我放弃希望的理由。因为不管身处什么位置，更多时候要挺过的还是自己一个人时，<br><strong>梦想不一定是孤独的旅行，但为梦想奋斗的勇气却还是来自于我不害怕孤独</strong>。</p>
-<p>   随着见识的不断增加，对这个时代也有了更多的认识。现在我们正位于一个伟大的时代，互联网丶各种云服务和终端的兴起，人们的生活日益便捷，地球村—“天涯若比邻”也从当初的美好愿景变成了如今的现实，而现在移动互联网的迅速发展，这场空前的人类文明的进步并没有停止。我们现在就正面临着从传统的互联网过渡到物联网时代，一个人工智能崛起的时代。这一场智能革命既是世界面临的一个巨大挑战，也是我们中华实现伟大的民族复兴要面临的一个巨大挑战！前两次技术革命我国都慢于西方的一些国家，而这一次信息的革命因为这些年改革开放促使经济的不断发展，再加上我国人口的数量，使得在大数据上有着得天独厚的优势，而这些东西又迫使我们必须解决更高的技术难度才能为人们提供更加高质量的服务，所以这一次大的变革需要我们抓住时机，以站在这场科技革命的浪潮之巅。促成这一目标，需要不是少数的几个人或者说是某个企业，而是需要千千万万带着如此愿景的开发者去达成，正如“星星之火，可以燎原”。</p>
-<hr>
-<p>有一句话挺不错，<br><strong>栽一颗树最好的时间有两个，一个是十年前，一个是现在</strong>。所以，保持 <strong>恰同学少年，风华正茂</strong>的自己，<br><strong>不为已经过去的感到失落，抓住和感谢所拥有的，期待着更好的明天</strong>。最后，感谢自己所处的时代，站在巨人的肩上，你我都为让世界变得更美好而坚定前行。</p>
+        <p>##　一、背景<br>最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了，后面看讨论区时发现了一个比较有意思的算法，也就是今天的主题－－<strong>Manacher算法</strong>，用这个算法可以只需要O(n)级别的时间复杂度，花时间去学习了一下，感觉确实是挺好的一种思路，这里就来记录一下。</p>
+<h2 id="二、算法过程"><a href="#二、算法过程" class="headerlink" title="二、算法过程"></a>二、算法过程</h2><h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h3><p>Manacher算法是通过求解一个<strong>中心点</strong>，在距离这个点<strong>R</strong>长度以内都是关于这个点左右对称的，也就是说这个长度为<strong>2R</strong>的字符串是一个回文串，最后再比较大小，求出最大的长度2R及其中心点，最后就得出了题解，并且整个过程就扫描整个字符串一遍。这里也可以看出，因为要求回文子串的中心点，这个中心点也是唯一的，所以它只能处理字符串是奇数位的情况。因此我们第一步就是把字符串长度变为奇数，这里就要使用一个非常巧妙的方式，把字符串中每个字符使用一个其它字符号包围起来，，这里以“＃”号为例，可以想象一下，要把每个字符都使用’’#’’号包裹，那么需要的#号总是要比原来的字符串长度多一位，才能保证每个字符都能被插入到#与#中间，简单举个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">aa -&gt; #a#a# </div><div class="line">aaa -&gt; #a#a#a#</div></pre></td></tr></table></figure></p>
+<p>可以看到不管原来的字符串长度是什么，奇数加偶数结果肯定是奇数的，进行这一步处理后，就可以开始求最长回文子串的半径R了。</p>
+<h3 id="2-求解最长回文子串半径"><a href="#2-求解最长回文子串半径" class="headerlink" title="2.求解最长回文子串半径"></a>2.求解最长回文子串半径</h3><p>这里可以先借助两个变量center、right分别记录回文子串对应的中心点和右端点，看看下图，<br><img src="https://upload-images.jianshu.io/upload_images/3110248-775b7aac953c4b36.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>其实这里直接可以知道right就是<strong>2xcenter-i</strong>（也就是i关于center的对称点），既然是对称点，<strong>那么当端点right&gt;i时，端点i需要进行计算回文子串R，但它的对称点有可能也进行过计算，所以可以无需从头开始匹配，因为这些点都包含在一个已经进行过匹配的父回文串中，所以这里可以直接取right-i和它的对称点回文子串半径长度较小的，用来保证绝对进行过计算的回文子串的部分;反之，就只能从1个长度开始匹配了</strong>，就是下面的这行代码，这里可能没如果还不理解的可以看看末尾的参考链接，这里我就不去画图了<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">r[i]=right&gt;i?(Math.min(r[<span class="number">2</span>*center-i], right-i)):<span class="number">1</span>;</div></pre></td></tr></table></figure></p>
+<p>这里借助一个辅助的数组r[]来记录回文子串的半径R，r[i]表示的是以i为<strong>中心点</strong>的回文字符串的半径长度(初始情况下为1)，知道r[i]后，就可以继续把索引向左右两边扩充，也就是看<strong>i+r[i]</strong>与<strong>i-r[i]</strong>左右端点的位置所对应的字符是否相等，相等的话就把回文半径r[i]继续扩充，直到不相等为止。进行这一轮扩充后，就去看看之前的右端点<strong>right</strong>是否小于回文子串扩充后的右端点<strong>i+r[i]</strong>,小于就直接更新右端点和中心点，不小于就说明当前回文子串还是在当前right端点的内部。</p>
+<h3 id="3-全部代码"><a href="#3-全部代码" class="headerlink" title="3.全部代码"></a>3.全部代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test200</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">        <span class="comment">// write your code here</span></div><div class="line">        StringBuilder builder = <span class="keyword">new</span> StringBuilder();</div><div class="line">       <span class="comment">// 防止左端点越界</span></div><div class="line">        builder.append(<span class="string">"&amp;#"</span>);</div><div class="line">        <span class="keyword">char</span>[] c = s.toCharArray();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i &lt; c.length;i++) &#123;</div><div class="line">            builder.append(c[i]+<span class="string">"#"</span>);</div><div class="line">        &#125;</div><div class="line">        String newStr = builder.toString();</div><div class="line">        c = newStr.toCharArray();</div><div class="line">        <span class="comment">// 回文半径</span></div><div class="line">        <span class="keyword">int</span>[] r = <span class="keyword">new</span> <span class="keyword">int</span>[newStr.length()];</div><div class="line">        <span class="comment">// 回文子串最大右端点、中心点</span></div><div class="line">        <span class="keyword">int</span> right=<span class="number">0</span>, center=<span class="number">0</span>;</div><div class="line">        <span class="comment">// 最大回文半径、最大中心点</span></div><div class="line">        <span class="keyword">int</span> maxR=<span class="number">0</span>, maxC=<span class="number">0</span>;</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i &lt; c.length;i++) &#123;</div><div class="line">　　　<span class="comment">// 以i为中心点的回文半径，可以重复利用以及匹配过对称点的半径</span></div><div class="line">            r[i]=right&gt;i?(Math.min(r[<span class="number">2</span>*center-i], right-i)):<span class="number">1</span>;</div><div class="line">            <span class="keyword">while</span> (i+r[i]&lt;c.length &amp;&amp; c[i+r[i]]==c[i-r[i]]) &#123;</div><div class="line">                ++r[i];</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 更新右端点和中心点</span></div><div class="line">            <span class="keyword">if</span> (right &lt; i+r[i]) &#123;</div><div class="line">                right = i+r[i];</div><div class="line">                center = i;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 更新最大半径和最大中心点</span></div><div class="line">            <span class="keyword">if</span> (maxR &lt; r[i]) &#123;</div><div class="line">                maxR = r[i];</div><div class="line">                maxC = i;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 计算在原字符串中的起始点</span></div><div class="line">        <span class="keyword">int</span> start = (maxC-maxR)/<span class="number">2</span>;</div><div class="line">        <span class="keyword">return</span> s.substring(start, start+maxR-<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        String s = <span class="string">"aa"</span>;</div><div class="line">        Test200 test = <span class="keyword">new</span> Test200();</div><div class="line">        System.out.println(test.longestPalindrome(s));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>整体来说，理解清楚了，这个算法确实是挺巧妙的，就暂时到这里了。<br>参考：<a href="https://www.felix021.com/blog/read.php?2040" target="_blank" rel="external">https://www.felix021.com/blog/read.php?2040</a></p>
 
       
       
@@ -334,13 +333,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/12/31/回首2017-展望未来/">回首2017 展望未来</a></p>
+        <p><span>本文标题:</span><a href="/2018/06/16/Manacher算法求解最长回文子串/">Manacher算法求解最长回文子串</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
-        <p><span>发布时间:</span>2017年12月31日 - 21时15分</p>
-        <p><span>最后更新:</span>2018年01月01日 - 00时16分</p>
+        <p><span>发布时间:</span>2018年06月16日 - 22时21分</p>
+        <p><span>最后更新:</span>2018年06月16日 - 22时22分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/12/31/回首2017-展望未来/" title="回首2017 展望未来">http://blog.cspojie.cn/2017/12/31/回首2017-展望未来/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2017/12/31/回首2017-展望未来/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2018/06/16/Manacher算法求解最长回文子串/" title="Manacher算法求解最长回文子串">http://blog.cspojie.cn/2018/06/16/Manacher算法求解最长回文子串/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/06/16/Manacher算法求解最长回文子串/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -353,18 +352,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Ubuntu16.04下Nginx+uwsgi部署Django项目
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/12/25/Pycahrm远程调试Django项目/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Pycahrm远程调试Django项目</div>
+    <a href="/2018/05/15/Java内存模型/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Java内存模型</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -375,7 +365,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#二、算法过程"><span class="toc-number">1.</span> <span class="toc-text">二、算法过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-简介"><span class="toc-number">1.1.</span> <span class="toc-text">1.简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-求解最长回文子串半径"><span class="toc-number">1.2.</span> <span class="toc-text">2.求解最长回文子串半径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-全部代码"><span class="toc-number">1.3.</span> <span class="toc-text">3.全部代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、总结"><span class="toc-number">2.</span> <span class="toc-text">三、总结</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -441,13 +431,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/" title="上一篇: Ubuntu16.04下Nginx+uwsgi部署Django项目">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2017/12/25/Pycahrm远程调试Django项目/" title="下一篇: Pycahrm远程调试Django项目">
+            <a href="/2018/05/15/Java内存模型/" title="下一篇: Java内存模型">
                 <i class="fa fa-angle-right"></i>
             </a>
         
