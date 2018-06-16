@@ -5,18 +5,18 @@
   
   <title>Manacher算法求解最长回文子串 | legend＇s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="##　一、背景最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了，后面看讨论区时发现了一个比较有意思的算法，也就是今天的主题－－Manacher算法，用这个算法可以只需要O(n)级别的时间复杂度，花时间去学习了一下，感觉确实是挺好的一种思路，这里就来记录一下。 二、算法过程1.简介Manacher算法">
+  <meta name="description" content="一、背景最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了">
 <meta name="keywords" content="算法与数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Manacher算法求解最长回文子串">
 <meta property="og:url" content="http://blog.cspojie.cn/2018/06/16/Manacher算法求解最长回文子串/index.html">
 <meta property="og:site_name" content="legend＇s blog">
-<meta property="og:description" content="##　一、背景最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了，后面看讨论区时发现了一个比较有意思的算法，也就是今天的主题－－Manacher算法，用这个算法可以只需要O(n)级别的时间复杂度，花时间去学习了一下，感觉确实是挺好的一种思路，这里就来记录一下。 二、算法过程1.简介Manacher算法">
+<meta property="og:description" content="一、背景最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-775b7aac953c4b36.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-06-16T14:22:50.292Z">
+<meta property="og:updated_time" content="2018-06-16T14:24:47.113Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Manacher算法求解最长回文子串">
-<meta name="twitter:description" content="##　一、背景最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了，后面看讨论区时发现了一个比较有意思的算法，也就是今天的主题－－Manacher算法，用这个算法可以只需要O(n)级别的时间复杂度，花时间去学习了一下，感觉确实是挺好的一种思路，这里就来记录一下。 二、算法过程1.简介Manacher算法">
+<meta name="twitter:description" content="一、背景最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3110248-775b7aac953c4b36.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
@@ -271,7 +271,7 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>##　一、背景<br>最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了，后面看讨论区时发现了一个比较有意思的算法，也就是今天的主题－－<strong>Manacher算法</strong>，用这个算法可以只需要O(n)级别的时间复杂度，花时间去学习了一下，感觉确实是挺好的一种思路，这里就来记录一下。</p>
+        <h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><p>最近在LintCode上面刷题时遇到了一个求解最长回文子串的问题，这个题目可以使用暴力的方式去进行求解，但算法的时间复杂度至少就是O(n^2)级别了<a id="more"></a>，后面看讨论区时发现了一个比较有意思的算法，也就是今天的主题－－<strong>Manacher算法</strong>，用这个算法可以只需要O(n)级别的时间复杂度，花时间去学习了一下，感觉确实是挺好的一种思路，这里就来记录一下。</p>
 <h2 id="二、算法过程"><a href="#二、算法过程" class="headerlink" title="二、算法过程"></a>二、算法过程</h2><h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h3><p>Manacher算法是通过求解一个<strong>中心点</strong>，在距离这个点<strong>R</strong>长度以内都是关于这个点左右对称的，也就是说这个长度为<strong>2R</strong>的字符串是一个回文串，最后再比较大小，求出最大的长度2R及其中心点，最后就得出了题解，并且整个过程就扫描整个字符串一遍。这里也可以看出，因为要求回文子串的中心点，这个中心点也是唯一的，所以它只能处理字符串是奇数位的情况。因此我们第一步就是把字符串长度变为奇数，这里就要使用一个非常巧妙的方式，把字符串中每个字符使用一个其它字符号包围起来，，这里以“＃”号为例，可以想象一下，要把每个字符都使用’’#’’号包裹，那么需要的#号总是要比原来的字符串长度多一位，才能保证每个字符都能被插入到#与#中间，简单举个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">aa -&gt; #a#a# </div><div class="line">aaa -&gt; #a#a#a#</div></pre></td></tr></table></figure></p>
 <p>可以看到不管原来的字符串长度是什么，奇数加偶数结果肯定是奇数的，进行这一步处理后，就可以开始求最长回文子串的半径R了。</p>
 <h3 id="2-求解最长回文子串半径"><a href="#2-求解最长回文子串半径" class="headerlink" title="2.求解最长回文子串半径"></a>2.求解最长回文子串半径</h3><p>这里可以先借助两个变量center、right分别记录回文子串对应的中心点和右端点，看看下图，<br><img src="https://upload-images.jianshu.io/upload_images/3110248-775b7aac953c4b36.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>其实这里直接可以知道right就是<strong>2xcenter-i</strong>（也就是i关于center的对称点），既然是对称点，<strong>那么当端点right&gt;i时，端点i需要进行计算回文子串R，但它的对称点有可能也进行过计算，所以可以无需从头开始匹配，因为这些点都包含在一个已经进行过匹配的父回文串中，所以这里可以直接取right-i和它的对称点回文子串半径长度较小的，用来保证绝对进行过计算的回文子串的部分;反之，就只能从1个长度开始匹配了</strong>，就是下面的这行代码，这里可能没如果还不理解的可以看看末尾的参考链接，这里我就不去画图了<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">r[i]=right&gt;i?(Math.min(r[<span class="number">2</span>*center-i], right-i)):<span class="number">1</span>;</div></pre></td></tr></table></figure></p>
@@ -336,7 +336,7 @@
         <p><span>本文标题:</span><a href="/2018/06/16/Manacher算法求解最长回文子串/">Manacher算法求解最长回文子串</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
         <p><span>发布时间:</span>2018年06月16日 - 22时21分</p>
-        <p><span>最后更新:</span>2018年06月16日 - 22时22分</p>
+        <p><span>最后更新:</span>2018年06月16日 - 22时24分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2018/06/16/Manacher算法求解最长回文子串/" title="Manacher算法求解最长回文子串">http://blog.cspojie.cn/2018/06/16/Manacher算法求解最长回文子串/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/06/16/Manacher算法求解最长回文子串/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -365,7 +365,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#二、算法过程"><span class="toc-number">1.</span> <span class="toc-text">二、算法过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-简介"><span class="toc-number">1.1.</span> <span class="toc-text">1.简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-求解最长回文子串半径"><span class="toc-number">1.2.</span> <span class="toc-text">2.求解最长回文子串半径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-全部代码"><span class="toc-number">1.3.</span> <span class="toc-text">3.全部代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、总结"><span class="toc-number">2.</span> <span class="toc-text">三、总结</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、背景"><span class="toc-number">1.</span> <span class="toc-text">一、背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、算法过程"><span class="toc-number">2.</span> <span class="toc-text">二、算法过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-简介"><span class="toc-number">2.1.</span> <span class="toc-text">1.简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-求解最长回文子串半径"><span class="toc-number">2.2.</span> <span class="toc-text">2.求解最长回文子串半径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-全部代码"><span class="toc-number">2.3.</span> <span class="toc-text">3.全部代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、总结"><span class="toc-number">3.</span> <span class="toc-text">三、总结</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
