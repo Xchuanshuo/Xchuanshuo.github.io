@@ -3,21 +3,22 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Ubuntu16.04下Nginx+uwsgi部署Django项目 | legend＇s blog</title>
+  <title>JVM运行期优化 | legend＇s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，">
-<meta name="keywords" content="Python,Linux">
+  <meta name="description" content="一、前言JVM运行期的优化主要是指程序在编译成字节码之后，JVM通过解释器去解释执行，再针对程序运行的资源占用等情况进行分析然后做出的一系列的优化">
+<meta name="keywords" content="JVM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ubuntu16.04下Nginx+uwsgi部署Django项目">
-<meta property="og:url" content="http://blog.cspojie.cn/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/index.html">
+<meta property="og:title" content="JVM运行期优化">
+<meta property="og:url" content="http://blog.cspojie.cn/2018/08/04/JVM运行期优化/index.html">
 <meta property="og:site_name" content="legend＇s blog">
-<meta property="og:description" content="之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3110248-1a3ca5f9c1478e9b.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-05-01T17:25:24.966Z">
+<meta property="og:description" content="一、前言JVM运行期的优化主要是指程序在编译成字节码之后，JVM通过解释器去解释执行，再针对程序运行的资源占用等情况进行分析然后做出的一系列的优化">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-b4b57c4a53aa685c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-7c57daa6bfb0a758.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-08-04T02:13:11.881Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ubuntu16.04下Nginx+uwsgi部署Django项目">
-<meta name="twitter:description" content="之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，">
-<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3110248-1a3ca5f9c1478e9b.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:title" content="JVM运行期优化">
+<meta name="twitter:description" content="一、前言JVM运行期的优化主要是指程序在编译成字节码之后，JVM通过解释器去解释执行，再针对程序运行的资源占用等情况进行分析然后做出的一系列的优化">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3110248-b4b57c4a53aa685c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
   
@@ -229,11 +230,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-Ubuntu16-04下Nginx-uwsgi部署Django项目" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-JVM运行期优化" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/" class="article-date">
-      <time datetime="2018-01-04T11:38:22.000Z" itemprop="datePublished">2018-01-04</time>
+      <a href="/2018/08/04/JVM运行期优化/" class="article-date">
+      <time datetime="2018-08-04T02:07:43.000Z" itemprop="datePublished">2018-08-04</time>
 </a>
     </div>
   
@@ -246,7 +247,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Ubuntu16.04下Nginx+uwsgi部署Django项目
+      JVM运行期优化
     </h1>
   
 
@@ -255,13 +256,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/环境部署/">环境部署</a>
+    <a class="article-category-link" href="/categories/java/">java</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -271,35 +272,21 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>之前写了一篇Pycharm远程调试django项目的，只是完成了Django项目在服务器上的运行。而且当时是用的虚拟机，有些坑并没有遇到。前几天买了阿里云的Linux服务器ubuntu16.04，<a id="more"></a>一路搭建环境和部署过程搞了2天多，可以说是神坑无数，最有意思的网上的很多博客是叫踩坑记录，结果照着这些方式去搞出现了很多奇怪的问题，估计也和版本不同有关。这里为了避免少走一些弯路，我就来记录一下整个过程(这里都是默认root用户远程登录下进行操作,项目名为DjangoTest)。</p>
-<h3 id="Python环境的配置"><a href="#Python环境的配置" class="headerlink" title="Python环境的配置"></a>Python环境的配置</h3><p>因为Python环境都是Linux系统上面自带的，我这里项目用的设Python3.6，安装的过程就不多说了，这里基本没什么问题，安装好后只需把安装目录链接到系统自带的python3（系统自带的是Python3.5）即可。本来这里应该没什么问题的，但刚这个项目需要请求https的链接，因为在本地的时候会这里是不会出问题的，但是一旦放到服务器端，坑也就来了。请求时直接返回这么一句异常<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SSLError(&quot;Can`t connect to HTTTPS URL because the SSL module is not available&quot;))</div></pre></td></tr></table></figure></p>
-<p>可以看到用到是python中的ssl模块不存在，直接去安装好相应的openssl模块后，还是抛出这个异常。于是不停的去Google和百度，过程中也是按照类似的答案，结果还是没能解决这个问题。最后我就卸载了Python3.6, 直接用3.5的环境去运行，这个问题才得以解决。<br>具体应该是因为系统默认的是加载已存在的ssl模块，用3.6版本的虽然也依赖了，但是并不会识别，发现不是来自默认Python环境中自带的，就无法加载。这里感觉也是能配置的，但事实就是我不知道多少次的卸载重装，按照各种方式去安装和依赖，还是出现同样的问题，好在3.6版本的项目在3.5上还是基本兼容的，虽然暴力，但不失为一种办法。（如果哪位有更好的解决办法，欢迎给我留言）</p>
-<p>这里完成后就是Python虚拟环境容器的安装和环境变量的配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install virtualenvwrapper</div></pre></td></tr></table></figure></p>
-<p>这里的话，因为之前写过，就不多说了，可以参考我的之前的一篇博客<a href="http://blog.cspojie.cn/2017/12/25/Pycahrm远程调试Django项目/#more">Pycharm远程调试Django项目</a>。</p>
-<h3 id="Mariadb的配置"><a href="#Mariadb的配置" class="headerlink" title="Mariadb的配置"></a>Mariadb的配置</h3><p>本来不想写数据库的，但这里我也是第一次用Mariadb，并且在配置文件方面发生了一些变化，也踩了一些坑。<br>Mariadb是MySQL的一个分支，开发者也是MySQL的作者，所以Mariadb是完全兼容MySQL的基本命令的。<br>安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-get install mariadb-server</div></pre></td></tr></table></figure></p>
-<p>如果报本地不存在，就先更新下源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-get update</div></pre></td></tr></table></figure></p>
-<p>安装完成后直接启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/etc/init.d/mysql start  </div><div class="line">/etc/init.d/mysql stop</div><div class="line">/etc/init.d/mysql restart</div></pre></td></tr></table></figure></p>
-<p>然后直接输入mysql进入数据库后<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">use mysql</div></pre></td></tr></table></figure></p>
-<p>更改mysql密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">update user set Password = PASSWORD(&apos;你的密码&apos;) where User =&apos;root&apos;;</div></pre></td></tr></table></figure></p>
-<p>然后设置外部ip访问权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GRANT ALL PRIVILEGES ON *.* TO &apos;root&apos;@&apos;%&apos; IDENTIFIED BY &apos;你的密码&apos; WITH GRANT OPTION;</div><div class="line">FLUSH PRIVILEGES;</div></pre></td></tr></table></figure></p>
-<p>这里完成后 重启一下 ，然后还需要修改一下配置文件中绑定的地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/mysql/mariadb.conf.d/50-server.cnf</div></pre></td></tr></table></figure></p>
-<p>找到这一行<br><img src="http://upload-images.jianshu.io/upload_images/3110248-1a3ca5f9c1478e9b.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>直接注释掉就可以了。最后需要注意一下，如果是用的阿里云的服务器就需要配置一下安全组规则，开放3306端口。<br>这样就能完成数据库的远程连接了。<br>注意:<br>如果Django项目中用到Mysql的话，需要在服务器端的Python虚拟环境下安装一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install mysqlclient</div></pre></td></tr></table></figure></p>
-<p>可能会安装出错，因为缺少一些依赖包，安装一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-get install libmysqlclient-dev</div></pre></td></tr></table></figure></p>
-<p>然后重新安装mysqlclient，这样配置就完成了。</p>
-<h3 id="uwsgi的安装和配置"><a href="#uwsgi的安装和配置" class="headerlink" title="uwsgi的安装和配置"></a>uwsgi的安装和配置</h3><p>uwsgi也是一种web服务器，这里就不多介绍了，直接开始安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install uwsgi</div></pre></td></tr></table></figure></p>
-<p>可以先来测试一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">uwsgi --http 0:80 --module DjangoTest.wsgi</div></pre></td></tr></table></figure></p>
-<p>然后使用配置文件的方式来启动django项目,可以直接在项目的目录下新建一个uwsgi.ini文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"># mysite_uwsgi.ini file</div><div class="line">[uwsgi]</div><div class="line"># Django-related settings</div><div class="line"># 项目根目录的路径</div><div class="line">chdir           = /你的路径/DjangoTest</div><div class="line"># Django&apos;s wsgi file</div><div class="line">module          = DjangoTest.wsgi</div><div class="line"># the virtualenv (full path)</div><div class="line"></div><div class="line"># process-related settings</div><div class="line"># master</div><div class="line">master          = true</div><div class="line"># maximum number of worker processes</div><div class="line">processes       = 10</div><div class="line"># the socket (use the full path to be safe</div><div class="line">socket          = :8000</div><div class="line"># ... with appropriate permissions - may be needed</div><div class="line"># chmod-socket    = 664</div><div class="line"># clear environment on exit</div><div class="line">vacuum          = true</div><div class="line"># 虚拟环境的目录</div><div class="line">pythonpath = /你的虚拟环境的路径/lib/python3.6/site-packages/</div></pre></td></tr></table></figure></p>
-<p>配置文件写好后，其实我们是可以直接用uwsgi就能完成部署的，使用命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">uwsgi -i uwsgi.ini</div></pre></td></tr></table></figure></p>
-<p>如果端口号被占用，就直接使用命令查看占用情况<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lsof -i :8000</div></pre></td></tr></table></figure></p>
-<p>然后使用命令，销毁这些进程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">killall -9 uwsgi</div></pre></td></tr></table></figure></p>
-<p>但是为了提高扩展性，我们继续下面的步骤</p>
-<h3 id="Nginx的安装与配置"><a href="#Nginx的安装与配置" class="headerlink" title="Nginx的安装与配置"></a>Nginx的安装与配置</h3><p>nginx是一个强大的中间件，我们直接把它作为对外的服务接口。<br>开始安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-get install nginx</div></pre></td></tr></table></figure></p>
-<p>然后看看启动、停止和重启命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/etc/init.d/nginx start</div><div class="line">/etc/init.d/nginx stop</div><div class="line">/etc/init.d/nginx reload</div></pre></td></tr></table></figure></p>
-<p>这里注意，其它配置文件不要乱改！如果安装完成不能正常启动的话可以重启服务器看看。没问题的话，我们可以在项目目录下新建一个nginx.conf文件，然后按照下面的方式配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"># the upstream component nginx needs to connect to</div><div class="line">upstream django &#123;</div><div class="line">#django项目的端口号 和uwsgi里面的端口号保存一致</div><div class="line">server 0.0.0.0:8000; # for a web port socket (we&apos;ll use this first)</div><div class="line">&#125;</div><div class="line"># configuration of the server</div><div class="line"></div><div class="line">server &#123;</div><div class="line"># nginx服务的端口号 不用修改</div><div class="line">listen 80;</div><div class="line"># the domain name it will serve for</div><div class="line"># 这里可以填写你的ip地址或者域名</div><div class="line">server_name www.test.com;</div><div class="line">charset     utf-8;</div><div class="line"></div><div class="line"># max upload size</div><div class="line">client_max_body_size 75M;   # adjust to taste</div><div class="line"></div><div class="line"># Django media</div><div class="line">location /media  &#123;</div><div class="line">    alias /你的路径/DjangoTest/media;  # 指向django的media目录</div><div class="line">&#125;</div><div class="line"></div><div class="line">location /static &#123;</div><div class="line">    alias /你的路径/DjangoTest/static; # 指向django的static目录</div><div class="line">&#125;</div><div class="line"></div><div class="line"># Finally, send all non-media requests to the Django server.</div><div class="line">location / &#123;</div><div class="line">    uwsgi_pass  django;</div><div class="line">    include     uwsgi_params; # the uwsgi_params file you installed</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>配置写好后，就需要把它链接到Nginx的启动配置文件中，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ln -s /你的目录/DjangoTest/nginx.conf  /etc/nginx/conf.d/</div></pre></td></tr></table></figure></p>
-<p>配置完成后，再去加载一下uwsgi文件。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>配置好后，直接输入IP地址或者解析到该IP的域名就能成功访问到Django项目了，这样你也会发现，通过nginx我们可以轻松地配置和部署多个环境不同的站点，只需要把配置文件写好后放入nginx的启动文件中。<br>最后来整理一下整个访问的过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1.使用nginx作为外部接口，直接处理发送过来的请求，如果是静态请求，就直接根据配置的静态文件目录，返回相应的静态资源。</div><div class="line">2.如果是动态请求，就通过配置文件将请求转移到uwsgi，uwsgi又会将接受到的请求传递给wsgi（Django项目默认通过wsgi启动服务的），wsgi就会根据请求来调用Django项目中的逻辑来处理请求。</div><div class="line">3.处理完成后，又将结果返回给uwsgi，然后uwsgi又继续将结果返回给nginx</div><div class="line">4.最后Nginx将处理后的结果返回给用户</div></pre></td></tr></table></figure></p>
-<p>虽然过程中遇到很多坑，但在多次的尝试中更能加深自己的经验和理解。<br>最后，祝大家在新的一年里，技术节节高升！！！</p>
+        <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>JVM运行期的优化主要是指程序在编译成字节码之后，JVM通过解释器去解释执行，再针对程序运行的资源占用等情况进行分析然后做出的一系列的优化<a id="more"></a>。Java程序的效率之所以较高（即使是和接近底层的c/c++语言相比较，在Java内部的即时编译器优化的情况下，很多应用场景下效率也毫不逊色），是离不开JVM对程序进行的优化的，这篇博客就来总结一下虚拟机在背后给我们做的工作（针对的是目前市面上主流的HotSpot虚拟机而言）。</p>
+<h2 id="二、JVM的即时编译器"><a href="#二、JVM的即时编译器" class="headerlink" title="二、JVM的即时编译器"></a>二、JVM的即时编译器</h2><h3 id="1-解释器与编译器"><a href="#1-解释器与编译器" class="headerlink" title="1.解释器与编译器"></a>1.解释器与编译器</h3><p>JVM虚拟机采用的是解释器与编译器共存的架构，这样的搭配平均情况下能最好的发挥程序的性能。解释器与编译器各有优势：当程序需要迅速启动和快速执行的时候，解释器可以首先发挥作用，省去编译的时间，能够立即执行；而程序运行一段时间后，<strong>即时编译器(JIT)</strong>开始发挥作用，会根据程序代码的运行状况，把越来越多的代码编译成本地代码，以提高执行的效率。当程序在运行环境中占用内存资源较多时，可以使用解释器执行来减少内存的占用率。同时，当编译器进行过早优化时，解释器可以让编译器根据概率来选择一些大多数情况下都能提高运行速度的优化手段，但如果这次优化后，导致后续程序的运行出现特殊状况，这时即时编译器又会通过<strong>逆优化</strong>来回退到解释器执行。整个过程也就是下图所示<br><img src="https://upload-images.jianshu.io/upload_images/3110248-b4b57c4a53aa685c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="20170601114304750.png"><br>从上图也可以看出，编译器里面内置了<strong>Client和Server两个编译器（通常也被称为c1和c2编译器）</strong>，JVM采用了<strong>分层编译</strong>的方式来使程序启动的响应速度与运行效率之间达到平衡:</p>
+<blockquote>
+<p>1.第０层，程序解释执行，解释器不开启性能监控，可触发第一层编译。<br>  2.第1层，c1编译，将字节码编译为本地代码，进行简单可靠的优化。<br>  3.第2层，c2编译，将字节码编译为本地代码，但是会进行一些编译耗时较长的优化。</p>
+<h3 id="2-编译对象与触发条件"><a href="#2-编译对象与触发条件" class="headerlink" title="2.编译对象与触发条件"></a>2.编译对象与触发条件</h3><p>在JVM运行过程中会被即使编译器编译的主要有<strong>被多次调用的方法和被多次执行的循环体</strong>这些热点代码。这里需要注意，对于第一种情况，直接理所当然的以整个方法作为JIT编译的对象，而对于后面一种情况，尽管编译动作是由循环体触发的，编译器还是会以它所在的整个方法为编译对象。这种编译是发生在方法执行的过程中，因此也被称为<strong>栈上替换(OSR，方法栈帧还在栈上，方法就被替换了)</strong>。</p>
+<h4 id="热点代码的判定方式"><a href="#热点代码的判定方式" class="headerlink" title="热点代码的判定方式"></a>热点代码的判定方式</h4><p>在现在的虚拟机中，主要有以下几种方式：<br>1.<strong>基于采样的热点探测</strong>：采用这种方法的虚拟机会周期性地检查各个线程的栈顶，如果发现某个方法经常出现在栈顶，这个方法就是热点方法。这种方法实现起来较为简单，可以很容易的获取方法调用的关系，缺点是由于有线程阻塞或别的因素影响，无法精确的对热点进行探测。<br>2.<strong>基于计数器的热点探测</strong>：采用这种方法的虚拟机会为每个方法（甚至是代码块）建立并维护计数器，统计方法的执行次数，执行次数超过一定的阀值就会认为它是热点方法，这种方式更加精确和严谨，但统计时需要为每个方法建立并维护计数器，而且不能获取方法的调用关系，实现起来较为麻烦。</p>
+<h2 id="3-基于踪迹-Trace-的热点探测：采用这种方式的虚拟机是将一段频繁执行的代码作为一个编译单元，并仅对该代码片段进行编译，该代码片段由一个线性且连续的指令序列组成，仅有一个入口，但有多个出口。也就是说，基于踪迹而编译的热点代码不仅仅局限在一个单独的方法或者代码快中，一条Trace可能对应多个方法，代码中频繁执行的路径就可能被识别成不同的踪迹。因此这种方法有着更高的精度，并且能够避免编译不是频繁执行的代码，减少不必要的编译开销，但这种方法的实现就更为的复杂。在Android早期的Dalvik虚拟机的JIT编译器就是使用的这种方式-从Android4-4开始，Google就把Android中的Dalvik虚拟机无缝切换到了ART虚拟机，这里简单的说一下，Android上面的虚拟机是按照JVM的部分规范去实现的一种类似的东西，并不属于Java虚拟机，并且与JVM最大的不同是就是Dalvik-ART基于寄存器，而JVM基于栈，Android里面是每个程序都对应着一个单独的虚拟机，也是一个单独的进程-。"><a href="#3-基于踪迹-Trace-的热点探测：采用这种方式的虚拟机是将一段频繁执行的代码作为一个编译单元，并仅对该代码片段进行编译，该代码片段由一个线性且连续的指令序列组成，仅有一个入口，但有多个出口。也就是说，基于踪迹而编译的热点代码不仅仅局限在一个单独的方法或者代码快中，一条Trace可能对应多个方法，代码中频繁执行的路径就可能被识别成不同的踪迹。因此这种方法有着更高的精度，并且能够避免编译不是频繁执行的代码，减少不必要的编译开销，但这种方法的实现就更为的复杂。在Android早期的Dalvik虚拟机的JIT编译器就是使用的这种方式-从Android4-4开始，Google就把Android中的Dalvik虚拟机无缝切换到了ART虚拟机，这里简单的说一下，Android上面的虚拟机是按照JVM的部分规范去实现的一种类似的东西，并不属于Java虚拟机，并且与JVM最大的不同是就是Dalvik-ART基于寄存器，而JVM基于栈，Android里面是每个程序都对应着一个单独的虚拟机，也是一个单独的进程-。" class="headerlink" title="3.基于踪迹(Trace)的热点探测：采用这种方式的虚拟机是将一段频繁执行的代码作为一个编译单元，并仅对该代码片段进行编译，该代码片段由一个线性且连续的指令序列组成，仅有一个入口，但有多个出口。也就是说，基于踪迹而编译的热点代码不仅仅局限在一个单独的方法或者代码快中，一条Trace可能对应多个方法，代码中频繁执行的路径就可能被识别成不同的踪迹。因此这种方法有着更高的精度，并且能够避免编译不是频繁执行的代码，减少不必要的编译开销，但这种方法的实现就更为的复杂。在Android早期的Dalvik虚拟机的JIT编译器就是使用的这种方式(从Android4.4开始，Google就把Android中的Dalvik虚拟机无缝切换到了ART虚拟机，这里简单的说一下，Android上面的虚拟机是按照JVM的部分规范去实现的一种类似的东西，并不属于Java虚拟机，并且与JVM最大的不同是就是Dalvik/ART基于寄存器，而JVM基于栈，Android里面是每个程序都对应着一个单独的虚拟机，也是一个单独的进程)。"></a>3.<strong>基于踪迹(Trace)的热点探测</strong>：采用这种方式的虚拟机是将一段频繁执行的代码作为一个编译单元，并仅对该代码片段进行编译，该代码片段由一个线性且连续的指令序列组成，仅有一个入口，但有多个出口。也就是说，基于踪迹而编译的热点代码不仅仅局限在一个单独的方法或者代码快中，一条Trace可能对应多个方法，代码中频繁执行的路径就可能被识别成不同的踪迹。因此这种方法有着更高的精度，并且能够避免编译不是频繁执行的代码，减少不必要的编译开销，但这种方法的实现就更为的复杂。在Android早期的Dalvik虚拟机的JIT编译器就是使用的这种方式(从Android4.4开始，Google就把Android中的Dalvik虚拟机无缝切换到了ART虚拟机，这里简单的说一下，Android上面的虚拟机是按照JVM的部分规范去实现的一种类似的东西，并不属于Java虚拟机，并且与JVM最大的不同是就是Dalvik/ART基于寄存器，而JVM基于栈，Android里面是每个程序都对应着一个单独的虚拟机，也是一个单独的进程)。</h2><p>而在JVM虚拟机中使用的是<strong>基于计数器的热点探测</strong>，至于为什么不使用基于踪迹的热点探测，我想一个是实现上的困难，并且基于栈的JVM与寄存器的执行速度无法相比，繁琐的优化反而会造成得不偿失的局面。这种方式又包含了两类计数器：<strong>方法调用计数器和回边计数器</strong>。<br><strong>方法掉用计数器</strong>：统计一段时间内方法被调用的次数，当超过一个时间限度，它的调用次数仍然不足以给JIT编器编译，这个方法的调用计数久会减半。<br><strong>回边计数器</strong>：主要是统计循环体内的代码执行的次数，在字节码遇到控制流后向后跳转的指令称为回边，建立回边计数器也是为了触发OSR。因为有些情况下，比如空的循环，照样会执行对应的次数，但它是直接跳转到自己，所以JIT编译器去编译这种代码是没有任何意义的。</p>
+<h3 id="3-编译过程"><a href="#3-编译过程" class="headerlink" title="3.编译过程"></a>3.编译过程</h3><p>第一阶段，首先在字节码层做一些系列的优化，如<strong>方法内联、常量传播等</strong>，然后将字节码构造成一种高级中间代码(<strong>HIR</strong>)，HIR使用静态单分配(根据调用的方法和它接收的参数)的形式来代表代码值，使得构造HIR时的优化更加容易实现。<br>第二阶段，对传来的<strong>HIR</strong>进行<strong>空值检查、范围检查消除等优化</strong>，然后从<strong>HIR</strong>中产生低级中间代码(<strong>LIR</strong>)。<br>最后阶段：使用线性扫描算法，在<strong>LIR</strong>上分配寄存器，并在<strong>LIR</strong>上做窥孔优化（局部的优化方式，编译器仅仅在一个或者多个基本块中，针对已经生成的代码，结合CPU自己指令的特点，通过一些认为可能带来性能提升的转换规则，或者通过整体的分析，通过指令转换，提升代码性能），然后产生机器代码。</p>
+</blockquote>
+<p>整个大致的过程如下图所示<br><img src="https://upload-images.jianshu.io/upload_images/3110248-7c57daa6bfb0a758.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1688022-2ca3e27ef583f275.png"></p>
+<h2 id="三、编译优化技术"><a href="#三、编译优化技术" class="headerlink" title="三、编译优化技术"></a>三、编译优化技术</h2><p>JVM团队几乎把所有代码优化的措施集中在了即时编译器中，所以即时编译器产生的本地代码要比原来的解释器解释执行字节码所产生的本地代码要更优。优化的技术非常的多，这里就不做过多的描述了。重点整理一下JVM中比较前沿的<strong>逃逸分析</strong>。<br><strong>逃逸分析</strong>并不是直接优化代码的手段，而是为其它优化方式提供的分析技术。逃逸分析的基本行为就是分析对象的动态作用域（当一个对象在方法中被定义之后，可能被外部方法所引用，例如作为参数传递到其他方法中，称为<strong>方法逃逸</strong>；可能被外部线程访问到，比如赋值给类变量或可以在其它线程中访问的实例变量，称为<strong>线程逃逸</strong>）。如果别的方法或线程无法通过任何途径访问到这个对象，就能为这个对象下列高效的优化。</p>
+<h3 id="1-栈上分配"><a href="#1-栈上分配" class="headerlink" title="1.栈上分配"></a>1.栈上分配</h3><p>在JVM中，创建对象所需的内存是从Java堆上分配出来的，而Java堆中的对象对各个线程都是共享和可见的，只要持有这个对象的引用，就能获取Java堆中所储存的该对象的数据，JVM中的垃圾收集器可以回收堆中不再使用的对象，但是筛选可回收对象以及回收和整理内存都需要比较大的时间开销。如果能确定一个对象不会出现方法逃逸的情况，就可以直接在栈上分配对象的内存，对象随着栈帧出栈而消耗，这样一来可以很大程度的减少垃圾收集系统的压力。</p>
+<h3 id="2-同步消除"><a href="#2-同步消除" class="headerlink" title="2.同步消除"></a>2.同步消除</h3><p>如果确定一个对象不会出现线程逃逸，也就是不会被其它线程访问到，那么对这个对象的的读写操作肯定不会出现竞争，就可以直接去除同步的措施，线程的同步操作也是一个比较耗时的操作，</p>
+<h3 id="3-标量替换"><a href="#3-标量替换" class="headerlink" title="3.标量替换"></a>3.标量替换</h3><p>标量是指一个数据无法被分解成更小的数据来表示了，例如Java中的原始数据类型就是这样。相反，聚合量就表示一个能继续分解的数据，Java中的对象就是如此。所以如果逃逸分析证明了一个对象不会被外部访问，那么就可以根据程序访问的情况，把对象拆分，然后把里面用到的成员变量替换成原始类型，这种方式就被称为标量替换。因为标量也是直接存储在栈上面的，而栈上储存的数据有大概率会被分配到CPU的寄存器上，并且存储到栈上也方便后续的优化操作。<br>逃逸分析也是一种比较重要的间接优化手段，但是由于逃逸分析也会有过多的消耗，和前面提到的基于踪迹的热点代码探测的手段一样，可能会获得的利益小于自身的消耗，所以虚拟机也去权衡是否需要完全准确的逃逸分析。</p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>主体内容还是来自《深入理解Java虚拟机》，也穿插了书中没有细讲的一些内容，这篇博客主要内容虽然是总结的JVM运行期的优化，但其实基本上都是在描述JIT编译器在背后所做的工作，了解这些能对Java为何会如此高效有一个大体的认识，也能增加对写出的代码更加深层次的思考，这篇博客就先到这里了。<br>参考：<br><a href="https://blog.csdn.net/Luoshengyang/article/details/18006645" target="_blank" rel="external">https://blog.csdn.net/Luoshengyang/article/details/18006645</a><br><a href="http://www.shcas.net/jsjyup/pdf/2017/3/%E5%9F%BA%E4%BA%8ETrace%E7%9A%84CMinus%E8%AF%AD%E8%A8%80%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91%E6%8A%80%E6%9C%AF.pdf" target="_blank" rel="external">http://www.shcas.net/jsjyup/pdf/2017/3/%E5%9F%BA%E4%BA%8ETrace%E7%9A%84CMinus%E8%AF%AD%E8%A8%80%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91%E6%8A%80%E6%9C%AF.pdf</a></p>
 
       
       
@@ -355,13 +342,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/">Ubuntu16.04下Nginx+uwsgi部署Django项目</a></p>
+        <p><span>本文标题:</span><a href="/2018/08/04/JVM运行期优化/">JVM运行期优化</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
-        <p><span>发布时间:</span>2018年01月04日 - 19时38分</p>
-        <p><span>最后更新:</span>2018年05月02日 - 01时25分</p>
+        <p><span>发布时间:</span>2018年08月04日 - 10时07分</p>
+        <p><span>最后更新:</span>2018年08月04日 - 10时13分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/" title="Ubuntu16.04下Nginx+uwsgi部署Django项目">http://blog.cspojie.cn/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2018/08/04/JVM运行期优化/" title="JVM运行期优化">http://blog.cspojie.cn/2018/08/04/JVM运行期优化/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/08/04/JVM运行期优化/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -374,18 +361,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2018/01/10/Django查错配置/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Django查错配置
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/12/31/回首2017-展望未来/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">回首2017 展望未来</div>
+    <a href="/2018/06/30/LRU与LFU缓存算法/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">LRU与LFU缓存算法</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -396,7 +374,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Python环境的配置"><span class="toc-number">1.</span> <span class="toc-text">Python环境的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mariadb的配置"><span class="toc-number">2.</span> <span class="toc-text">Mariadb的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#uwsgi的安装和配置"><span class="toc-number">3.</span> <span class="toc-text">uwsgi的安装和配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx的安装与配置"><span class="toc-number">4.</span> <span class="toc-text">Nginx的安装与配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、前言"><span class="toc-number">1.</span> <span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、JVM的即时编译器"><span class="toc-number">2.</span> <span class="toc-text">二、JVM的即时编译器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-解释器与编译器"><span class="toc-number">2.1.</span> <span class="toc-text">1.解释器与编译器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-编译对象与触发条件"><span class="toc-number">2.2.</span> <span class="toc-text">2.编译对象与触发条件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#热点代码的判定方式"><span class="toc-number">2.2.1.</span> <span class="toc-text">热点代码的判定方式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-基于踪迹-Trace-的热点探测：采用这种方式的虚拟机是将一段频繁执行的代码作为一个编译单元，并仅对该代码片段进行编译，该代码片段由一个线性且连续的指令序列组成，仅有一个入口，但有多个出口。也就是说，基于踪迹而编译的热点代码不仅仅局限在一个单独的方法或者代码快中，一条Trace可能对应多个方法，代码中频繁执行的路径就可能被识别成不同的踪迹。因此这种方法有着更高的精度，并且能够避免编译不是频繁执行的代码，减少不必要的编译开销，但这种方法的实现就更为的复杂。在Android早期的Dalvik虚拟机的JIT编译器就是使用的这种方式-从Android4-4开始，Google就把Android中的Dalvik虚拟机无缝切换到了ART虚拟机，这里简单的说一下，Android上面的虚拟机是按照JVM的部分规范去实现的一种类似的东西，并不属于Java虚拟机，并且与JVM最大的不同是就是Dalvik-ART基于寄存器，而JVM基于栈，Android里面是每个程序都对应着一个单独的虚拟机，也是一个单独的进程-。"><span class="toc-number">3.</span> <span class="toc-text">3.基于踪迹(Trace)的热点探测：采用这种方式的虚拟机是将一段频繁执行的代码作为一个编译单元，并仅对该代码片段进行编译，该代码片段由一个线性且连续的指令序列组成，仅有一个入口，但有多个出口。也就是说，基于踪迹而编译的热点代码不仅仅局限在一个单独的方法或者代码快中，一条Trace可能对应多个方法，代码中频繁执行的路径就可能被识别成不同的踪迹。因此这种方法有着更高的精度，并且能够避免编译不是频繁执行的代码，减少不必要的编译开销，但这种方法的实现就更为的复杂。在Android早期的Dalvik虚拟机的JIT编译器就是使用的这种方式(从Android4.4开始，Google就把Android中的Dalvik虚拟机无缝切换到了ART虚拟机，这里简单的说一下，Android上面的虚拟机是按照JVM的部分规范去实现的一种类似的东西，并不属于Java虚拟机，并且与JVM最大的不同是就是Dalvik/ART基于寄存器，而JVM基于栈，Android里面是每个程序都对应着一个单独的虚拟机，也是一个单独的进程)。</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-编译过程"><span class="toc-number">3.1.</span> <span class="toc-text">3.编译过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、编译优化技术"><span class="toc-number">4.</span> <span class="toc-text">三、编译优化技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-栈上分配"><span class="toc-number">4.1.</span> <span class="toc-text">1.栈上分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-同步消除"><span class="toc-number">4.2.</span> <span class="toc-text">2.同步消除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-标量替换"><span class="toc-number">4.3.</span> <span class="toc-text">3.标量替换</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、总结"><span class="toc-number">5.</span> <span class="toc-text">四、总结</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -462,13 +440,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2018/01/10/Django查错配置/" title="上一篇: Django查错配置">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2017/12/31/回首2017-展望未来/" title="下一篇: 回首2017 展望未来">
+            <a href="/2018/06/30/LRU与LFU缓存算法/" title="下一篇: LRU与LFU缓存算法">
                 <i class="fa fa-angle-right"></i>
             </a>
         
