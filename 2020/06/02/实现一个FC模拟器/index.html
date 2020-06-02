@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://s1.ax1x.com/2020/05/30/tQAMi6.png">
 <meta property="og:image" content="http://wiki.nesdev.com/w/images/b/bf/NTS_scrolling_seam.gif">
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/02/tYpCTA.png">
-<meta property="og:updated_time" content="2020-06-02T04:09:52.812Z">
+<meta property="og:updated_time" content="2020-06-02T04:13:06.887Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="实现一个FC模拟器">
 <meta name="twitter:description" content="前言前段时间无意中浏览到了描述FC(Family Computer)游戏的一些工作原理的博客，瞬间勾起了儿时对小霸王游戏机如痴如醉的过往，看到网上从以前游戏卡带中导出来的游戏：超级玛丽、魂斗罗等才几十k">
@@ -315,10 +315,7 @@
 <li>1.Mapper Id<br>FC卡带上自带的额外扩展的芯片<strong>Mapper</strong>的id，后面再详细介绍。 </li>
 <li>2.CHR-ROM/VROM<br>即Charater-ROM, 这部分就是存储的游戏中所需要用到的图像信息，或者换个说法，也就是常说的字体库。程序包那么小的体积，存图片肯定是不现实的，它是存储游戏中背景和精灵需要引用的图案的点阵，需要装载到显存。</li>
 <li>3.PRG-ROM<br>即Program-ROM，这部分存储的就是游戏程序编译后的二进制代码，需要装载到主内存。</li>
-<li><ol>
-<li>Mirroring-Type<br>镜像类型，主要是决定了程序运行过程显存中存储的背景渲染信息的那部分内存是如何规划，在PPU部分再详细解释。</li>
-</ol>
-</li>
+<li>4.Mirroring-Type<br>镜像类型，主要是决定了程序运行过程显存中存储的背景渲染信息的那部分内存是如何规划，在PPU部分再详细解释。</li>
 </ul>
 <p>知道大概需要哪些东西了，就可以先定义一个获取该文件信息相关的接口了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">INesLoader</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 获取16KB PRG(程序)数据的页数</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getPRGPageCount</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">// 获取8KB CHR(图像)数据的页数</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getCHRPageCount</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">// 通过索引获取对应的PRG数据块</span></div><div class="line">    <span class="keyword">byte</span>[] getPRGPageByIndex(<span class="keyword">int</span> index);</div><div class="line"></div><div class="line">    <span class="comment">// 通过索引获取对应的CHR数据块</span></div><div class="line">    <span class="keyword">byte</span>[] getCHRPageByIndex(<span class="keyword">int</span> index);</div><div class="line"></div><div class="line">    <span class="comment">// 获取屏幕的镜像类型</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getMirroringType</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getMapperId</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function">String <span class="title">getFileMD5</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>具体文件格式可以看看这篇博客<br><a href="https://zhuanlan.zhihu.com/p/44035613" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/44035613</a></p>
@@ -461,7 +458,7 @@
         <p><span>本文标题:</span><a href="/2020/06/02/实现一个FC模拟器/">实现一个FC模拟器</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
         <p><span>发布时间:</span>2020年06月02日 - 11时42分</p>
-        <p><span>最后更新:</span>2020年06月02日 - 12时09分</p>
+        <p><span>最后更新:</span>2020年06月02日 - 12时13分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2020/06/02/实现一个FC模拟器/" title="实现一个FC模拟器">http://blog.cspojie.cn/2020/06/02/实现一个FC模拟器/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2020/06/02/实现一个FC模拟器/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
