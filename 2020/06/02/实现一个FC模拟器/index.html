@@ -6,7 +6,6 @@
   <title>实现一个FC模拟器 | legend＇s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言前段时间无意中浏览到了描述FC(Family Computer)游戏的一些工作原理的博客，瞬间勾起了儿时对小霸王游戏机如痴如醉的过往，看到网上从以前游戏卡带中导出来的游戏：超级玛丽、魂斗罗等才几十k">
-<meta name="keywords" content="Java,模拟器,体系结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="实现一个FC模拟器">
 <meta property="og:url" content="http://blog.cspojie.cn/2020/06/02/实现一个FC模拟器/index.html">
@@ -28,7 +27,7 @@
 <meta property="og:image" content="https://s1.ax1x.com/2020/05/30/tQAMi6.png">
 <meta property="og:image" content="http://wiki.nesdev.com/w/images/b/bf/NTS_scrolling_seam.gif">
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/02/tYpCTA.png">
-<meta property="og:updated_time" content="2020-06-02T03:50:49.078Z">
+<meta property="og:updated_time" content="2020-06-02T03:58:40.291Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="实现一个FC模拟器">
 <meta name="twitter:description" content="前言前段时间无意中浏览到了描述FC(Family Computer)游戏的一些工作原理的博客，瞬间勾起了儿时对小霸王游戏机如痴如醉的过往，看到网上从以前游戏卡带中导出来的游戏：超级玛丽、魂斗罗等才几十k">
@@ -164,7 +163,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Android/" style="font-size: 18.33px;">Android</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Python/" style="font-size: 18.33px;">Python</a> <a href="/tags/Tomcat/" style="font-size: 11.67px;">Tomcat</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/体系结构/" style="font-size: 10px;">体系结构</a> <a href="/tags/图/" style="font-size: 11.67px;">图</a> <a href="/tags/字符串匹配/" style="font-size: 10px;">字符串匹配</a> <a href="/tags/常用命令/" style="font-size: 10px;">常用命令</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/模拟器/" style="font-size: 10px;">模拟器</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/源码分析/" style="font-size: 11.67px;">源码分析</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/算法与数据结构/" style="font-size: 20px;">算法与数据结构</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/设计模式/" style="font-size: 11.67px;">设计模式</a> <a href="/tags/随笔/" style="font-size: 13.33px;">随笔</a>
+                        <a href="/tags/Android/" style="font-size: 18.33px;">Android</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/Java/" style="font-size: 11.67px;">Java</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Python/" style="font-size: 18.33px;">Python</a> <a href="/tags/Tomcat/" style="font-size: 11.67px;">Tomcat</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/图/" style="font-size: 11.67px;">图</a> <a href="/tags/字符串匹配/" style="font-size: 10px;">字符串匹配</a> <a href="/tags/常用命令/" style="font-size: 10px;">常用命令</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/源码分析/" style="font-size: 11.67px;">源码分析</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/算法与数据结构/" style="font-size: 20px;">算法与数据结构</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/设计模式/" style="font-size: 11.67px;">设计模式</a> <a href="/tags/随笔/" style="font-size: 13.33px;">随笔</a>
                     </div>
                 </section>
                 
@@ -269,12 +268,12 @@
       
       <div class="article-info article-info-post">
         
-
-        
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/体系结构/">体系结构</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/模拟器/">模拟器</a></li></ul>
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Java/">Java</a><a class="article-category-link" href="/categories/Java/模拟器/">模拟器</a><a class="article-category-link" href="/categories/Java/模拟器/体系结构/">体系结构</a>
     </div>
 
+
+        
         <div class="clearfix"></div>
       </div>
       
@@ -282,7 +281,28 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间无意中浏览到了描述FC(Family Computer)游戏的一些工作原理的博客，瞬间勾起了儿时对小霸王游戏机如痴如醉的过往，看到网上从以前游戏卡带中导出来的游戏：超级玛丽、魂斗罗等才几十k<a id="more"></a>大小，大的也不过几百k，极少数超过1M的，而这点空间现在的一张普通质量的图片可能都存不下。所以想到了不如自己实现一个FC模拟器，一探它背后神秘的魔法。即是重新追忆一下那些逝去的时光，又是对计算基础知识很好的一个实践。然现实很骨感，网上能找得到的相关硬件资料太少，资料比较全面的就是NesDev，但是全英文，而且很多东西过于详细，花了很长时间读可能还找不到重点在哪里，除非做过类似的东西否则很难就此上手。所以写篇博客记录一下整个实现的流程。<br>|  |  |  |<br>| — | — | — |<br>|<img src="https://s1.ax1x.com/2020/05/29/tmrMr9.png" alt="">| <img src="https://s1.ax1x.com/2020/05/29/tmrWrj.png" alt=""> |<img src="https://s1.ax1x.com/2020/05/29/tmsUYV.png" alt=""><br>|<img src="https://s1.ax1x.com/2020/05/29/tmspi6.png" alt="">| <img src="https://s1.ax1x.com/2020/05/29/tmsFQe.png" alt=""> |<img src="https://s1.ax1x.com/2020/05/29/tmsZdI.png" alt=""> </p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间无意中浏览到了描述FC(Family Computer)游戏的一些工作原理的博客，瞬间勾起了儿时对小霸王游戏机如痴如醉的过往，看到网上从以前游戏卡带中导出来的游戏：超级玛丽、魂斗罗等才几十k<a id="more"></a>大小，大的也不过几百k，极少数超过1M的，而这点空间现在的一张普通质量的图片可能都存不下。所以想到了不如自己实现一个FC模拟器，一探它背后神秘的魔法。即是重新追忆一下那些逝去的时光，又是对计算基础知识很好的一个实践。然现实很骨感，网上能找得到的相关硬件资料太少，资料比较全面的就是NesDev，但是全英文，而且很多东西过于详细，花了很长时间读可能还找不到重点在哪里，除非做过类似的东西否则很难就此上手。所以写篇博客记录一下整个实现的流程。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://s1.ax1x.com/2020/05/29/tmrMr9.png" alt=""></td>
+<td><img src="https://s1.ax1x.com/2020/05/29/tmrWrj.png" alt=""></td>
+<td><img src="https://s1.ax1x.com/2020/05/29/tmsUYV.png" alt=""></td>
+</tr>
+<tr>
+<td><img src="https://s1.ax1x.com/2020/05/29/tmspi6.png" alt=""></td>
+<td><img src="https://s1.ax1x.com/2020/05/29/tmsFQe.png" alt=""></td>
+<td><img src="https://s1.ax1x.com/2020/05/29/tmsZdI.png" alt=""> </td>
+</tr>
+</tbody>
+</table>
 <h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><p>所谓模拟器，实际就是我们在软件层面来模拟硬件的工作，也就是说实现一个FC程序的执行环境。要实现这么一个模拟器，首先就是要清楚FC主要由哪些硬件构成以及各个硬件是如何协作的，反正现代的计算机基本都是基于冯洛伊曼体系啦。与我们一般的电脑一样，主要就是CPU、内存、显卡、输入设备、输出设备几部分。具体到FC，以前游戏机都是插卡的，所以卡带也要算一部分。接下来描述一下大致的过程，主机通电后</p>
 <ul>
 <li><ol>
@@ -478,7 +498,7 @@
         <p><span>本文标题:</span><a href="/2020/06/02/实现一个FC模拟器/">实现一个FC模拟器</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
         <p><span>发布时间:</span>2020年06月02日 - 11时42分</p>
-        <p><span>最后更新:</span>2020年06月02日 - 11时50分</p>
+        <p><span>最后更新:</span>2020年06月02日 - 11时58分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2020/06/02/实现一个FC模拟器/" title="实现一个FC模拟器">http://blog.cspojie.cn/2020/06/02/实现一个FC模拟器/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2020/06/02/实现一个FC模拟器/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
