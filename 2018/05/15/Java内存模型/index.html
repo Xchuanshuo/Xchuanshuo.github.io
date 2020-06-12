@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Java内存模型 | legend＇s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言Java内存模型是Java虚拟机制定的一种规范，众所周知的Java程序都是运行在JVM上的，而Java语言“一次编写，到处运行”的特效很多程度是来源与虚拟机">
+<meta name="keywords" content="JVM,Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java内存模型">
+<meta property="og:url" content="http://blog.cspojie.cn/2018/05/15/Java内存模型/index.html">
+<meta property="og:site_name" content="legend＇s blog">
+<meta property="og:description" content="前言Java内存模型是Java虚拟机制定的一种规范，众所周知的Java程序都是运行在JVM上的，而Java语言“一次编写，到处运行”的特效很多程度是来源与虚拟机">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-a88da9d101d3785f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-c819d92b585ac3c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2020-06-12T16:05:51.320Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java内存模型">
+<meta name="twitter:description" content="前言Java内存模型是Java虚拟机制定的一种规范，众所周知的Java程序都是运行在JVM上的，而Java语言“一次编写，到处运行”的特效很多程度是来源与虚拟机">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3110248-a88da9d101d3785f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">Legend</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/works">作品展示</a></li>
+                        
+                            <li><a href="/about">留言打卡</a></li>
+                        
+                            <li><a href="/FrontEndGuide">后端导航</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Android/" style="font-size: 17.14px;">Android</a> <a href="/tags/JVM/" style="font-size: 14.29px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Linux/" style="font-size: 15.71px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/Tomcat/" style="font-size: 11.43px;">Tomcat</a> <a href="/tags/体系结构/" style="font-size: 10px;">体系结构</a> <a href="/tags/图/" style="font-size: 11.43px;">图</a> <a href="/tags/字符串匹配/" style="font-size: 10px;">字符串匹配</a> <a href="/tags/常用命令/" style="font-size: 10px;">常用命令</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/模拟器/" style="font-size: 10px;">模拟器</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/源码分析/" style="font-size: 11.43px;">源码分析</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/算法与数据结构/" style="font-size: 18.57px;">算法与数据结构</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/设计模式/" style="font-size: 11.43px;">设计模式</a> <a href="/tags/随笔/" style="font-size: 12.86px;">随笔</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.jikedaohang.com/">极客导航</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.ofmonkey.com/">在线工具</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">虽生有涯而知无涯，但进一寸有一寸的欢喜！</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">Legend</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">Legend</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/works">作品展示</a></li>
+                
+                    <li><a href="/about">留言打卡</a></li>
+                
+                    <li><a href="/FrontEndGuide">后端导航</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Java内存模型" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/05/15/Java内存模型/" class="article-date">
+      <time datetime="2018-05-15T11:58:28.000Z" itemprop="datePublished">2018-05-15</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java内存模型
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Java内存模型是Java虚拟机制定的一种规范，众所周知的Java程序都是运行在JVM上的，而Java语言“一次编写，到处运行”的特效很多程度是来源与虚拟机<a id="more"></a>，因为不同的操作系统都有自身相对应的内存模型和线程调度的方式，所以之前一些语言很难解决的问题就是同一套代码在不同平台上面运行时会因为操作系统以及机器的不同，产生很多的问题，而JVM中的内存模型规范就把开发人员和不同的硬件、操作系统分离开来，使得开发人员更好的专注于业务，除了Java是纯粹的面向对象语言以外，对各个平台的一致性也是Java如此多的被用于服务器端非常重要的原因之一，并发的程序在之前由于平台的差异产生的问题尤为突出，说这些，是因为要想理解Java并发编程的一些问题，对Java内存模型的了解是十分重要的，现在开始进入正题。</p>
+<h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><p>Java内存模型主要目标是定义程序中各个变量的访问规则，这里不要和Java内存区域搞混了，内存区域是对Java程序进行的内存划分，这里可以看看我之前写的一篇<a href="&quot;http://blog.cspojie.cn/2018/03/29/Java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA/#more&quot;">Java内存区域</a>,而<strong>Java内存模型</strong>的主要目标是定义程序中各个变量的访问规则，即在虚拟机中将变量存储到内存和从内存中取出时的具体细节。这里的变量包括了实例字段、静态字段和构成数组对象的元素，但不包括局部变量和方法参数（因为线程私有，不存在资源共享和竞争的问题）。Java内存模型没有限制执行引擎使用处理器的特点寄存器或缓存来和主内存进行交互，也没有限制即使编译器对代码的执行顺序进行调整。首先看一张图<br><img src="https://upload-images.jianshu.io/upload_images/3110248-a88da9d101d3785f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="线程、工作内存、主内存的关系"><br>Jvm通过Java内存模型(JMM)协调线程、工作内存之间的。Java内存模型规定了所有的变量都储存在主内存内，每条线程有自己的工作内存，线程的工作内存中保存了被该线程使用到的变量的主内存副本拷贝(注意拷贝的不是对象本身，一般是对象的引用、对象中某个线程访问到的字段)。线程对变量的读取、赋值等都必须在工作内存中进行，不能直接读取主内存中的变量(即使对于volatile关键字也不例外)。不同的线程之间也无法直接访问对方工作内存中的变量，线程间变量值的传递需要通过主内存来完成，因为程序的读写时主要访问的是工作内存，所以虚拟机会让工作内存优先存储于寄存器和高速缓存中。</p>
+<h2 id="内存间交互操作"><a href="#内存间交互操作" class="headerlink" title="内存间交互操作"></a>内存间交互操作</h2><p>内存间交互指一个变量如何从主内存拷贝到工作内存、如何从工作内存同步回主内存的实现细节，Java内存模型定义了８大操作来完成，虚拟保证了其中每一种操作都是原子的、不可再分的，看看下面的图<br><img src="https://upload-images.jianshu.io/upload_images/3110248-c819d92b585ac3c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="八大操作"><br>看看这张图，要把变量进行读写操作，就要经过上图中的流程，如果进行读取操作，先给这个变量加锁(<strong>Lock</strong>)，然后把这个变量从主内存传输到线程的工作内存中(<strong>Read</strong>)，接下来把得到的变量值放入到工作内存的变量副本中(<strong>Load</strong>)，这样就可以给Java线程读取了(<strong>Use</strong>)；如果要进行写操作，首先把一个从执行引擎接收到的值赋值给内存的变量(<strong>Assign</strong>)，然后把工作内存中的一个变量值传送到主内存中(<strong>Store</strong>)，最后把通过Store操作得到的变量值放入主内的变量中(<strong>Write</strong>)，此后就是释放锁(<strong>UnLock</strong>)。这里是说按常规顺序，Java内存模型只对<strong>Read和Load</strong>(进行读操作时)，<strong>Store和Write</strong>（进行写操作时）操作保证了必须顺序执行，如果对多个变量进行同时访问时顺序是可以，整体的顺序是可以被打乱的，如read a、read b、load b、load a。除此之外，在执行8大操作时还必须满足一下的规则</p>
+<h3 id="8大操作遵循的规则"><a href="#8大操作遵循的规则" class="headerlink" title="8大操作遵循的规则"></a>8大操作遵循的规则</h3><blockquote>
+<p>1.不允许出现一个变量从主内存读取了但工作内存不接受，或者从工作内存读发起回写但主内存不接受的情况。<br>2.变量在工作内存中改变了之后必须把该变化同步回主内存。<br>3.不允许一个线程没有发生过<strong>assign</strong>操作就把数据从工作内存同步回主内存。<br>4.对一个变量进行<strong>use和store</strong>之前必须执行过<strong>assign和load</strong>操作。<br>5.一个变量在同一时刻只允许一条线程对其进行<strong>lock</strong>操作，但<strong>lock</strong>操作可以被同一线程重复执行多次。<br>6.对一个变量执行<strong>lock</strong>操作之前，回清除工作内存中此变量的值，在执行引擎使用这个变量前，需要重新执行<strong>load和assgin</strong>操作初始化变量的值。<br>7.如果一个变量没有进行锁定，就不得进行<strong>unlock</strong>操作，不允许<strong>unlock</strong>被其他线程锁定的变量。<br>8.对一个变量执行<strong>unlock</strong>之前，必须把此变量同步回主内存中。</p>
+<h3 id="指令重排序"><a href="#指令重排序" class="headerlink" title="指令重排序"></a>指令重排序</h3><p>指令重排序是为了程序获得更好的性能，JVM对程序进行的优化，普通的变量能保证在方法执行过程中所有依赖赋值结果的地方都能获取到正确的结果，而不保证变量赋值的顺序与程序代码中的顺序一致，也正是由于这一点，所以程序多线程并发执行时会产生很多的问题。说到指令重排序，就不得不说下<strong>volatile</strong>关键字，<strong>volatile</strong>保证了变量对所有线程的<strong>可见性</strong>，也就是一旦变量值被修改，可以直接被其他线程得知，不需要通过主内存来进行传递(注意！可见性并不等于原子性)；<strong>volatile</strong>还有一个重要的作用就是<strong>禁止指令重排序优化</strong>，指令重排序虽说是为了提高程序的性能，但会因此带来并发问题，这里用一段代码来看看<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonExample5</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SingletonExample5</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 单例对象　volatile＋双重校验锁防止指令重排</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> SingletonExample5 instance = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     *  线程不安全　多线程模式下JVM和CPU优化导致指令重排</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SingletonExample5 <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">synchronized</span> (SingletonExample5.class) &#123;</div><div class="line">                <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">                    instance = <span class="keyword">new</span> SingletonExample5();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</blockquote>
+<p>对设计模式了解的都知道，这就是使用了<strong>双层校验锁</strong>的单例模式，这里这个变量就是要用<strong>volatile</strong>来进行修饰，因为在多线程模式下，判断instance为空后就把这个类进行了锁定，如果这时另一个线程访问到这里，可能会导致变量instance未被初始化就指向了分配的内存空间，前面说过，指令重排导致出现的这个问题，而使用了volatile关键字后，会在变量赋值后插入一道<strong>内存屏障</strong>，指令重排序时不能把后面的指令重排序到屏障之前的位置，这样就保证了变量能够安全的执行后面的操作。而对于此时进来的线程来说，当执行引擎执行到内存屏障这里时，意外着之前的操作已经完成，这个线程将放弃后续的操作。</p>
+<h2 id="原子性、可见性、有序性"><a href="#原子性、可见性、有序性" class="headerlink" title="原子性、可见性、有序性"></a>原子性、可见性、有序性</h2><p>1.<strong>原子性</strong>:　由Java内存模型来直接保证的原子性变量操作包括read、load、assign、use、store和write，这些主要是对变量的读写操作，如果需要更大范围的原子性保证，可以用<strong>synchronized</strong>关键字。<br>2.<strong>可见性</strong>: 　指当一个线程修改了共享变量的值，其它线程能立即得知这个修改。主要提供的关键字有<strong>volatile</strong>、<strong>synchronized</strong>、<strong>final</strong>，volatile就不多说了，sychronized的可见性是“对一个变量执行unlock操作之前，必须先把变量同步回主内存”；而final关键字是由于被其修饰的字段一旦初始化完成，构造器没有通过this的引用传递出去，其它线程就能直接获取final的值。<br>3.<strong>有序性</strong>: 线程内表现为串行，但多线程情况下会发生指令重排序和工作内存与主内存同步延迟。</p>
+<h2 id="先行发生原则"><a href="#先行发生原则" class="headerlink" title="先行发生原则"></a>先行发生原则</h2><p>先行发生原则是Java内存模型已经制定的并且无需任何其它操作就存在的规范，这也是判断数据是否存在竞争、线程是否安全的主要依据，如下</p>
+<blockquote>
+<p>1.程序次序规则：在一个线程内，按照程序的控制流的顺序依次执行。<br>2.管程锁定规则：一个unlock操作先行发生于后面对同一个锁的lock操作。<br>3.volatile变量规则：对一个volatile变量的写操作先行发生于后面对这个变量的读操作。<br>4.线程启动规则：Thead对象的start()方法先行发生于此线程的每一个动作。<br>5.线程终止原则：线程中的所有操作都先行发生于对此线程的终止检测。<br>6.线程中断规则：对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生。<br>7.对象终结规则：一个对象初始化的完成先行与它的<strong>finalize()</strong>方法的开始。<br>8.传递性：如果操作A先行发生于操作B，操作B先行发生于操作C，那么操作A先行发生于操作C。</p>
+</blockquote>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>Java内存模型的总结就到这里了，大部分是学习的笔记，也有自己的一些理解，如果有不对的地方，请留言指教。只要花时间去理解，这些东西也不是那么枯燥的，共勉。</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/05/15/Java内存模型/">Java内存模型</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
+        <p><span>发布时间:</span>2018年05月15日 - 19时58分</p>
+        <p><span>最后更新:</span>2020年06月13日 - 00时05分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/05/15/Java内存模型/" title="Java内存模型">http://blog.cspojie.cn/2018/05/15/Java内存模型/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/05/15/Java内存模型/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2018/06/16/Manacher算法求解最长回文子串/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Manacher算法求解最长回文子串
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/02/Linux也可以这样美——Ubuntu18-04安装、配置、美化-踩坑记/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Linux也可以这样美——Ubuntu18.04安装、配置、美化-踩坑记</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#简单介绍"><span class="toc-number">2.</span> <span class="toc-text">简单介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存间交互操作"><span class="toc-number">3.</span> <span class="toc-text">内存间交互操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8大操作遵循的规则"><span class="toc-number">3.1.</span> <span class="toc-text">8大操作遵循的规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#指令重排序"><span class="toc-number">3.2.</span> <span class="toc-text">指令重排序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#原子性、可见性、有序性"><span class="toc-number">4.</span> <span class="toc-text">原子性、可见性、有序性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#先行发生原则"><span class="toc-number">5.</span> <span class="toc-text">先行发生原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结尾"><span class="toc-number">6.</span> <span class="toc-text">结尾</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.decodeURIComponent(window.location.pathname),
+      owner: 'Xchuanshuo',
+      repo: 'Xchuanshuo.github.io',
+      oauth: {
+        client_id: '84a8ba9556b4d1293665',
+        client_secret: 'f6ce30da75414de93e37eb4a59102fbcb53ea568',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/06/16/Manacher算法求解最长回文子串/" title="上一篇: Manacher算法求解最长回文子串">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2018/05/02/Linux也可以这样美——Ubuntu18-04安装、配置、美化-踩坑记/" title="下一篇: Linux也可以这样美——Ubuntu18.04安装、配置、美化-踩坑记">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/02/实现一个FC模拟器/">实现一个FC模拟器</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/回首2019/">回首2019</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Tomcat剖析之源码篇-二/">Tomcat剖析之源码篇(二)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/14/Tomcat剖析之架构篇(一)/">Tomcat剖析之架构篇(-)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/回首2018/">回首2018</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/04/JVM运行期优化/">JVM运行期优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/LRU与LFU缓存算法/">LRU与LFU缓存算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/25/平衡查找树之AVL树/">平衡查找树之AVL树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/16/Manacher算法求解最长回文子串/">Manacher算法求解最长回文子串</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/15/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/02/Linux也可以这样美——Ubuntu18-04安装、配置、美化-踩坑记/">Linux也可以这样美——Ubuntu18.04安装、配置、美化-踩坑记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/15/JVM中的类加载机制/">JVM中的类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/坦白说解密/">坦白说解密</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/Java内存区域与内存溢出/">Java内存区域与内存溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/仿MIUI实现带弹性的ScrollView/">仿MIUI实现带弹性的ScrollView</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/09/机器学习起步－k-最近邻算法/">机器学习起步－k-最近邻算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/14/Okhttp3的封装-搞定常用的请求/">Okhttp3的封装 搞定常用的请求</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/10/实现安卓无限轮播组件Banner/">实现安卓无限轮播组件Banner</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/31/浅谈Android中的MVP架构/">浅谈Android中的MVP架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/随机模拟算法求解圆周率/">随机模拟算法求解圆周率</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/21/Android第三方登录与服务器端验证过程/">Android第三方登录与服务器端验证过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/10/Django查错配置/">Django查错配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/">Ubuntu16.04下Nginx+uwsgi部署Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/31/回首2017-展望未来/">回首2017 展望未来</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/25/Pycahrm远程调试Django项目/">Pycahrm远程调试Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/14/Python中的策略模式/">Python中的策略模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/04/图论-应用篇/">图论 应用篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/22/MySQL性能优化-一/">MySQL性能优化(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/20/图论-基础篇/">图论 基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/13/二叉堆与优先队列/">二叉堆与优先队列</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/06/Ubuntu下常用命令汇总/">Ubuntu下常用命令汇总</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/02/分治思想之排序算法/">分治思想之排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/27/灵活-高效的符号表-二叉查找树/">灵活&&高效的符号表--二叉查找树</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/">Python3爬取百科词条+导入MySQL数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/常用的正则表达式整理/">常用的正则表达式整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/面向对象思想/">面向对象思想</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/25/玩转Python装饰器/">玩转Python装饰器</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+
+ </div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 Legend
+            </div>
+            <div class="footer-right">
+                
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >geek到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>

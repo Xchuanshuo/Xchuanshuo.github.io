@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android第三方登录与服务器端验证过程 | legend＇s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="开篇随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android第三方登录与服务器端验证过程">
+<meta property="og:url" content="http://blog.cspojie.cn/2018/01/21/Android第三方登录与服务器端验证过程/index.html">
+<meta property="og:site_name" content="legend＇s blog">
+<meta property="og:description" content="开篇随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力">
+<meta property="og:updated_time" content="2018-01-21T11:30:32.229Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android第三方登录与服务器端验证过程">
+<meta name="twitter:description" content="开篇随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力">
+  
+    <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">Legend</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/works">作品展示</a></li>
+                        
+                            <li><a href="/about">留言打卡</a></li>
+                        
+                            <li><a href="/FrontEndGuide">后端导航</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Android/" style="font-size: 17.14px;">Android</a> <a href="/tags/JVM/" style="font-size: 14.29px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Linux/" style="font-size: 15.71px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/Tomcat/" style="font-size: 11.43px;">Tomcat</a> <a href="/tags/体系结构/" style="font-size: 10px;">体系结构</a> <a href="/tags/图/" style="font-size: 11.43px;">图</a> <a href="/tags/字符串匹配/" style="font-size: 10px;">字符串匹配</a> <a href="/tags/常用命令/" style="font-size: 10px;">常用命令</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/模拟器/" style="font-size: 10px;">模拟器</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/源码分析/" style="font-size: 11.43px;">源码分析</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/算法与数据结构/" style="font-size: 18.57px;">算法与数据结构</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/设计模式/" style="font-size: 11.43px;">设计模式</a> <a href="/tags/随笔/" style="font-size: 12.86px;">随笔</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.jikedaohang.com/">极客导航</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.ofmonkey.com/">在线工具</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">虽生有涯而知无涯，但进一寸有一寸的欢喜！</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">Legend</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">Legend</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/works">作品展示</a></li>
+                
+                    <li><a href="/about">留言打卡</a></li>
+                
+                    <li><a href="/FrontEndGuide">后端导航</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Android第三方登录与服务器端验证过程" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/01/21/Android第三方登录与服务器端验证过程/" class="article-date">
+      <time datetime="2018-01-21T09:47:56.000Z" itemprop="datePublished">2018-01-21</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android第三方登录与服务器端验证过程
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h3><p>随着时代的发展，现在对App要求不像早几年那样，大多数应用还是未联网的，现在的应用程序如果不能与用户进行较好的交互，就会少了太多的竞争力<a id="more"></a>。说到交互，就必需要求我们访问网络，进行数据的交互。因为需要用户的信息，又少不了注册和登录的功能，而现在五花八门的账号，使得一些用户不想再又去注册一个，这里对于开发人员或者中小企业来说最好的选择就是直接使用第三方账号了，这里虽然标题是android，但其实这个过程和什么平台是没有什么关系的。</p>
+<h3 id="第三方账号与后台的绑定"><a href="#第三方账号与后台的绑定" class="headerlink" title="第三方账号与后台的绑定"></a>第三方账号与后台的绑定</h3><p>这里主要讲讲最常见的QQ登录，首先我们需要的是去腾讯的开放平台去申请，以及读取官方文档，这些东西就不重复了。这里我们的重点是如何将用户<br>信息与后台进行相应的绑定，之前我没自己写过后台，刚开始面对这些时也是很模糊的，去百度搜出来的第三方登录，基本上都是讲OAuth协议的，也正是因为这一点，更加不清晰了。其实我们在移动端的登录与web端还是有较大的区别的，很重要的，就是登录后的回调。<br>既然要与后台进行绑定，肯定是需要唯一的标识符作为标准，因为保证安全性，所以我们在移动端进行登录后，并不能直接获取QQ账号，于是腾讯给我们提供了32位的OPEN_ID用来作为唯一标识，并且不同的应用OPEN_ID是不同的，但对于一个应用而言，这是唯一的标识符。<br>所以后台进行注册时<br>1.需要在服务器端判断数据库中中是否存在这个OPEN_ID 如果存在，就说明用户已经存在了，无需再进行注册。<br>2.如果不存在， 就从客户端向服务器端传递Access_Token和OPEN_ID,服务器端接收后就在这个地址进行验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https://graph.qq.com/user/get_user_info?access_token=客户端传来的access_token&amp;oauth_consumer_key=你申请到的appkey&amp;openid=客户端传来的OPEN_ID&amp;</div></pre></td></tr></table></figure></p>
+<p>请求后，这里会有一个返回一个键ret，值为0表示返回用户信息成功,这里进行下判断就可以了。<br>3.这样通过这两步就能与客户端登录的账号进行绑定。这里注意，登录其实就只是做一个验证而已。</p>
+<h3 id="使用JWT方式进行验证"><a href="#使用JWT方式进行验证" class="headerlink" title="使用JWT方式进行验证"></a>使用JWT方式进行验证</h3><p>上面说了与客户端与服务器端之间的绑定（其实就是类似于注册过程，不过用户不知道而已，过程都是交给后台去完成）。<br>注册成功后，可以使用一种比较安全，并且快速的验证方式，也就是JSON WEB TOKEN方式进行验证，对前端了解的朋友应该很熟悉这种方式，不熟悉的可以去网上搜一下，用这种方式进行请求验证，无需携带敏感信息。<br>1.首先用账号密码进行请求，服务器端返回给我们一个加密后的值。<br>（这里如果我们用Open_Id作为用户的唯一标识符的话，可以把用户信息的其它字段当作参数传递，这里就要结合具体的语言去进行修改了)<br>2.获取这个值后，可以保存在本地，等某些请求需要进行身份验证时，在把该值加入到请求头中。<br>3.请求时，还需要再加密后的这段值前面加上自定义的字符串。<br>这样一来即使服务器端返回的这个值被泄漏，用户的敏感信息照样能得到安全保证。在移动端进行请求时，直接携带请求头，就能快速的完成身份验证，实现单点登录。</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>因为这里这是阐述这个过程，没有具体的代码，所以就暂时到这里了。因为我觉得，对一门语言基本的东西解了，关键就是搞清楚这些业务逻辑，了解交互的过程，不局限于某一种语言，结合具体的框架去做相应的调整。经验无非也是更加理解整个过程，才能得来的。</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/01/21/Android第三方登录与服务器端验证过程/">Android第三方登录与服务器端验证过程</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
+        <p><span>发布时间:</span>2018年01月21日 - 17时47分</p>
+        <p><span>最后更新:</span>2018年01月21日 - 19时30分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/01/21/Android第三方登录与服务器端验证过程/" title="Android第三方登录与服务器端验证过程">http://blog.cspojie.cn/2018/01/21/Android第三方登录与服务器端验证过程/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/01/21/Android第三方登录与服务器端验证过程/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2018/01/23/随机模拟算法求解圆周率/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          随机模拟算法求解圆周率
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/01/10/Django查错配置/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Django查错配置</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#开篇"><span class="toc-number">1.</span> <span class="toc-text">开篇</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#第三方账号与后台的绑定"><span class="toc-number">2.</span> <span class="toc-text">第三方账号与后台的绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用JWT方式进行验证"><span class="toc-number">3.</span> <span class="toc-text">使用JWT方式进行验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结尾"><span class="toc-number">4.</span> <span class="toc-text">结尾</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.decodeURIComponent(window.location.pathname),
+      owner: 'Xchuanshuo',
+      repo: 'Xchuanshuo.github.io',
+      oauth: {
+        client_id: '84a8ba9556b4d1293665',
+        client_secret: 'f6ce30da75414de93e37eb4a59102fbcb53ea568',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/01/23/随机模拟算法求解圆周率/" title="上一篇: 随机模拟算法求解圆周率">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2018/01/10/Django查错配置/" title="下一篇: Django查错配置">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/02/实现一个FC模拟器/">实现一个FC模拟器</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/回首2019/">回首2019</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Tomcat剖析之源码篇-二/">Tomcat剖析之源码篇(二)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/14/Tomcat剖析之架构篇(一)/">Tomcat剖析之架构篇(-)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/回首2018/">回首2018</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/04/JVM运行期优化/">JVM运行期优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/LRU与LFU缓存算法/">LRU与LFU缓存算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/25/平衡查找树之AVL树/">平衡查找树之AVL树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/16/Manacher算法求解最长回文子串/">Manacher算法求解最长回文子串</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/15/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/02/Linux也可以这样美——Ubuntu18-04安装、配置、美化-踩坑记/">Linux也可以这样美——Ubuntu18.04安装、配置、美化-踩坑记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/15/JVM中的类加载机制/">JVM中的类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/坦白说解密/">坦白说解密</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/Java内存区域与内存溢出/">Java内存区域与内存溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/仿MIUI实现带弹性的ScrollView/">仿MIUI实现带弹性的ScrollView</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/09/机器学习起步－k-最近邻算法/">机器学习起步－k-最近邻算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/14/Okhttp3的封装-搞定常用的请求/">Okhttp3的封装 搞定常用的请求</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/10/实现安卓无限轮播组件Banner/">实现安卓无限轮播组件Banner</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/31/浅谈Android中的MVP架构/">浅谈Android中的MVP架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/随机模拟算法求解圆周率/">随机模拟算法求解圆周率</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/21/Android第三方登录与服务器端验证过程/">Android第三方登录与服务器端验证过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/10/Django查错配置/">Django查错配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/">Ubuntu16.04下Nginx+uwsgi部署Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/31/回首2017-展望未来/">回首2017 展望未来</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/25/Pycahrm远程调试Django项目/">Pycahrm远程调试Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/14/Python中的策略模式/">Python中的策略模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/04/图论-应用篇/">图论 应用篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/22/MySQL性能优化-一/">MySQL性能优化(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/20/图论-基础篇/">图论 基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/13/二叉堆与优先队列/">二叉堆与优先队列</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/06/Ubuntu下常用命令汇总/">Ubuntu下常用命令汇总</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/02/分治思想之排序算法/">分治思想之排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/27/灵活-高效的符号表-二叉查找树/">灵活&&高效的符号表--二叉查找树</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/">Python3爬取百科词条+导入MySQL数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/常用的正则表达式整理/">常用的正则表达式整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/面向对象思想/">面向对象思想</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/25/玩转Python装饰器/">玩转Python装饰器</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+
+ </div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 Legend
+            </div>
+            <div class="footer-right">
+                
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >geek到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Java内存区域与内存溢出 | legend＇s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言最近在读周志明老师的《深入理解Java虚拟机》,感觉一下换了一个角度来看待Java代码，有必要整理一些内容，更清楚实际的流程">
+<meta name="keywords" content="JVM,Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java内存区域与内存溢出">
+<meta property="og:url" content="http://blog.cspojie.cn/2018/03/29/Java内存区域与内存溢出/index.html">
+<meta property="og:site_name" content="legend＇s blog">
+<meta property="og:description" content="前言最近在读周志明老师的《深入理解Java虚拟机》,感觉一下换了一个角度来看待Java代码，有必要整理一些内容，更清楚实际的流程">
+<meta property="og:image" content="http://img.mukewang.com/5abcd667000181f410050590.png">
+<meta property="og:updated_time" content="2020-06-12T16:06:09.830Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java内存区域与内存溢出">
+<meta name="twitter:description" content="前言最近在读周志明老师的《深入理解Java虚拟机》,感觉一下换了一个角度来看待Java代码，有必要整理一些内容，更清楚实际的流程">
+<meta name="twitter:image" content="http://img.mukewang.com/5abcd667000181f410050590.png">
+  
+    <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">Legend</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/works">作品展示</a></li>
+                        
+                            <li><a href="/about">留言打卡</a></li>
+                        
+                            <li><a href="/FrontEndGuide">后端导航</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Android/" style="font-size: 17.14px;">Android</a> <a href="/tags/JVM/" style="font-size: 14.29px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Linux/" style="font-size: 15.71px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/Tomcat/" style="font-size: 11.43px;">Tomcat</a> <a href="/tags/体系结构/" style="font-size: 10px;">体系结构</a> <a href="/tags/图/" style="font-size: 11.43px;">图</a> <a href="/tags/字符串匹配/" style="font-size: 10px;">字符串匹配</a> <a href="/tags/常用命令/" style="font-size: 10px;">常用命令</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/模拟器/" style="font-size: 10px;">模拟器</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/源码分析/" style="font-size: 11.43px;">源码分析</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/算法与数据结构/" style="font-size: 18.57px;">算法与数据结构</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/设计模式/" style="font-size: 11.43px;">设计模式</a> <a href="/tags/随笔/" style="font-size: 12.86px;">随笔</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.jikedaohang.com/">极客导航</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.ofmonkey.com/">在线工具</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">虽生有涯而知无涯，但进一寸有一寸的欢喜！</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">Legend</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">Legend</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/works">作品展示</a></li>
+                
+                    <li><a href="/about">留言打卡</a></li>
+                
+                    <li><a href="/FrontEndGuide">后端导航</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Java内存区域与内存溢出" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/03/29/Java内存区域与内存溢出/" class="article-date">
+      <time datetime="2018-03-29T11:45:55.000Z" itemprop="datePublished">2018-03-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java内存区域与内存溢出
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在读周志明老师的《深入理解Java虚拟机》,感觉一下换了一个角度来看待Java代码，有必要整理一些内容，更清楚实际的流程<a id="more"></a>,这一篇就记录下Java内存区域与相关的一些内存溢出的异常。</p>
+<h2 id="内存区域"><a href="#内存区域" class="headerlink" title="内存区域"></a>内存区域</h2><p>Java虚拟机在执行Java程序的过程会把它管理的内存划分为各个不同的区域，这些区域都有着各自的生命周期，总的来说Java虚拟机管理的内存将会包括一下的数据区域<br><img src="//img.mukewang.com/5abcd667000181f410050590.png" alt="运行时数据区域"></p>
+<p>图中可以很清晰的看出区域里面各个实体的关系，然后简单介绍一3下各个实体。</p>
+<h3 id="1-程序计数器"><a href="#1-程序计数器" class="headerlink" title="1.程序计数器"></a>1.程序计数器</h3><p>线程私有，可以看作是当前线程所执行的字节码的行号指示器，字节码解释器的工作就是通过改变计数器的值来进行后续的操作。</p>
+<h3 id="2-虚拟机栈"><a href="#2-虚拟机栈" class="headerlink" title="2.虚拟机栈"></a>2.虚拟机栈</h3><p>线程私有，描述的是Java方法执行的内存模型，每个方法在执行的同时会创建一个栈帧用于储存局部变量表、操作数栈、动态链接、方法出口等信息。</p>
+<h3 id="3-本地方法栈"><a href="#3-本地方法栈" class="headerlink" title="3.本地方法栈"></a>3.本地方法栈</h3><p>与虚拟机栈发挥的作用类似，但虚拟机栈主要是为执行Java方法服务，而本地方法栈则为虚拟机使用到的native方法服务。</p>
+<h3 id="4-Java堆"><a href="#4-Java堆" class="headerlink" title="4.Java堆"></a>4.Java堆</h3><p>是Java虚拟机所管理的内存中最大的一块，也是被所有线程共享的一块内存区域，在虚拟机启动时创建，此区域唯一目的是存放对象实例。</p>
+<h3 id="5-方法区"><a href="#5-方法区" class="headerlink" title="5.方法区"></a>5.方法区</h3><p>也是各个线程共享，用于储存已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，为堆的一个逻辑部分。其中的<strong>运行时常量池</strong>相对于Class文件常量池而言具备动态性，运行期间也可将新的常量放入池中。<br>除了这些以外，<strong>直接内存</strong>的不合理分配也会影响到Java虚拟机动态扩展内存时出现内存溢出。</p>
+<h2 id="从JVM看对象"><a href="#从JVM看对象" class="headerlink" title="从JVM看对象"></a>从JVM看对象</h2><p>Java对象的创建我们无时无刻都在使用着，这里从虚拟机层面来看待对象的创建。</p>
+<hr>
+<h3 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h3><p>1.当虚拟机收到一条new指令时，首先去检查这个指令的参数能否在常量池中定位到对应的符号引用，并且检查符号引用代表的类是否加载过、解析和初始化过，没有则进行对应的类加载过程。</p>
+<p>2.在类检查通过后，虚拟机为新生对象从Java堆中分配内存。而内存的分配又有两种方式。一种是<strong>指针碰撞</strong>，就是把空闲和正在使用的内存中间放一个指针隔开，所以这种方式实际就是把指针进行移动，当内存出现相互交错时。该方式自然就行不通了；另一种方式是<strong>空闲列表</strong>，由虚拟机维护一个列表，分配内存后就更新这个列表的记录。至于使用哪种方式就要看是基于何种垃圾回收器而言。除了怎么划分可用空间之外，还需要考虑虚拟机分配内存的频率，分配频率就会涉及到并发中的一些问题了。JVM采用CAS（比较并交换）方式进行失败重试保证操作的原子性；另一种是每个线程在Java堆中预先分配一小块内存，也就是<strong>本地线程分配缓冲(TLAB)</strong></p>
+<p>3.内存分配完成后，虚拟机将分配到的内存空间都初始化为零值，使用TLAB，则可以提前到分配时进行。</p>
+<p>4.虚拟机对对象进行必要的设置，也就是把该对象相关的信息存储在对象头之中,这些工作都完成后，一个新的对象已经产生了，接下来就是对象的初始化了。</p>
+<h3 id="对象的访问定位"><a href="#对象的访问定位" class="headerlink" title="对象的访问定位"></a>对象的访问定位</h3><p>对象的访问目前主流的方式有<strong>句柄</strong>和直接<strong>指针</strong>两种。<br>1.使用句柄访问，Java堆会划分出一块内存作为句柄池，对象的引用中存储的就是其句柄的地址，句柄包含了对象实例数据和类型数据的具体地址信息。<br>2.使用直接指针，堆就要考虑如何放置访问类型数据相关的信息，引用中存储的直接就是对象地址。<br>很显然，因为是直接指向地址，所以直接指针的方式更加快，但对象访问在Java中太过频繁，积少成多后也会造成较高的执行成本。</p>
+<h2 id="内存溢出异常"><a href="#内存溢出异常" class="headerlink" title="内存溢出异常"></a>内存溢出异常</h2><h3 id="1-Java堆溢出"><a href="#1-Java堆溢出" class="headerlink" title="1.Java堆溢出"></a>1.Java堆溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeapOOM</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OOMObject</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        List&lt;OOMObject&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">            list.add(<span class="keyword">new</span> OOMObject());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里可以设置下虚拟机相关的参数,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8</div></pre></td></tr></table></figure></p>
+<h3 id="2-虚拟机和本地方法栈溢出"><a href="#2-虚拟机和本地方法栈溢出" class="headerlink" title="2.虚拟机和本地方法栈溢出"></a>2.虚拟机和本地方法栈溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaVMStackSOF</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> stackLength = <span class="number">1</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stackLeak</span><span class="params">()</span> </span>&#123;</div><div class="line">        stackLength++;</div><div class="line">        stackLeak();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        JavaVMStackSOF stackSOF = <span class="keyword">new</span> JavaVMStackSOF();</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            stackSOF.stackLeak();</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">            System.out.println(<span class="string">"Stack length: "</span>+stackSOF.stackLength );</div><div class="line">            <span class="keyword">throw</span> e;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-创建线程导致的内存溢出"><a href="#3-创建线程导致的内存溢出" class="headerlink" title="3.创建线程导致的内存溢出"></a>3.创建线程导致的内存溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaVMStackOOM</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doStop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stackLeakByThread</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">            Thread thread = <span class="keyword">new</span> Thread(()-&gt;&#123;</div><div class="line">               doStop();</div><div class="line">            &#125;);</div><div class="line">            thread.start();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        JavaVMStackOOM oom = <span class="keyword">new</span> JavaVMStackOOM();</div><div class="line">        oom.stackLeakByThread();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里的话,在Windows平台的虚拟机中，Java的线程是映射到操作系统的内核线程上，这里可能导致机器假死。</p>
+<h3 id="4-方法和运行时常量池溢出"><a href="#4-方法和运行时常量池溢出" class="headerlink" title="4.方法和运行时常量池溢出"></a>4.方法和运行时常量池溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RuntimeConstantPoolOOM</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">            list.add(String.valueOf(i++).intern());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="5-本机直接内存溢出"><a href="#5-本机直接内存溢出" class="headerlink" title="5.本机直接内存溢出"></a>5.本机直接内存溢出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DirectMemoryOOM</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> _1MB = <span class="number">1024</span> * <span class="number">1024</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        Field unsafeField = Unsafe.class.getDeclaredFields()[<span class="number">0</span>];</div><div class="line">        unsafeField.setAccessible(<span class="keyword">true</span>);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Unsafe unsafe = (Unsafe) unsafeField.get(<span class="keyword">null</span>);</div><div class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">                unsafe.allocateMemory(_1MB);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>了解了这些不得不佩服设计者，一个看似简单的东西底层要解决的问题、处理的细节也是非常多的，从Java虚拟机层面看到了不一样的东西，也是非常有意思的，理解底层实现的原理有助于写成更健壮的代码，更快速的debug，就到这里了。</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/03/29/Java内存区域与内存溢出/">Java内存区域与内存溢出</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
+        <p><span>发布时间:</span>2018年03月29日 - 19时45分</p>
+        <p><span>最后更新:</span>2020年06月13日 - 00时06分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/03/29/Java内存区域与内存溢出/" title="Java内存区域与内存溢出">http://blog.cspojie.cn/2018/03/29/Java内存区域与内存溢出/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/03/29/Java内存区域与内存溢出/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2018/04/08/坦白说解密/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          坦白说解密
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/03/13/仿MIUI实现带弹性的ScrollView/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">仿MIUI实现带弹性的ScrollView</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存区域"><span class="toc-number">2.</span> <span class="toc-text">内存区域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-程序计数器"><span class="toc-number">2.1.</span> <span class="toc-text">1.程序计数器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-虚拟机栈"><span class="toc-number">2.2.</span> <span class="toc-text">2.虚拟机栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-本地方法栈"><span class="toc-number">2.3.</span> <span class="toc-text">3.本地方法栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Java堆"><span class="toc-number">2.4.</span> <span class="toc-text">4.Java堆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-方法区"><span class="toc-number">2.5.</span> <span class="toc-text">5.方法区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从JVM看对象"><span class="toc-number">3.</span> <span class="toc-text">从JVM看对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对象的创建"><span class="toc-number">3.1.</span> <span class="toc-text">对象的创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#对象的访问定位"><span class="toc-number">3.2.</span> <span class="toc-text">对象的访问定位</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存溢出异常"><span class="toc-number">4.</span> <span class="toc-text">内存溢出异常</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Java堆溢出"><span class="toc-number">4.1.</span> <span class="toc-text">1.Java堆溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-虚拟机和本地方法栈溢出"><span class="toc-number">4.2.</span> <span class="toc-text">2.虚拟机和本地方法栈溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-创建线程导致的内存溢出"><span class="toc-number">4.3.</span> <span class="toc-text">3.创建线程导致的内存溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-方法和运行时常量池溢出"><span class="toc-number">4.4.</span> <span class="toc-text">4.方法和运行时常量池溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-本机直接内存溢出"><span class="toc-number">4.5.</span> <span class="toc-text">5.本机直接内存溢出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.decodeURIComponent(window.location.pathname),
+      owner: 'Xchuanshuo',
+      repo: 'Xchuanshuo.github.io',
+      oauth: {
+        client_id: '84a8ba9556b4d1293665',
+        client_secret: 'f6ce30da75414de93e37eb4a59102fbcb53ea568',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/04/08/坦白说解密/" title="上一篇: 坦白说解密">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2018/03/13/仿MIUI实现带弹性的ScrollView/" title="下一篇: 仿MIUI实现带弹性的ScrollView">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/02/实现一个FC模拟器/">实现一个FC模拟器</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/回首2019/">回首2019</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Tomcat剖析之源码篇-二/">Tomcat剖析之源码篇(二)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/14/Tomcat剖析之架构篇(一)/">Tomcat剖析之架构篇(-)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/回首2018/">回首2018</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/04/JVM运行期优化/">JVM运行期优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/LRU与LFU缓存算法/">LRU与LFU缓存算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/25/平衡查找树之AVL树/">平衡查找树之AVL树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/16/Manacher算法求解最长回文子串/">Manacher算法求解最长回文子串</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/15/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/02/Linux也可以这样美——Ubuntu18-04安装、配置、美化-踩坑记/">Linux也可以这样美——Ubuntu18.04安装、配置、美化-踩坑记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/15/JVM中的类加载机制/">JVM中的类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/坦白说解密/">坦白说解密</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/Java内存区域与内存溢出/">Java内存区域与内存溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/仿MIUI实现带弹性的ScrollView/">仿MIUI实现带弹性的ScrollView</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/09/机器学习起步－k-最近邻算法/">机器学习起步－k-最近邻算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/14/Okhttp3的封装-搞定常用的请求/">Okhttp3的封装 搞定常用的请求</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/10/实现安卓无限轮播组件Banner/">实现安卓无限轮播组件Banner</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/31/浅谈Android中的MVP架构/">浅谈Android中的MVP架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/随机模拟算法求解圆周率/">随机模拟算法求解圆周率</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/21/Android第三方登录与服务器端验证过程/">Android第三方登录与服务器端验证过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/10/Django查错配置/">Django查错配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/">Ubuntu16.04下Nginx+uwsgi部署Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/31/回首2017-展望未来/">回首2017 展望未来</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/25/Pycahrm远程调试Django项目/">Pycahrm远程调试Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/14/Python中的策略模式/">Python中的策略模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/04/图论-应用篇/">图论 应用篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/22/MySQL性能优化-一/">MySQL性能优化(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/20/图论-基础篇/">图论 基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/13/二叉堆与优先队列/">二叉堆与优先队列</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/06/Ubuntu下常用命令汇总/">Ubuntu下常用命令汇总</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/02/分治思想之排序算法/">分治思想之排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/27/灵活-高效的符号表-二叉查找树/">灵活&&高效的符号表--二叉查找树</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/">Python3爬取百科词条+导入MySQL数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/常用的正则表达式整理/">常用的正则表达式整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/面向对象思想/">面向对象思想</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/25/玩转Python装饰器/">玩转Python装饰器</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+
+ </div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 Legend
+            </div>
+            <div class="footer-right">
+                
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >geek到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>

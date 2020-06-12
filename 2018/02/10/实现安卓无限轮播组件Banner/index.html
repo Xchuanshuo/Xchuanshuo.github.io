@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>实现安卓无限轮播组件Banner | legend＇s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言前些天需要使用到安卓的banner，也就是现在主流app主页的无限轮播的横幅，现在已经有很多好的开源项目可以直接使用">
+<meta name="keywords" content="Android,Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现安卓无限轮播组件Banner">
+<meta property="og:url" content="http://blog.cspojie.cn/2018/02/10/实现安卓无限轮播组件Banner/index.html">
+<meta property="og:site_name" content="legend＇s blog">
+<meta property="og:description" content="前言前些天需要使用到安卓的banner，也就是现在主流app主页的无限轮播的横幅，现在已经有很多好的开源项目可以直接使用">
+<meta property="og:image" content="http://img.blog.csdn.net/20180210020033204?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2l0aHViXzM2NDk4MTc1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:updated_time" content="2020-06-12T16:07:58.600Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实现安卓无限轮播组件Banner">
+<meta name="twitter:description" content="前言前些天需要使用到安卓的banner，也就是现在主流app主页的无限轮播的横幅，现在已经有很多好的开源项目可以直接使用">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20180210020033204?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2l0aHViXzM2NDk4MTc1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+  
+    <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">Legend</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/works">作品展示</a></li>
+                        
+                            <li><a href="/about">留言打卡</a></li>
+                        
+                            <li><a href="/FrontEndGuide">后端导航</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Android/" style="font-size: 17.14px;">Android</a> <a href="/tags/JVM/" style="font-size: 14.29px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Linux/" style="font-size: 15.71px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/Tomcat/" style="font-size: 11.43px;">Tomcat</a> <a href="/tags/体系结构/" style="font-size: 10px;">体系结构</a> <a href="/tags/图/" style="font-size: 11.43px;">图</a> <a href="/tags/字符串匹配/" style="font-size: 10px;">字符串匹配</a> <a href="/tags/常用命令/" style="font-size: 10px;">常用命令</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/模拟器/" style="font-size: 10px;">模拟器</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/源码分析/" style="font-size: 11.43px;">源码分析</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/算法与数据结构/" style="font-size: 18.57px;">算法与数据结构</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/设计模式/" style="font-size: 11.43px;">设计模式</a> <a href="/tags/随笔/" style="font-size: 12.86px;">随笔</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.jikedaohang.com/">极客导航</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.ofmonkey.com/">在线工具</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">虽生有涯而知无涯，但进一寸有一寸的欢喜！</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">Legend</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">Legend</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/works">作品展示</a></li>
+                
+                    <li><a href="/about">留言打卡</a></li>
+                
+                    <li><a href="/FrontEndGuide">后端导航</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-实现安卓无限轮播组件Banner" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/02/10/实现安卓无限轮播组件Banner/" class="article-date">
+      <time datetime="2018-02-09T16:47:11.000Z" itemprop="datePublished">2018-02-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      实现安卓无限轮播组件Banner
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前些天需要使用到安卓的banner，也就是现在主流app主页的无限轮播的横幅，现在已经有很多好的开源项目可以直接使用<a id="more"></a>，不过我还是想自己去实现一遍。因为是访问的网络数据，实际过程中还是有些坑的，所以还是记录一下。</p>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><p>首先还是来看看最终的效果，gif是有些卡顿，跑起来还是很流畅的<br><img src="http://img.blog.csdn.net/20180210020033204?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2l0aHViXzM2NDk4MTc1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="BannViewDemo"><br>了解到，现在实现这种横幅，基本上是2种方式，一种是使用RecyclerView的横向滚动去实现，因为横幅是从一个页面直接跳转到下一页，用RecyclerView需要监听滑动的过程，计算滑动的距离，然后进行跳转，后面官方考虑到这一点提供了PagerSnapHelper这个工具类来解决这个问题，这里就不多说了。<br>这篇博客主要就是写的就是第二种方式，使用ViewPager去实现。</p>
+<p>首先，要用ViewPager实现无限轮播，可以使PagerAdapter的getCount方法返回Integer.MAX_VALUE。也就是让页面数量返回一个Integer的最大值，这样在滑动过程中产生一种无限循环的假象，首先写一个抽象基类，继承自PagerAdapter</p>
+<h4 id="定义适配器"><a href="#定义适配器" class="headerlink" title="定义适配器"></a>定义适配器</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BannerViewBaseAdapter</span> <span class="keyword">extends</span> <span class="title">PagerAdapter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> List&lt;View&gt; mList;</div><div class="line">    <span class="keyword">private</span> View mView;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BannerViewBaseAdapter</span><span class="params">()</span> </span>&#123;</div><div class="line">        mList = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 返回Integer的最大值</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> Integer.MAX_VALUE;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isViewFromObject</span><span class="params">(View view, Object object)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> view == object;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">instantiateItem</span><span class="params">(ViewGroup container, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        Log.d(<span class="string">"I am postion cx cx xcx"</span>, String.valueOf(position));</div><div class="line">        <span class="keyword">if</span> (getSize() != <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (mList.size() &lt;= (position % getSize())) &#123;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = mList.size();i &lt;= position % getSize();++i) &#123;</div><div class="line">                    mList.add(getView(container,i));</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            mView = mList.get(position % getSize());</div><div class="line">            <span class="keyword">if</span> (mView.getParent() != <span class="keyword">null</span>) &#123;</div><div class="line">                container.removeView(mView);</div><div class="line">            &#125;</div><div class="line">            container.addView(mView);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> mView;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroyItem</span><span class="params">(ViewGroup container, <span class="keyword">int</span> position, Object object)</span> </span>&#123;</div><div class="line">        <span class="comment">// 滑动下一张图时当前的图</span></div><div class="line">        <span class="keyword">if</span> (getSize() != <span class="number">0</span> &amp;&amp; position != <span class="number">0</span>) &#123;</div><div class="line">            container.removeView(mList.get(position % getSize()));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     *  获取要显示的View</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> container</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> position</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> View <span class="title">getView</span><span class="params">(ViewGroup container,<span class="keyword">int</span> position)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     *  获取实际ItemView的数量</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getSize</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure>
+<p>这里主要是重写instantiateItem方法，进行添加页面的逻辑，首先要判断getSize不为0，因为实际网络加载时可能是一个异步的耗时操作，如果执行到下面的计算时，除数为0肯定会报错的，其它类似地方也都是这样，然后注意到下面的position%getSize,这里是用当前位置对实际item的数量进行模运算取余，得到的值就是当前item的实际位置（前面说过无限轮播是不停的增加页面，造成轮播的假象，实际位置就是指在进行轮播的几个item中，当前处的位置），接下来就判断，如果item不在集合中，就把view添加到一个List集合里面，最后要防止同一个view的重复添加，所以每次添加前需要移除这个view。<br>接着重写destroyItem方法，每次循环跳转时都要销毁掉之前的view。下面两个抽象方法就是用来获取到具体的值了。</p>
+<p>然后就是我们的具体视图的适配器<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BannerViewAdapter</span> <span class="keyword">extends</span> <span class="title">BannerViewBaseAdapter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> List&lt;TestBean&gt; mBeansList;</div><div class="line">    <span class="keyword">private</span> Context mContext;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BannerViewAdapter</span><span class="params">(List&lt;TestBean&gt; bannerBeans)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.mBeansList = bannerBeans;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">(ViewGroup container, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        AppCompatImageView imageView;</div><div class="line">        TextView title;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (mContext == <span class="keyword">null</span>) &#123;</div><div class="line">            mContext = container.getContext();</div><div class="line">        &#125;</div><div class="line">        View mView = LayoutInflater.from(mContext).inflate(R.layout.banner_item_layout,<span class="keyword">null</span>);</div><div class="line"></div><div class="line">        <span class="keyword">final</span> TestBean bean = mBeansList.get(position);</div><div class="line">        imageView = mView.findViewById(R.id.image);</div><div class="line">        title = mView.findViewById(R.id.banner_title);</div><div class="line">        title.setText(bean.getTitle());</div><div class="line">        Glide.with(mContext).load(bean.getImageId())</div><div class="line">                .error(R.drawable.ic_launcher_background)</div><div class="line">                .into(imageView);</div><div class="line">        notifyDataSetChanged();</div><div class="line"></div><div class="line">        imageView.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">                Toast.makeText(mContext,<span class="string">"你点击了"</span>+bean.getTitle(),Toast.LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        <span class="keyword">return</span> mView;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSize</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mBeansList.size();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里基础抽象基类，逻辑比较简单，没什么好讲的。</p>
+<h4 id="视图绘制"><a href="#视图绘制" class="headerlink" title="视图绘制"></a>视图绘制</h4><p>然后重点就是自定义的BannerView类了<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BannerView</span> <span class="keyword">extends</span> <span class="title">FrameLayout</span> <span class="keyword">implements</span> <span class="title">ViewPager</span>.<span class="title">OnPageChangeListener</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> ViewPager mViewPager;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     *  圆点布局</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> LinearLayout mPointContainer;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> BannerViewBaseAdapter mAdapter;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     *  圆点数量</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mPointCount;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     *  圆点图片</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> ImageView[] mPoints;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     *  最后一个圆点</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mLastPos;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     *  当前是否触摸</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isTouch = <span class="keyword">false</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> ScheduledExecutorService executorService;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Handler handler = <span class="keyword">new</span> Handler() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">            <span class="keyword">switch</span> (msg.what) &#123;</div><div class="line">                <span class="keyword">case</span> <span class="number">0</span>:</div><div class="line">                    postDelayed(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">                        <span class="meta">@Override</span></div><div class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                            mViewPager.setCurrentItem(mViewPager.getCurrentItem()+<span class="number">1</span>);</div><div class="line">                        &#125;</div><div class="line">                    &#125;,<span class="number">1000</span>);</div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">                <span class="keyword">default</span>:</div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BannerView</span><span class="params">(@NonNull Context context, AttributeSet attributeSet)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context,attributeSet);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onFinishInflate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onFinishInflate();</div><div class="line">        initView();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initView</span><span class="params">()</span> </span>&#123;</div><div class="line">        mViewPager = findViewById(R.id.views_container);</div><div class="line">        mPointContainer = findViewById(R.id.point_container);</div><div class="line">        mViewPager.addOnPageChangeListener(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAdapter</span><span class="params">(BannerViewAdapter adapter)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.mAdapter = adapter;</div><div class="line">        mPointCount = mAdapter.getSize();</div><div class="line">        mViewPager.setAdapter(mAdapter);</div><div class="line">        Log.d(<span class="string">"sddsccdsvdsvdv"</span>, String.valueOf(mPointCount*<span class="number">100</span>));</div><div class="line">        initPoint();</div><div class="line">        <span class="comment">/**</span></div><div class="line"><span class="comment">         *  防止第二次刷新后 显示空白页面</span></div><div class="line"><span class="comment">         */</span></div><div class="line">        mViewPager.setCurrentItem(mPointCount*<span class="number">100</span>+<span class="number">3</span>);</div><div class="line">        startScroll();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     *  加载圆点</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initPoint</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (mPointCount == <span class="number">0</span>) &#123;</div><div class="line">           <span class="keyword">return</span>;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       mPoints = <span class="keyword">new</span> ImageView[mPointCount];</div><div class="line">       <span class="comment">// 清chu所有圆点</span></div><div class="line">       mPointContainer.removeAllViews();</div><div class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i &lt; mPointCount;i++) &#123;</div><div class="line">           ImageView view = <span class="keyword">new</span> ImageView(getContext());</div><div class="line">           view.setImageResource(R.drawable.point_normal);</div><div class="line">           mPointContainer.addView(view);</div><div class="line">           mPoints[i] = view;</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (mPoints[<span class="number">0</span>] != <span class="keyword">null</span>) &#123;</div><div class="line">           mPoints[<span class="number">0</span>].setImageResource(R.drawable.point_selected);</div><div class="line">       &#125;</div><div class="line">       mLastPos = <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 改变圆点位置</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">changePoint</span><span class="params">(<span class="keyword">int</span> currentPoint)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mLastPos == currentPoint) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        mPoints[currentPoint].setImageResource(R.drawable.point_selected);</div><div class="line">        mPoints[mLastPos].setImageResource(R.drawable.point_normal);</div><div class="line">        mLastPos = currentPoint;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startScroll</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">        executorService = <span class="keyword">new</span> ScheduledThreadPoolExecutor(<span class="number">1</span>);</div><div class="line">        executorService.scheduleAtFixedRate(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                <span class="keyword">if</span> (isTouch) &#123;</div><div class="line">                    <span class="keyword">return</span>;</div><div class="line">                &#125;</div><div class="line">                handler.sendEmptyMessage(<span class="number">0</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;,<span class="number">1000</span>,<span class="number">3000</span>, TimeUnit.MILLISECONDS);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancelScroll</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (executorService != <span class="keyword">null</span>) &#123;</div><div class="line">            executorService.shutdown();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageScrolled</span><span class="params">(<span class="keyword">int</span> position, <span class="keyword">float</span> positionOffset, <span class="keyword">int</span> positionOffsetPixels)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageSelected</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mPointCount != <span class="number">0</span>) &#123;</div><div class="line">            changePoint(position % mPointCount);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageScrollStateChanged</span><span class="params">(<span class="keyword">int</span> state)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</div><div class="line">        <span class="keyword">switch</span> (ev.getAction()) &#123;</div><div class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</div><div class="line">                isTouch = <span class="keyword">true</span>;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> MotionEvent.ACTION_UP:</div><div class="line">                isTouch = <span class="keyword">false</span>;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">default</span>:</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(ev);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>BannerView继承FrameLayout，实现滑动监听的接口，这里先看看initView方法，这里给viewpager设置了适配器，然后接着就是加载圆点指示器的方法，逻辑也比较简单，加载前注意先移除掉之前的圆点，防止刷新后点的数量重复添加。然后就是第一次加载时，时ViewPager跳转到mPoinCoun*100+x的位置,也是为了防止首次加载无法向左滑动，就不是无限循环的假象了。然后就让我们的ViewPager执行定时滑动任务，定时任务有很多的实现方式，可以使用Timer+handler的方式，可以使用CountDownTimer类来实现，这里的话，我使用的是线程池来进行的定时任务，后面分别传入预加载与跳转周期，然后里面需要进行判断当前是否触摸屏幕，所以要重写dispatchEvent方法，监听当前的动作，然后向handler发送消息，再进行页面滑动，这里可能会有疑惑，线程池已经设置了定时任务，为什么还要向handler去发送消息，进行延时处理，handler里面才是真正的滚动延时，除了是非Ui线程不进行Ui更新的操作 也是因为在我们刷新后，线程池会造成阻塞，无法正常执行。我使用了其它几种方式，还是出现了各种问题，这里就不多说了。</p>
+<p>整个BannerView的流程就走完了<br>再看看布局文件 banner_item_layout<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;android.support.design.widget.CoordinatorLayout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    android:layout_width=<span class="string">"match_parent"</span></div><div class="line">    android:layout_height=<span class="string">"match_parent"</span></div><div class="line">    &gt;</div><div class="line"></div><div class="line">    &lt;android.support.v7.widget.AppCompatImageView</div><div class="line">        android:id=<span class="string">"@+id/image"</span></div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:layout_height=<span class="string">"match_parent"</span></div><div class="line">        android:scaleType=<span class="string">"fitXY"</span>/&gt;</div><div class="line"></div><div class="line">    &lt;TextView</div><div class="line">        android:id=<span class="string">"@+id/banner_title"</span></div><div class="line">        android:text=<span class="string">"我是圈子名字"</span></div><div class="line">        android:textSize=<span class="string">"15sp"</span></div><div class="line">        android:textColor=<span class="string">"@android:color/white"</span></div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:gravity=<span class="string">"center_vertical"</span></div><div class="line">        android:paddingLeft=<span class="string">"10dp"</span></div><div class="line">        android:layout_gravity=<span class="string">"bottom"</span></div><div class="line">        android:background=<span class="string">"@color/transparency"</span></div><div class="line">        android:layout_height=<span class="string">"35dp"</span> /&gt;</div><div class="line">&lt;/android.support.design.widget.CoordinatorLayout&gt;</div></pre></td></tr></table></figure></p>
+<p>banner_view_layout<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">&lt;com.legend.bannerviewdemo.banner.BannerView xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</div><div class="line">    android:id=&quot;@+id/my_slide_view&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;wrap_content&quot;&gt;</div><div class="line"></div><div class="line">    &lt;android.support.v4.view.ViewPager</div><div class="line">        android:id=&quot;@+id/views_container&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;180dp&quot;&gt;&lt;/android.support.v4.view.ViewPager&gt;</div><div class="line"></div><div class="line">    &lt;LinearLayout</div><div class="line">        android:id=&quot;@+id/indicator&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:layout_gravity=&quot;bottom&quot;</div><div class="line">        android:layout_marginBottom=&quot;5dp&quot;</div><div class="line">        android:orientation=&quot;vertical&quot;</div><div class="line">        android:visibility=&quot;visible&quot;&gt;</div><div class="line"></div><div class="line">        &lt;LinearLayout</div><div class="line">            android:id=&quot;@+id/point_container&quot;</div><div class="line">            android:layout_width=&quot;match_parent&quot;</div><div class="line">            android:layout_height=&quot;11dp&quot;</div><div class="line">            android:gravity=&quot;center_horizontal&quot;</div><div class="line">            android:orientation=&quot;horizontal&quot; /&gt;</div><div class="line">    &lt;/LinearLayout&gt;</div><div class="line"></div><div class="line">&lt;/com.legend.bannerviewdemo.banner.BannerView&gt;</div></pre></td></tr></table></figure></p>
+<p>使用的话就直接给adapter添加数据，然后实例化给BannerView设置adapter就可以了。这里很要注意一点，就是每次刷新之前记得手动关闭线程池，也就是调用BannView中的cancelScroll()方法，不然会造成进行网络加载，第二次刷新加载数据时，banner直接出现空白页面，这肯定不是我们想要的。 另外，配合RecyclerView使用时，可以把BannerView动态添加到RecyclerView的头部，直接放到布局中，如果要实现RecyclerView上滑时，banner跟着一起滚动的话，可以使用NestedScrollView，但是会造成嵌套滑动冲突，这一点也没看到好的解决办法，设置了NestedScrollingEnable属性，但是会导致RecyclerView无法上拉加载，如果一次性加载完数据的话，RecyclerView的复用和回收机制就没起到作用了，很容易出现OOM，这也不是我们想看到的，所以最好还是配合RecyclerView使用。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总的来说，实现一个并不困难，难在实际过程中会出现各种各样的问题，也正是常说的，debug时间远远多于写代码的是时间（说到底还是经验不足的，理解不够深的缘故）。废话不多说，最后该Demo地址<a href="https://github.com/Xchuanshuo/BannerViewDemo" target="_blank" rel="external">github</a></p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/02/10/实现安卓无限轮播组件Banner/">实现安卓无限轮播组件Banner</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
+        <p><span>发布时间:</span>2018年02月10日 - 00时47分</p>
+        <p><span>最后更新:</span>2020年06月13日 - 00时07分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/02/10/实现安卓无限轮播组件Banner/" title="实现安卓无限轮播组件Banner">http://blog.cspojie.cn/2018/02/10/实现安卓无限轮播组件Banner/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/02/10/实现安卓无限轮播组件Banner/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2018/02/14/Okhttp3的封装-搞定常用的请求/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Okhttp3的封装 搞定常用的请求
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/01/31/浅谈Android中的MVP架构/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">浅谈Android中的MVP架构</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体实现"><span class="toc-number">2.</span> <span class="toc-text">具体实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#定义适配器"><span class="toc-number">2.1.</span> <span class="toc-text">定义适配器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#视图绘制"><span class="toc-number">2.2.</span> <span class="toc-text">视图绘制</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.decodeURIComponent(window.location.pathname),
+      owner: 'Xchuanshuo',
+      repo: 'Xchuanshuo.github.io',
+      oauth: {
+        client_id: '84a8ba9556b4d1293665',
+        client_secret: 'f6ce30da75414de93e37eb4a59102fbcb53ea568',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/02/14/Okhttp3的封装-搞定常用的请求/" title="上一篇: Okhttp3的封装 搞定常用的请求">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2018/01/31/浅谈Android中的MVP架构/" title="下一篇: 浅谈Android中的MVP架构">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/02/实现一个FC模拟器/">实现一个FC模拟器</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/回首2019/">回首2019</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Tomcat剖析之源码篇-二/">Tomcat剖析之源码篇(二)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/14/Tomcat剖析之架构篇(一)/">Tomcat剖析之架构篇(-)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/回首2018/">回首2018</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/04/JVM运行期优化/">JVM运行期优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/LRU与LFU缓存算法/">LRU与LFU缓存算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/25/平衡查找树之AVL树/">平衡查找树之AVL树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/16/Manacher算法求解最长回文子串/">Manacher算法求解最长回文子串</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/15/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/02/Linux也可以这样美——Ubuntu18-04安装、配置、美化-踩坑记/">Linux也可以这样美——Ubuntu18.04安装、配置、美化-踩坑记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/15/JVM中的类加载机制/">JVM中的类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/坦白说解密/">坦白说解密</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/Java内存区域与内存溢出/">Java内存区域与内存溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/仿MIUI实现带弹性的ScrollView/">仿MIUI实现带弹性的ScrollView</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/09/机器学习起步－k-最近邻算法/">机器学习起步－k-最近邻算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/14/Okhttp3的封装-搞定常用的请求/">Okhttp3的封装 搞定常用的请求</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/10/实现安卓无限轮播组件Banner/">实现安卓无限轮播组件Banner</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/31/浅谈Android中的MVP架构/">浅谈Android中的MVP架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/随机模拟算法求解圆周率/">随机模拟算法求解圆周率</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/21/Android第三方登录与服务器端验证过程/">Android第三方登录与服务器端验证过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/10/Django查错配置/">Django查错配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/">Ubuntu16.04下Nginx+uwsgi部署Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/31/回首2017-展望未来/">回首2017 展望未来</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/25/Pycahrm远程调试Django项目/">Pycahrm远程调试Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/14/Python中的策略模式/">Python中的策略模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/04/图论-应用篇/">图论 应用篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/22/MySQL性能优化-一/">MySQL性能优化(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/20/图论-基础篇/">图论 基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/13/二叉堆与优先队列/">二叉堆与优先队列</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/06/Ubuntu下常用命令汇总/">Ubuntu下常用命令汇总</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/02/分治思想之排序算法/">分治思想之排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/27/灵活-高效的符号表-二叉查找树/">灵活&&高效的符号表--二叉查找树</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/">Python3爬取百科词条+导入MySQL数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/常用的正则表达式整理/">常用的正则表达式整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/面向对象思想/">面向对象思想</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/25/玩转Python装饰器/">玩转Python装饰器</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+
+ </div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 Legend
+            </div>
+            <div class="footer-right">
+                
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >geek到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
