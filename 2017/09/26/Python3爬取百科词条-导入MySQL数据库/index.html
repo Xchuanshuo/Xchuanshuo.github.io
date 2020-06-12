@@ -436,7 +436,7 @@
 <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
 <script>
     var gitment = new Gitment({
-      id: window.location.pathname,
+      id: window.decodeURIComponent(window.location.pathname),
       owner: 'Xchuanshuo',
       repo: 'Xchuanshuo.github.io',
       oauth: {
