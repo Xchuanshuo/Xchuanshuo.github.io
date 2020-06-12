@@ -6,7 +6,7 @@
   <title>Java内存模型 | legend＇s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言Java内存模型是Java虚拟机制定的一种规范，众所周知的Java程序都是运行在JVM上的，而Java语言“一次编写，到处运行”的特效很多程度是来源与虚拟机">
-<meta name="keywords" content="JVM">
+<meta name="keywords" content="JVM,Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java内存模型">
 <meta property="og:url" content="http://blog.cspojie.cn/2018/05/15/Java内存模型/index.html">
@@ -14,7 +14,7 @@
 <meta property="og:description" content="前言Java内存模型是Java虚拟机制定的一种规范，众所周知的Java程序都是运行在JVM上的，而Java语言“一次编写，到处运行”的特效很多程度是来源与虚拟机">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-a88da9d101d3785f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3110248-c819d92b585ac3c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-05-15T12:00:07.242Z">
+<meta property="og:updated_time" content="2020-06-12T16:05:51.320Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java内存模型">
 <meta name="twitter:description" content="前言Java内存模型是Java虚拟机制定的一种规范，众所周知的Java程序都是运行在JVM上的，而Java语言“一次编写，到处运行”的特效很多程度是来源与虚拟机">
@@ -150,7 +150,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Android/" style="font-size: 18.33px;">Android</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Python/" style="font-size: 18.33px;">Python</a> <a href="/tags/Tomcat/" style="font-size: 11.67px;">Tomcat</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/体系结构/" style="font-size: 10px;">体系结构</a> <a href="/tags/图/" style="font-size: 11.67px;">图</a> <a href="/tags/字符串匹配/" style="font-size: 10px;">字符串匹配</a> <a href="/tags/常用命令/" style="font-size: 10px;">常用命令</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/模拟器/" style="font-size: 10px;">模拟器</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/源码分析/" style="font-size: 11.67px;">源码分析</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/算法与数据结构/" style="font-size: 20px;">算法与数据结构</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/设计模式/" style="font-size: 11.67px;">设计模式</a> <a href="/tags/随笔/" style="font-size: 13.33px;">随笔</a>
+                        <a href="/tags/Android/" style="font-size: 17.14px;">Android</a> <a href="/tags/JVM/" style="font-size: 14.29px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Linux/" style="font-size: 15.71px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/Tomcat/" style="font-size: 11.43px;">Tomcat</a> <a href="/tags/体系结构/" style="font-size: 10px;">体系结构</a> <a href="/tags/图/" style="font-size: 11.43px;">图</a> <a href="/tags/字符串匹配/" style="font-size: 10px;">字符串匹配</a> <a href="/tags/常用命令/" style="font-size: 10px;">常用命令</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/模拟器/" style="font-size: 10px;">模拟器</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/源码分析/" style="font-size: 11.43px;">源码分析</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/算法与数据结构/" style="font-size: 18.57px;">算法与数据结构</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/设计模式/" style="font-size: 11.43px;">设计模式</a> <a href="/tags/随笔/" style="font-size: 12.86px;">随笔</a>
                     </div>
                 </section>
                 
@@ -255,14 +255,10 @@
       
       <div class="article-info article-info-post">
         
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/java/">java</a>
-    </div>
-
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -344,7 +340,7 @@
         <p><span>本文标题:</span><a href="/2018/05/15/Java内存模型/">Java内存模型</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
         <p><span>发布时间:</span>2018年05月15日 - 19时58分</p>
-        <p><span>最后更新:</span>2018年05月15日 - 20时00分</p>
+        <p><span>最后更新:</span>2020年06月13日 - 00时05分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2018/05/15/Java内存模型/" title="Java内存模型">http://blog.cspojie.cn/2018/05/15/Java内存模型/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2018/05/15/Java内存模型/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
