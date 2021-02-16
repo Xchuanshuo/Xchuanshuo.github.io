@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>漫谈从编译器到运行时 | legend＇s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言编译原理相关的书籍资料五花八门，大多偏理论为主，实用性高的寥寥无几；而讲实践的书，相关的理论太少，难以提炼出一套方法论。并且教科书通常只实现了一些语言的子集">
+<meta name="keywords" content="体系结构,编译原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漫谈从编译器到运行时">
+<meta property="og:url" content="http://blog.cspojie.cn/2021/02/16/漫谈从编译器到运行时/index.html">
+<meta property="og:site_name" content="legend＇s blog">
+<meta property="og:description" content="前言编译原理相关的书籍资料五花八门，大多偏理论为主，实用性高的寥寥无几；而讲实践的书，相关的理论太少，难以提炼出一套方法论。并且教科书通常只实现了一些语言的子集">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/05/yGiQjx.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/05/yJC8jP.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/08/yUeS41.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/08/yUtY9O.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/08/yaEHt1.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/08/yaZurD.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/12/yD6lPf.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/02/16/ycGjj1.png">
+<meta property="og:updated_time" content="2021-02-16T08:02:26.747Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="漫谈从编译器到运行时">
+<meta name="twitter:description" content="前言编译原理相关的书籍资料五花八门，大多偏理论为主，实用性高的寥寥无几；而讲实践的书，相关的理论太少，难以提炼出一套方法论。并且教科书通常只实现了一些语言的子集">
+<meta name="twitter:image" content="https://s3.ax1x.com/2021/02/05/yGiQjx.png">
+  
+    <link rel="alternative" href="/atom.xml" title="legend＇s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">Legend</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/">作品展示</a></li>
+                        
+                            <li><a href="/about">留言打卡</a></li>
+                        
+                            <li><a href="/FrontEndGuide">后端导航</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Android/" style="font-size: 17.14px;">Android</a> <a href="/tags/JVM/" style="font-size: 14.29px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Linux/" style="font-size: 15.71px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Python/" style="font-size: 17.14px;">Python</a> <a href="/tags/Tomcat/" style="font-size: 11.43px;">Tomcat</a> <a href="/tags/体系结构/" style="font-size: 11.43px;">体系结构</a> <a href="/tags/图/" style="font-size: 11.43px;">图</a> <a href="/tags/字符串匹配/" style="font-size: 10px;">字符串匹配</a> <a href="/tags/常用命令/" style="font-size: 10px;">常用命令</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/模拟器/" style="font-size: 10px;">模拟器</a> <a href="/tags/正则表达式/" style="font-size: 10px;">正则表达式</a> <a href="/tags/源码分析/" style="font-size: 11.43px;">源码分析</a> <a href="/tags/爬虫/" style="font-size: 10px;">爬虫</a> <a href="/tags/算法与数据结构/" style="font-size: 18.57px;">算法与数据结构</a> <a href="/tags/编程思想/" style="font-size: 10px;">编程思想</a> <a href="/tags/编译原理/" style="font-size: 10px;">编译原理</a> <a href="/tags/设计模式/" style="font-size: 11.43px;">设计模式</a> <a href="/tags/随笔/" style="font-size: 12.86px;">随笔</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.jikedaohang.com/">极客导航</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.ofmonkey.com/">在线工具</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">虽生有涯而知无涯，但进一寸有一寸的欢喜！</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">Legend</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">Legend</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">最大的幸运是年轻时有着对梦想执着的激情</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/">作品展示</a></li>
+                
+                    <li><a href="/about">留言打卡</a></li>
+                
+                    <li><a href="/FrontEndGuide">后端导航</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="/2414605975@gmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/Xchuanshuo" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="google" target="_blank" href="/aixs241460@gmail.com" title="google">google</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-漫谈从编译器到运行时" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2021/02/16/漫谈从编译器到运行时/" class="article-date">
+      <time datetime="2021-02-16T07:59:59.000Z" itemprop="datePublished">2021-02-16</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      漫谈从编译器到运行时
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/体系结构/">体系结构</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编译原理/">编译原理</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>编译原理相关的书籍资料五花八门，大多偏理论为主，实用性高的寥寥无几；而讲实践的书，相关的理论太少，难以提炼出一套方法论。并且教科书通常只实现了一些语言的子集<a id="more"></a>，很多基本的特性都有所阉割，对一些新的语言特性要么只字不提，要么一笔带过。最近笔者实现了从支持面向对象、函数式、闭包等特性的源语言-中间代码-目标代码-到寄存器式虚拟机上的解释执行，这篇博客主要写一下工程实践中的一些思路，尽量的撇开细枝末节。</p>
+<h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><p>说点与主题无关的，对于学习阶段而言，编译器的实现尽量选用自己熟悉的特性较为丰富的高级语言，原因在于主要目的是要了解编译与运行时相关的理论与实践，重点在于把这一块领域知识串起来，所以过程中最好排除与之无关的干扰信息，也就是抓住主要矛盾。既然要实现语言的编译器/解释器，首先要知道该语言是怎样的一门语言，大概要支持哪些基本特性，首先谈谈程序与语言。</p>
+<h4 id="程序与语言"><a href="#程序与语言" class="headerlink" title="程序与语言"></a>程序与语言</h4><p>程序，实际是我们给计算机所读取的一套解决某个可计算问题的指令集合。但机器能直接读取的二进制指令对人来说可读性太差了，更别说用它来写程序。于是人们想出了用一些语义化的文本来表示某个指令，如 0x10 0x1 0x2 0x3 换成文本表示 add r1,r2,r3 这样通过文本就能一眼看出该条指令的含义-将r1和r2的数值相加，结果再放入r3，这个表示的文本也就是<strong>汇编语言</strong>。但这些文本机器不能识别，所以又需要一个程序来将这些文本转换为机器指令，这个转换程序称为<strong>汇编器</strong>。汇编器用什么来写呢？用汇编语言、或者高级语言都可以，但前提是已经有程序能将这些东西转换成二进制机器码程序。所以可想而知，最早汇编器就是直接用机器码写的。</p>
+<p>同样的，汇编语言基本与机器码一一对应，还是太繁琐了，本来只想写个简单的程序，还要关注太多硬件的细节。于是前人又尝试设计一种更为高级的语言，目的就是为了去除这些无关的细节，让同样的文本有更强的表达能力。当然，最后还是需要转换成低级语言，如汇编，那么将这个高级语言转换为低级语言的程序称为<strong>编译器</strong>。</p>
+<p>再回到现代计算机，实际上我们现在的程序都是运行在操作系统上的，这里说的程序实际不是<strong>纯二进制程序</strong>，纯二进制程序是除了指令与数据外不包含额外的信息，但一般运行的程序都是对应操作系统定义了在它上面运行的程序文件的格式，运行时由<strong>程序加载载器</strong>来将固定格式的文件解析、分配内存、装载程序指令与数据。所以如果是纯二进制程序，其实是只与硬件支持的指令集有关。但我们的程序不是在裸机器上运行的，一般跟随着操作系统提供的有汇编器、链接器、程序装载器，这才有了Intel和AT&amp;T两种不同风格的汇编指令。由编译器生成汇编指令后，再由汇编器生成目标文件，最后由链接器生成操作系统支持的可执行文件。</p>
+<p>当然，程序语言的设计是单独的一个领域了，只有对各个语言的构成都有过研究，才可能设计出一个好的语言，编译器只是一个实现语言所表达含义的工具。</p>
+<h4 id="编译器与解释器"><a href="#编译器与解释器" class="headerlink" title="编译器与解释器"></a>编译器与解释器</h4><p>其实编译器与解释器没有太严格的界限，一般是按照最后生成的目标代码是否是操作系统对应的汇编指令来决定。光是解释器有好几种，可以直接在语法树上进行解释执行，可以对生成的中间代码解释执行，或者给最后生成的指令提供一个虚拟机来执行。前两者通常是直接通过在内存的数据结构，后者可以直接输出一个文件，然后下次运行直接按照定义的格式解析加载后执行，无需再进行编译。所以可以看到，对于编译器与解释器更好的说法是是否进行了完善的语义分析、并产生了新的可执行的文件。至于直接的执行者是CPU，还是虚拟机程序就无关紧要了。平时有人爱说某某语言是编译型/解释型语言其实并不准确，程序语言本身与它怎么运行的无关，关键在于编译器是如何实现的，对于C/C++这种也可以直接解释执行。</p>
+<p>再来看看编译器完整的流程<br><img src="https://s3.ax1x.com/2021/02/05/yGiQjx.png" alt="yGiQjx.png"><br>分为以下几步</p>
+<ul>
+<li>首先读入源代码文本文件，获取到文本的字符流。</li>
+<li>将字符流输入到词法分析器，根据单词的规则，将一个或一组字符转化为一个个Token(单词)。</li>
+<li>将获取到的单词流丢入语法分析器，根据语法规则，生成抽象语法树。对于词法和语法分析，都有比较完善的工具可以自动生成了，不过手工编写也不算麻烦。</li>
+<li>对抽象语法树遍历来进行语义分析，语义分析一般包含引用消解、类型检查、类型推导、语义检验等，视不同设计目标的语言而定，接着根据分析过程中记录的符号信息进行后续操作。</li>
+<li>根据语义分析的信息，进行IR(Intermediate Representation)代码生成，中间代码也包括树型IR和线性IR，比较常见的是后者，生成IR的目的是为了方便后续进行机器无关的优化，也让目标代码生成更加简单。</li>
+<li>生成目标代码，一般一条中间代码对应一条或多条目标代码，现在的跨平台语言一般就是生成自己设计的一套目标代码，然后直接上虚拟机运行。如果是栈式虚拟机，所有指令都是对栈的操作，生成代码时无需考虑操作数存放的位置，基于寄存器的则需要对操作数进行寄存器分配。所以前者的指令占用更少的存储空间，后者更接近现代的计算机，能有更快的运行速度。 </li>
+<li>如果是直接生成对应操作系统的可执行文件，使用目标操作系统的汇编器与链接器来完成即可。使用虚拟机运行，根据运行时信息，直接对目标代码解释执行即可。</li>
+<li>编译器整个过程一般划分为前端和后端两个阶段。 前端一般指从词法分析、语法分析、语义分析到中间代码生成，后端一般指优化、目标代码生成等。</li>
+</ul>
+<p>常规的流程基本大同小异，额外的一些比如编译过程中加入的优化、根据与源语言的接近程度设计不同级别的中间代码、编译后交给汇编器、链接器生成目标平台的可执行程序… 当然，还有很多编译器不按流程走，不显式生成抽象语法树或者中间代码，直接在语法分析的时候完成一切工作。下面看看具体的流程</p>
+<h2 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h2><p>Lexer(词法分析器)，顾名思义就是将输入的一个个字符变成一个个Token(单词)。token一般保存了单词的类型、文本内容、在源代码的行号、列号。自然的可以定义如下的结构<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Token</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> tokenType;</div><div class="line">    String text;</div><div class="line">    <span class="keyword">int</span> line, column;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>要完成词法分析，首先需要定义一套词法规则，如:支持哪些关键字与基本的运算符？标识符的命名规则是怎样的？整数、小数、字符串等字面量的可以有哪几种表示。常用的规则基本类似，那么单词如何识别呢？一般编译原理的书籍都会把词法分析和有穷自动机(Finite Automata)理论放到一起，但二者其实并无关系，首先来简单说一下有穷自动机</p>
+<h4 id="有穷自动机"><a href="#有穷自动机" class="headerlink" title="有穷自动机"></a>有穷自动机</h4><p>有穷自动机作为一个数学模型，表示<strong>一个内部有有限个状态的系统，系统会有一个初始状态，并能根据新的输入，去改变当前的状态，直到转移到某个终止状态为止</strong>。所以可以知道，一个有穷自动机包含一下几部分:</p>
+<ul>
+<li>一个初始状态</li>
+<li>一个终止状态的集合</li>
+<li>一个有限的状态集合</li>
+<li>一个允许输入的字符表</li>
+<li>一个”某个状态+输入字符-&gt;另一个状态”的转移表</li>
+</ul>
+<p>那么如何使用这个模型呢？以变量名与数字字面量的识别为例,假设变量名允许的命名规则为大小写字母开头，后续可以接任意字母或者数字，那么可以画出如下的状态转移图<br><img src="https://s3.ax1x.com/2021/02/05/yJC8jP.png" alt="yJ9gfA.jpg"></p>
+<p>双圆环表示终止状态。其中1为初始状态，根据输入的字符，如果是数字则转移到状态3，直到输入的字符不是数字为止；状态1如果输入是字母，则转移到状态2，接着接受的字符如果是字母或数字则一直接收，直到不满足条件而终止。根据状态机模型，可以很快的编码来解决这么一个问题。首先根据初始状态+输入字符，得到要转移的状态<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> state = <span class="number">1</span>;</div><div class="line"><span class="keyword">if</span> (isLetter(ch)) &#123;</div><div class="line">    state = <span class="number">2</span></div><div class="line">    append(ch)</div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDigit(ch)) &#123;</div><div class="line">    state = <span class="number">3</span></div><div class="line">    append(ch)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>接着根据当前状态+输入字符<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> (has next ch) &#123;</div><div class="line">    <span class="keyword">switch</span> (state) &#123;</div><div class="line">        <span class="keyword">case</span> <span class="number">2</span>:</div><div class="line">            <span class="keyword">if</span> (isLetter(ch) || isDigit(ch)) &#123;</div><div class="line">                append(ch)</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                appendToken()</div><div class="line">                initState()</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> <span class="number">3</span>:</div><div class="line">            <span class="keyword">if</span> (isDigit(ch)) &#123;</div><div class="line">                append(ch)</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                appendToken()</div><div class="line">                initState()</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>换个角度，其实状态机的这整个流程和我们按照正常处理的逻辑其实是差不多的，即使不使用状态机相关的理论，依然可以快速的解决问题。如下述伪代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> (has next ch) &#123;</div><div class="line">    <span class="keyword">if</span> (isLetter(ch)) &#123;</div><div class="line">        processId()</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDigit(ch)) &#123;</div><div class="line">        processNum()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>所以要清楚有穷自动机模型只是一个可以解决字符串匹配的工具，但实际不必非得这样做，一是当要匹配的的单词规则过多时，状态也会大量增加，会增加很多不必要的状态维护；二是完全使用状态机模型去编码，状态过多，并且又没有状态转移图的情况下，代码可读性很差。当然，对于词法分析完全是可以使用正则表达式来进行匹配的，而正则表达式引擎本身也是由有穷自动机相关的理论实现的。</p>
+<p>直接按照正常的思路事半功倍，比如关键字与标识符的识别，关键字一般是标识符的子集，所以比较好的方式是单独建立一个哈希表存放关键字，词法分析时统一识别成标识符，完成后再去查询关键字表来最终决定token的类型，而不必去维护多个中间状态。</p>
+<h2 id="语法分析"><a href="#语法分析" class="headerlink" title="语法分析"></a>语法分析</h2><p>Parser(语法分析器)，目标是将词法分析器得到的token流变成按照语法规则来组织的数据结构，通常情况下树是一个好的选择，一般生成的语法树称为AST(abstract syntax tree)。同样，首先要做的是设计语言的文法规则。与自然语言一样，程序语言肯定也是某种固定的结构。既然要表示语句，必然要采用一种大家都约定俗成的表达方式，一般采用EBNF(扩展的巴科斯范式)，当然只要能准确表达，不用死扣具体规范。一般语句的组成有非终结符与终结符，前者表示抽象的一类事物，所以可以继续推导；反之，后者表示具体的事物。以汉语为例，一般句子由主、谓、宾结构组成，其中主语谓语可以用人称代词、名词表示，谓语用动词表示。可以得到如下式子<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">句子 -&gt; 主语 谓语 宾语</div><div class="line">主语 -&gt; 人称代词 | 名词</div><div class="line">谓语 -&gt; 走 | 跑 | 吃 | 打...</div><div class="line">宾语 -&gt; 人称代词 | 名词</div><div class="line">人称代词 -&gt; 你 | 我 | 他...</div><div class="line">名词 -&gt; 事物具体名称</div></pre></td></tr></table></figure></p>
+<p>其中句子左边是规则名称，右边是产生式，即产生句子的规则。以解析句子 “小明吃饭”为例，最终可以得到这么一颗语法树。<br><img src="https://s3.ax1x.com/2021/02/08/yUeS41.png" alt="yUeS41.png"><br>终结符与非终结符分别用不同颜色标出了。可以看到，用语法树表示时，在叶子节点的为终结符，不可再继续推导。程序语言与之类似，语法分析最终的目的也是得到这么一颗语法树。语法分析阶段依赖的文法称<strong>上下文无关文法</strong>，也就是意味着，该阶段只能检查出句子的语法结构上有没有错误，而不能识别出逻辑的错误。如”一个字符串减去另一个字符串”，表达式的语法结构是没有问题的，但语义上一般语言都是不支持的。接下来看看编程语言</p>
+<p>以while循环语句为例<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">stmt -&gt; expr | '&#123;' stmt '&#125;' | if_stmt | while_stmt</div><div class="line">while_stmt -&gt; WHILE '(' expr ')' stmt</div></pre></td></tr></table></figure></p>
+<ul>
+<li>注: 用大写字母以及单引号里的字符表示终端符</li>
+</ul>
+<p>stmt包括表达式、用花括号包裹的语句块、if语句、while语句，其中while语句由终结符WHILE，左右小括号，表达式，语句组成。既然语法规则也是固定的结构，那么能不能用正则表达式直接去进行匹配呢？答案是不可以，仔细观察能发现，正则文法实际上没办法处理递归定义的情况。根据这个语法结构很自然的能想到用递归的方式去进行语法分析，如下伪代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">parseStmt</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (curToken is <span class="string">'&#123;'</span>) &#123;</div><div class="line">        parseStmt()</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (curToken is IF) &#123;</div><div class="line">        parseIfStmt()</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (curToken is WHILE) &#123;</div><div class="line">        parseWhileStmt()</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        parseExpr()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">parseWhileStmt</span><span class="params">()</span> </span>&#123;</div><div class="line">    match(WHILE)</div><div class="line">    match(<span class="string">'('</span>)</div><div class="line">    parseExpr()</div><div class="line">    match(<span class="string">')'</span>)</div><div class="line">    parseStmt()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>整体逻辑还是挺清晰的，实际上也就是使用<strong>递归下降算法</strong>进行语法分析，一般提前实现好token流匹配相关的函数即可。语法分析的算法也有好几种，手工构造的词法分析器，递归下降也是比较常用的，这里也本着够用就行的原则。再来看看，使用递归下降进行语法分析的主要一个问题在于表达式的优先级处理。</p>
+<h4 id="表达式优先级"><a href="#表达式优先级" class="headerlink" title="表达式优先级"></a>表达式优先级</h4><p>以表达式1+2<em>3为例，最终得出的语法树应该是这个样子<br><img src="https://s3.ax1x.com/2021/02/08/yUtY9O.png" alt="yUtY9O.png"><br>这样根据语法树进行后序遍历，就能计算出正确的结果。处理表达式优先级，实际上就是将优先级高的子表达式先计算，对应到语法树就是<em>*优先级越高的运算符在语法树上所处的层级越低</em></em>。可以得出这样的产生式<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">expr -&gt; add</div><div class="line">add -&gt; add + mul | mul</div><div class="line">mul -&gt; mul * pri | pri</div><div class="line">pri -&gt; Id | Literal</div></pre></td></tr></table></figure></p>
+<p>不过这样的产生式导致了左递归的问题, 匹配逻辑大概是<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">parseAdd</span><span class="params">()</span> </span>&#123;</div><div class="line">    parseAdd()</div><div class="line">    match(<span class="string">'+'</span>)</div><div class="line">    parseMul()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>实际会在parseAdd一直无限地递归下去，式子add递推下去(不断将产生式的非终结符进行替换)就是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">add + mul + mul + mul + ...</div></pre></td></tr></table></figure></p>
+<p>可以看到，既然先parseAdd()导致左递归问题，那么换成先parseMul()不就好了。实际上这也是教科书标准的解决办法，即<strong>将左递归产生式改写为右递归</strong>，可以这样写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">add -&gt; mul add&apos;</div><div class="line">add&apos; -&gt; + mul add&apos; | ε</div></pre></td></tr></table></figure></p>
+<p>写成伪代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">parseAdd</span><span class="params">()</span> </span>&#123;</div><div class="line">    parseMul()</div><div class="line">    <span class="keyword">if</span> (next is <span class="string">'+'</span>) &#123;</div><div class="line">        parseAdd_()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">parseAdd_</span><span class="params">()</span> </span>&#123;</div><div class="line">    match(<span class="string">'+'</span>)</div><div class="line">    parseMul()</div><div class="line">    <span class="keyword">if</span> (next is <span class="string">'+'</span>) &#123;</div><div class="line">        parseAdd_()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用右递归的方式进行解析又会产生结合性问题，正常情况下表达式应该是左结合的，但右递归导致右结合，以表达式1+2+3为例，如下所示<br><img src="https://s3.ax1x.com/2021/02/08/yaEHt1.png" alt="yaEHt1.png"><br>左边是从左到右的结合，右边是从右到左结合，这么一看好像没问题，但如果换成减法1-2-3，从左至右运算实际含义是1-(2+3)，而从右向左运算是1-(2-3)，实际含义都变了，那么肯定要想办法解决这个问题，先如下方式改写产生式<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">add -&gt; mul('+'mul)*</div></pre></td></tr></table></figure></p>
+<p>这样与右递归描述的规则其实是一样的，但这样写在逻辑上可以变递归为循环来实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">parseAdd</span><span class="params">()</span> </span>&#123;</div><div class="line">    c1 = parseMul()</div><div class="line">    <span class="keyword">while</span> (next is <span class="string">'+'</span>) &#123;</div><div class="line">        match(<span class="string">'+'</span>)</div><div class="line">        c2 = parseMul()</div><div class="line">        c3 = <span class="keyword">new</span> Expr(<span class="string">'+'</span>, c1, c2)</div><div class="line">        c1 = c3</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过将新建的节点变成下一次匹配到的二元表达式的左孩子，这样就解决了结合性问题。大多数运算都是从左到右结合，但还是存在从右到左结合的情况，如赋值表达式<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">x = y = z = <span class="number">1</span></div></pre></td></tr></table></figure></p>
+<p>解决办法是在解析一个完整的表达式后再将二叉树的节点重组，以表达式x = y = 1为例，如图<br><img src="https://s3.ax1x.com/2021/02/08/yaZurD.png" alt="yaZurD.png"><br>实际得到的是左边的，但按照语义是要得到右边的语法树。所以直接将左子树的右节点断开，变成当前节点的左孩子，接着再将原先的左子树的右孩子变成当前节点即可，可以观察到的规律是<strong>赋值运算符的左孩子不能是赋值运算符</strong>，因此对于多个连续的赋值表达式直接按照上述规则一直循环处理当前节点的左孩子，直到不满足条件为止。如下伪代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> (node.left != <span class="keyword">null</span> &amp;&amp; node.left is assignExpr) &#123;</div><div class="line">    oldLeft = node.left</div><div class="line">    leftRight = oldLeft.right</div><div class="line">    oldLeft.right = node</div><div class="line">    node.left = leftRight</div><div class="line">    node = oldLeft</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>解决这些问题，语法分析基本只是堆积的工作了。接下来看看语义分析</p>
+<h2 id="语义分析"><a href="#语义分析" class="headerlink" title="语义分析"></a>语义分析</h2><p>语义分析是编译过程中比较重要的一步，所谓语义实际就是分析程序所表达的意思。因为程序最终的结果还是要执行某种计算，所以进行好语义分析后才方便进行目标代码的生成。前面说的语法分析是上下文无关的，而语义就是上下文相关的分析。语义分析阶段的工作一般包括类型推导、类型消解、类型检查、引用消解、语义校验、闭包分析等。下面介绍比较该阶段常见的几部分工作</p>
+<h3 id="类型系统"><a href="#类型系统" class="headerlink" title="类型系统"></a>类型系统</h3><p>建立类型系统的目的是将具有某类共同性质的值进行划分，以准确规定与预测程序的行为，既保证了程序的安全，又能提高运行时的效率。那么一般类型系统如何构成呢？<br>首先，要确定的就是该程序语言提供哪几种基础类型，一般包括整数、浮点数、字符、布尔值。直接通过字面量文本就可以确定好该字面量的基本数据类型。另外，主流的语言都支持定义新的组合类型，如字符串、数组、C语言的结构体、指针、面向对象语言的class，以及将函数作为一等公民的语言还包括函数类型，对于新类型的定义也要提供一套对应的规则，定义的类型支持哪些基本的运算。</p>
+<h4 id="类型推导"><a href="#类型推导" class="headerlink" title="类型推导"></a>类型推导</h4><p>建立类型系统后，语义分析的过程中就要确定所有的变量、常量、字面量、表达式的类型，这个视具体的语言而定，需要显示声明变量类型的语言，如C/C++、Java系<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> a = <span class="number">1</span></div></pre></td></tr></table></figure></p>
+<p>通过语法树的左孩子对应的关键字 ‘int’，就可以确定出变量a的类型；有些语言不需要显式声明变量类型的<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">1</span></div></pre></td></tr></table></figure></p>
+<p>就可以根据变量声明语句语法树中最右边的孩子整数字面量 ‘1’ 从而确定出变量a的类型也为整形。这里只是拿基本类型举例，对于组合类型而言，比如数组取值的表达式，取值表达式是几维，就看数组去掉几维后它的类型是什么，如<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span>[] a; <span class="comment">// a[0]的类型为去掉1维, 即int</span></div><div class="line"><span class="keyword">int</span>[][] a1; <span class="comment">// a1[0]的类型为去掉1维, 即int[]</span></div><div class="line">``` </div><div class="line">对于函数调用，则去查看函数对应的返回值类型来确定该表达式的类型。而对于二元表达式，则根据左右孩子的类型来推导出父亲节点的类型。该过程通常又会涉及到类型转换。</div><div class="line">#### 类型转换</div><div class="line">类型系统也要规定不同数据类型的数值之间的转换规则。如整形与浮点数类型的值进行运算，得到的结果应该为浮点型；任何类型的数值与字符串进行运算，得到的结果都为字符串类型。如</div><div class="line">``` java</div><div class="line"><span class="number">1</span> + <span class="number">2.0</span>   <span class="comment">// 该表达式类型为浮点型</span></div><div class="line"><span class="number">1</span> + <span class="string">"abc"</span> <span class="comment">// 该表达式类型为字符串类型</span></div></pre></td></tr></table></figure></p>
+<p>一般情况下，如果是直接显式的将不同类型的数值进行赋值，也要显式进行转换；如果是表达式，就要进行隐式的类型转换，也就是在语义分析阶段单独添加新的类型转换的语法树节点。</p>
+<h4 id="类型检查"><a href="#类型检查" class="headerlink" title="类型检查"></a>类型检查</h4><p>这里简单说下强类型与弱类型的区别，指一个变量的类型声明后是否还能改变，能改变说明该语言是弱类型的语言。一般的脚本语言通常就没有严格的类型限制，在运行期变量的类型可以任意改变，这样其实就杜绝了在编译期进行严格的安全检查，如下列代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">1</span>, b = <span class="number">2</span></div><div class="line"><span class="keyword">var</span> c = input()</div><div class="line"><span class="keyword">if</span> (c == <span class="string">'1'</span>) &#123;</div><div class="line">    a = <span class="string">"sass"</span></div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">'2'</span>) &#123;</div><div class="line">    a = <span class="number">5</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line">println(a - b)</div></pre></td></tr></table></figure></p>
+<p>这里对于表达式a - b，如果a为字符串的话，表达式肯定是不合法的，但a的类型实际没办法在编译期就确定。所以弱类型的语言运行期还要进行较多额外的类型检查与转换。</p>
+<p>一般强类型的语言就要做较为完善的类型检查，通常包括</p>
+<ul>
+<li>赋值表达式左右两边的类型是否匹配，如果是基本类型，看是否支持隐式类型转换；如果是类类型，看是否有继承关系；如果是函数类型，则比对函数类型的参数对应的类型以及返回值类型是否匹配。</li>
+<li>函数调用传参，需要检查对应位置实参与形参的类型是否匹配</li>
+<li>函数返回，需要检查返回值的类型是否符合函数定义。</li>
+</ul>
+<h3 id="引用消解"><a href="#引用消解" class="headerlink" title="引用消解"></a>引用消解</h3><p>引用消解的目的是给程序中引用的变量、函数等找到正确的定义，以及找出同一作用域下存在的变量名的重复定义。整个过程中肯定要查找声明的变量、函数、类、作用域等相关的信息，因此必然要有一个中间结构保存这些信息，这个结构称为<strong>符号表</strong>，后面再单独介绍符号表的设计。对变量进行引用消解基本是按以下几步进行</p>
+<ul>
+<li>对于最新声明的变量、函数、类等，加入到当前作用域所处的符号表。</li>
+<li>对于一个变量的引用，尝试从当前作用域中去查找，查找不到则去父作用域中去查找，直到查找到该定义。</li>
+<li>对于一个函数调用，同样按照上述流程，首先从当前作用域查找该函数定义，查找不到继续在父作用域查找；如果是支持函数类型的语言，则还要依次去查找是否存在为当前函数调用名称的函数类型的变量。</li>
+</ul>
+<p>可以看到，如果要达到“先使用后声明”的效果，如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</div><div class="line">    println(a)</div><div class="line">    T t = T()</div><div class="line">    println(t.a)</div><div class="line">&#125;</div><div class="line"><span class="keyword">int</span> a = <span class="number">1</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">T</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> a = <span class="number">1</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里变量a，以及类T的定义都在使用后面，但处理函数test时仍能找到正确的引用。比较好的做法是多阶段扫描，首先单独的将声明的类、变量、函数等加入符号表，后续进引用消解时就可以直接从符号表中查找到引用的定义。</p>
+<h3 id="符号表"><a href="#符号表" class="headerlink" title="符号表"></a>符号表</h3><p>程序源文件的内容对于计算机来说全部都是符号，那么确定这些符号表达的含义，把这些符号用某种结构组织起来就是编译器做的事情。主要保存符号的名称、类型、作用域等相关的信息，基本贯穿编译过程中的大部分阶段，所以重要性可见一斑。符号表作为一种中间结构，也没有规定具体的实现，但它本身是为了方便进行编译过程中符号所表示的信息的获取。一般的符号包括名称、可见性、是否是静态、以及所属作用域等，所以对于一个基本的符号可以这样设计<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Symbol</span> </span>&#123;</div><div class="line">    string name</div><div class="line">    <span class="keyword">int</span> visibility</div><div class="line">    <span class="keyword">boolean</span> isStatic</div><div class="line">    Scope enclosingScope</div><div class="line">    AST ast</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>另外，符号对应的ast节点也需要进行存储，ast节点会与token关联起来，所以主要目的是发现语义错误时，方便直接定位到错误所处的列号与行号。而Scope表示一个作用域，作用域其实是符号保存的一个位置，所以不同的作用域肯定有单独的一张符号表。于是作用域可以这样表示<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Scope</span> <span class="keyword">extends</span> <span class="title">Symbol</span> </span>&#123;</div><div class="line">    Symbol[] symbols = Symbol[<span class="number">1024</span>]</div><div class="line">    <span class="keyword">int</span> idx = <span class="number">0</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addSymbol</span><span class="params">(Symbol symbol)</span> </span>&#123;</div><div class="line">        symbols[idx] = symbol</div><div class="line">        idx += <span class="number">1</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function">Symbol <span class="title">findSymbolByName</span><span class="params">(string name)</span> </span>&#123;</div><div class="line">        Symbol result = <span class="keyword">null</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; symbols.length;i+=<span class="number">1</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (symbol.name == name) &#123;</div><div class="line">                result = symbol</div><div class="line">                <span class="keyword">break</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span> &amp;&amp; enclosingScope != <span class="keyword">null</span>) &#123;</div><div class="line">            result = enclosingScope.findSymbolByName(name)</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>一般编译器会针对不同的作用域设计不同的符号表，如全局符号表、局部符号表，其实也只是因为不同作用域符号的生命周期不同，方便后期代码的生成。其实通过这种简单的链式结构能很好的处理，当某个作用域没有父作用域时，肯定就是全局作用域了。其它的不同符号都可以在基本结构上扩展，如变量、类、函数0等<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Variable</span> <span class="keyword">extends</span> <span class="title">Symbol</span> </span>&#123;</div><div class="line">    Type type</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Class</span> <span class="keyword">extends</span> <span class="title">Scope</span> </span>&#123;</div><div class="line">    Class parentClass</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Function</span> <span class="keyword">extends</span> <span class="title">Scope</span> </span>&#123;</div><div class="line">    Variable[] formalParams</div><div class="line">    Type returnType</div><div class="line">&#125;</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>根据这些结构，基本能将各个符号相关的信息清楚的表示出来，前面说语义分析是为了得到带注释的抽象语法树，进而方便进行后续的工作。其实不必拘泥于概念，可以直接在原来的ast节点上进行扩展符号信息，但工程上的实现也是分步进行的，所以可以的话尽量前面的步骤不要依赖后面的实现，这样能保证整体逻辑的清晰，其实直接用一个hash表存储，建立起ast节点与其对应的类型，以及符号信息的映射即可。</p>
+<p>前面说过，语法分析阶段建立了语法树。语法树的好处在于，通过简单的树遍历，就可以实现语义分析。如二元表达式的类型推导，实际就可以根据树的后序遍历，遍历到根节点时，左右孩子肯定已经处理完，就可以直接根据左右孩子的类型信息，来标注根节点的类型，以此类推，直到处理完整课语法树。</p>
+<p>接下来看看中间代码生成</p>
+<h2 id="中间代码生成"><a href="#中间代码生成" class="headerlink" title="中间代码生成"></a>中间代码生成</h2><p>完成语义分析后可以直接生成目标代码，但编译器通常会先生成中间代码，目的是为了进行平台无关的优化以及简化目标代码的生成。<br>要清楚，即使进行了语义分析，对于源程序中的一些高级概念，如控制流语句语句、函数调用、多维数组、复合表达式…这些东西直接转换成目标代码要做不少工作，生成中间代码后，这些概念基本被消除了，中间代码通常靠近源语言又接近目标代码，能极大简化最终代码的生成。并且如果将不同的语言转换成同一中间表示的话，就能让多个不同的程序语言共用相同的编译器后端，最终编译成同一平台的目标代码。实际上llvm、方舟编译器就是这样做的，定义了一种IR，不同的编译器前端只需要生成指定格式的IR即可。</p>
+<p>现在比较常见的是一种线性IR-三地址码(Three Address Code)，即用四元组形式来表示<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">z = x op y</div></pre></td></tr></table></figure></p>
+<p>其中x、y表示操作数，op表示操作符，z表示运算结果存储的位置。当然，四元组不是说非得要用四个符号来表示，而是最多使用四个。可以设计这么一个结构<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TAC</span> </span>&#123;</div><div class="line">    Symbol result</div><div class="line">    string op</div><div class="line">    Symbol arg1</div><div class="line">    Symbol arg2</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>因为中间代码要将复合的表达式进行分解，不可避免的要产生许多临时变量来存储中间结果。如<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 源程序</span></div><div class="line">x = <span class="number">1</span> * <span class="number">2</span> * <span class="number">3</span></div><div class="line"></div><div class="line"><span class="comment">// ir</span></div><div class="line">v1 = <span class="number">1</span> * <span class="number">2</span></div><div class="line">v2 = v1 * <span class="number">3</span></div><div class="line"><span class="comment">// x = v2</span></div><div class="line">v0 = v2</div></pre></td></tr></table></figure></p>
+<p>既然要产生中间变量，不如直接将原先所有变量都重新分配新的名称，用hash表做映射，这样也是能方便后续生成目标代码时进行内存的分配。接下来再简单介绍几种高级语言的语法结构翻译成的中间表示</p>
+<h4 id="循环语句"><a href="#循环语句" class="headerlink" title="循环语句"></a>循环语句</h4><p>以while循环为例<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> i = <span class="number">0</span></div><div class="line"><span class="keyword">while</span> (i &lt; <span class="number">100</span>) &#123;</div><div class="line">    i += <span class="number">1</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>中间表示如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">v0 = <span class="number">0</span></div><div class="line">L0:</div><div class="line">v1 = v0 &lt; <span class="number">100</span></div><div class="line">jumpz v1 L1</div><div class="line">v2 = v0 + <span class="number">1</span></div><div class="line">v0 = v2</div><div class="line">GOTO LO</div><div class="line">L1:</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>可以看到，要把源程序的语义表达出来，需要插入额外的辅助标签。这里jumpz表示如果v1为false，则跳转到L1所处的位置。一般涉及到控制流语句的，就要插入标号占位，将来生成目标代码时再替换成内存实际的位置。这里需要注意的一个问题是，源程序是至上而下翻译的，要跳转到的位置在当前程序后面时，没办法马上获取到要跳转到的标号,所以对于循环、分支等语句通常要进行<strong>标号回填</strong>。见如下伪代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">translateWhileStmt</span><span class="params">(AST ast)</span> </span>&#123;</div><div class="line">    <span class="comment">// 生成开始标签</span></div><div class="line">    TAC start = genLabel()</div><div class="line">    <span class="comment">// 翻译while循环的条件表达式</span></div><div class="line">    Symol res = translateExpr(ast.condition())</div><div class="line">    <span class="comment">// 生成jumpz指令，标号暂时为空</span></div><div class="line">    TAC jumpTAC = genJumpZTAC(res, <span class="keyword">null</span>)</div><div class="line">    <span class="comment">// 翻译语句块 </span></div><div class="line">    translaBlockStmt()</div><div class="line">    <span class="comment">// 生成goto指令跳转到循环开始的位置</span></div><div class="line">    genGoto(start)</div><div class="line">    <span class="comment">// 标号回填</span></div><div class="line">    TAC end = genLabel()</div><div class="line">    jumpTAC.setArg1(end)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="分支语句"><a href="#分支语句" class="headerlink" title="分支语句"></a>分支语句</h4><p>以if语句为例，如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (flag) &#123;</div><div class="line">    i = <span class="number">1</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    i = <span class="number">2</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>翻译成的中间表示<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">jumpz v0 L0</div><div class="line">v1 = <span class="number">1</span></div><div class="line">GOTO L1</div><div class="line">L0:</div><div class="line">v1 = <span class="number">2</span></div><div class="line">GOTO L1</div><div class="line">L1:</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>if语句同样要进行标号回填，并且会在每个分支块的结尾生成直接跳转到整个分支语句后面位置的指令。</p>
+<h4 id="break、continue"><a href="#break、continue" class="headerlink" title="break、continue"></a>break、continue</h4><p>break与continue语句分别用来表示结束、跳过当前的这次循环。可以想到，肯定是也是翻译成goto语句，但关键是如何确定跳转的位置呢？前面的循环和分支语句，是因为可以确定语句开始与结束的位置，所以方便回填。对于break与continue，可能出现在循环的任意位置，并且如果处于多层嵌套的情况下，应该只退出或跳过最内层循环，解决办法是使用一个栈存储标号即可。<br>对于break，使用单独的栈存储最新进入循环语句的结束标号，退出该循环语句块时则将栈顶的标号出栈。所以碰到break，直接获取当前栈顶标号即可；同理，对于continue，使用单独的栈存储最新进入的循环语句的开始标签，遇到该关键字也直接获取栈顶标号。</p>
+<p>对于更多的指令，直接参考现成的或自己制定即可，反正最终目的是要生成的代码符合程序的逻辑，至于具体的表现不是重点。还有需要清楚的一个问题是，代码生成过程中有很多特殊情况需要处理。比如引用的变量所属作用域的问题，该变量是局部变量、还是类的成员、或是全局变量，支持闭包的话还要判断是否是自由变量。对于不同作用域的变量在内存中存储的位置肯定是不一样的，这个可以在目标代码生成的时候去处理。但在中间代码处理完更好，一般针对不同作用域的变量需要生成不同的指令。</p>
+<h2 id="运行时"><a href="#运行时" class="headerlink" title="运行时"></a>运行时</h2><p>编译器的目的是最终生成能在目标平台上运行的指令，所以为了正确的生成指令还需清楚程序运行的机制是怎样的。说运行时，主要了解的是程序运行的环境与运行的过程。</p>
+<h4 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h4><p>程序最终是运行在目标平台上，这个平台可能是实际机器，可能是虚拟机。对于实际的机器，主要就是跟CPU和内存这两个硬件进交互。首先得了解的是计算机硬件的基本组成，而现代的计算机基本都是冯诺依曼结构的，逻辑上包含五部分:输入设备、输出设备、存储设备、运算器、控制器。对应到实际的机器，CPU的负责的实际就是运算与控制，而内存、硬盘等实际上又是输入、输出还是存储设备，但由于不同的设备读写速度差异过大，直接与CPU打交道的通常是内存。CPU内部有寄存器与高速缓冲区，但容量有限，所以内存成为程序指令与数据主要存储的位置。</p>
+<p>程序按照运行的平台可分为3类。</p>
+<ul>
+<li>对于纯二进制程序可以直接装载到内存上机器运行，装载的这个动作通常是由BIOS程序完成；</li>
+<li>常见的应用程序，运行在操作系统里面，由程序装载器(也是一个程序)完成程序的装载，装载最核心的功能就是分配内存、将CPU的程序计数器指向程序的入口地址。</li>
+<li>运行在虚拟机的程序，由虚拟机完成上述同样的过程，由虚拟机去模拟实际硬件上的PC寄存器、栈指针寄存器等概念。</li>
+</ul>
+<p>直接运行在机器上的的程序，由自己完成内存的划分与分配；运行在操作系统里的程序，由操作系统来完成运行期内存的划分，操作系统通常使用的是虚拟内存，通过内存分页以及页表来建立虚拟内存到物理内存的映射。前两者，实际的运行时都是直接由硬件或操作系统完成的，只需按照平台的约定生成符合规范的程序即可。而运行在虚拟机上的程序就要虚拟机的实现者自己完成程序的装载、内存区域的划分、动态内存的分配等工作。</p>
+<p>对于后者，可以完全模拟实际的硬件，但可以表示的是可选项，不必局限于此。因此，一般的脚本语言有丰富的特性，就是因为它运行时平台的可定制性与灵活性高，所以去实现高级的语言特性时非常方便，可以把很多特性推迟到运行时来处理。反之，一般直接编译成真实目标平台上的汇编指令集的语言，因为硬件的限制，所以实现同样的功能要在编译期间花费较多额外的工作。</p>
+<p>通常情况下，内存区域都会使用类似的划分方式。一般可分为代码区、栈、静态数据区、堆。</p>
+<ul>
+<li>代码区: 存放程序的指令与操作数，该区域通常可读不可写。</li>
+<li>静态数据区: 通常存放常量、全局变量等</li>
+<li>栈: 通常存放局部或临时等生命周期较短的变量，在编译器就能完成内存的分配。一般函数调用时开辟新的栈空间，结束后回收。</li>
+<li>堆: 通常存放生命周期较长的变量，在运行期间动态分配内存，如对象、数组等。堆上分配的内存，要进行手动回收或者使用垃圾收集器进行自动回收，防止内存泄漏。<h4 id="运行过程"><a href="#运行过程" class="headerlink" title="运行过程"></a>运行过程</h4>程序开始运行，也就是程序文件的内容从硬盘装载到内存，CPU从入口地址开始执行指令。正常情况下是沿着指令起始地址，一直往后执行，直到遇见跳转语句，则需要定位到将要跳转的位置。直接跳转无需考虑其它，对于函数调用指令，要跳转到函数的起始地址执行，并且执行完后需要返回原来函数调用的下一条指令的地址。另外，函数调用时还包括参数的传递以及返回值的获取，所以这些信息必须要有地方进行保存，通常是保存在栈中。</li>
+</ul>
+<p>一般把一次函数调用称为一次活动，每个活动对应着一个活动记录，活动记录实际就保存了上述的信息，通常情况下基于栈来管理内存，所以活动记录也被称为栈帧。注意栈帧只是逻辑上的一个概念，只是为了方便描述当前的运行环境，不是说真的存在这么一个东西。当前栈帧通常还需要保存上一栈帧的链接地址(对于直接在实际计算机运行的程序，通常是栈基址寄存器)，调用过程中需要保存的寄存器等 ，这样在函数执行完回收栈帧时还能恢复之前的位置，或者某些情况下需要引用上一栈帧的变量，就可以沿着调用链进行查找。</p>
+<ul>
+<li>注：前面多次提到变量，在运行时的表现实际就是某个具体的内存地址，引用该变量就是往实际地址读值，变量赋值就是往内存地址写值。</li>
+</ul>
+<p>同内存区域一样，对于栈帧的实现如果是虚拟机需要自己来实现运行时的时候，可以完全参照实际机器的概念进行模拟，也可以真的显式地使用新的数据结构来存储以及链接。</p>
+<p>运行时相关的东西，光看概念很难清晰，动手实践一下就柳暗花明了。</p>
+<p>接下来描述语言的设计中一些常见的特性。</p>
+<h3 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h3><p>基于面向对象的方式编程更接近现实生活的逻辑，所以对面向对象相关特性的支持基本是现在主流的语言必备的。通常包括的概念有类、对象、继承、多态，这里就来简单的说一下为了支持这些特性编译器要做的工作。首先对于类，类似C语言中的结构体，同样是属于可以由用户自定义的类型，不过类可以包括属性与方法(C结构体用函数指针同样可以模拟)，设计类这样一个概念主要是方便融入语言的类型系统，通过类型来检查对象可以访问的字段与方法。</p>
+<h4 id="类与对象"><a href="#类与对象" class="headerlink" title="类与对象"></a>类与对象</h4><p>在面向对象的语言中，类是对象的模板，对象是类的实例。那么在运行期间，对象的具体表现是什么样呢？首先对于类的字段，每个不同的对象应该都是单独的一份；而类方法，每个实例对象调用的都是相同的方法，因此只用保存一份。所以对于一个对象，保存的基本信息至少应该有所属的类，以及存放字段的容器。可以这样定义<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Object</span> </span>&#123;</div><div class="line">    Type type</div><div class="line">    Slot[] slots</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对于自己实现运行时的语言来说，一般会在内存区域里划分一个元数据区，类、字段、方法相关的信息就可以保存在这里，在程序运行期去查找对应的元信息，来确定正确的操作。如数据类型，不管是整形、浮点数还是布尔值，到实际的存储时都是二进制数字，关键在于运行期如何针对不同的类型进行数据处理。取值，是整数直接从内存里取就好，浮点数则需要将取出来的整数根据设定的规则转换成浮点数；赋值时，则相反。当然，对于数据类型的问题同样可以通过将指令变成操作某种确定数据类型的，这样会增加很多多余的指令，但运行期不用再去查询元信息，执行效率能有一定的改善。</p>
+<p>对于类的字段，类定义后，字段的相对顺序不会改变，所以可以直接在编译期给字段编号，翻译的目标代码直接按标号访问对应的内存单元即可，内存单元可以固定为4字节，要存储更大的数就用更多的内存单元来存储。自己实现运行时确实比较灵活，对于C++这种直接编译成硬件平台汇编指令的，和结构体处理的方式类似，对于不同的数据类型要考虑字节对齐(同样可以直接固定内存单元的大小)，字段的访问翻译后就是基于对象基址的偏移。</p>
+<p>一般对于类来说，成员通常包括普通成员与静态成员，前者属于对象，后者属于类。在运行期，实际可以将静态成员直接当作全局变量来处理，用类签名拼接上成员签名，就可以唯一确定到一个静态成员。</p>
+<p>最后，对象的内存分配一般是在堆中动态分配，动态分配的内存回收是个问题。所以现代的编译器通常会考虑，如果对象只是在局部使用的话，可以在栈里分配空间，这样用完就可以直接回收了。</p>
+<h4 id="继承与多态"><a href="#继承与多态" class="headerlink" title="继承与多态"></a>继承与多态</h4><p>继承是为了实现数据和逻辑的重用以及实现多态，但对于重用不一定要使用继承，很多情况下更推荐使用组合，因为继承增加了代码的耦合性。这里主要说下编译器如何处理继承的。只需要在类的信息中设置继承的父类即可，在引用消解时直接从当前类查找不到就去父类查找，类型检查时也需要根据继承关系来判断是否合法。</p>
+<p>对于类字段，如果当前类有父类直接从父类最后一个字段的编号后面开始编号，所以最后类的实例对象的内存布局实际是这样的。<br><img src="https://s3.ax1x.com/2021/02/12/yD6lPf.png" alt="yD6lPf.png"><br>对象头保存了当前对象的实际类类型，然后父类、子类字段依次排列。</p>
+<p>在运行期，对于类方法，子类可以重写父类的同名方法，而在编译器期间可能无法确定对象的实际类型是什么。如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">(T t)</span> </span>&#123;</div><div class="line">    t.f()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">T</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span></span></div><div class="line"><span class="function">&#125;</span></div><div class="line"><span class="function"></span></div><div class="line"><span class="function">class T1 extends T </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</div><div class="line">        println(<span class="string">"t1..."</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">T2</span> <span class="keyword">extends</span> <span class="title">T</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</div><div class="line">        println(<span class="string">"t2..."</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编译期间对test()方法进行处理，消解的方法f()是父类T的，没有具体的实现。传的实际参数是哪个子类对象，根本不知道，所以只能在运行期根据对象t所属的实际类型，来根据方法签名查找到方法的位置，这个过程一般被称为<strong>动态绑定</strong>。同样，对于自己实现运行时，类、方法都有直接的数据结构来保存元信息，这个过程比较灵活，但如果是C++这种，方法的动态绑定如何处理呢？实际上，C++对象头里面有一个指针，指向一个表格，表格保存的就是当前对象所属类的实际方法的入口地址，这个表格被称为<strong>虚函数表</strong>。在编译期间就可以确定表格的大小，所以在生成目标代码时，知道对象的入口地址，也能知道表格的地址，调用对象的实例方法就直接翻译成调用根据表格首地址的偏移处存放的函数地址。</p>
+<h4 id="this与super"><a href="#this与super" class="headerlink" title="this与super"></a>this与super</h4><p>this与super关键字一般也是必备的，前者用来访问当前实例对象所属类的字段或方法，super关键字用来访问父类字段或方法。前面说过，在运行期间，没有什么父类的概念，所有的父类字段都排列在子类的实例中，所以<strong>this和super实际表示的都是当前对象实例</strong>，super其实只是一个子类访问父类成员的语法糖。那么在类的方法里面，怎么获取到<strong>当前对象实例</strong>呢？要知道，方法是被所有类的实例共享的，所以肯定对于不同的实例this的实际引用也不同，而方法的逻辑又是一样的，很自然的能想到，把实例对象当作它所调用方法的参数传递进去，一般放在第一个参数的位置。而对于静态方法，是属于类的，就和常规的函数一样翻译即可。</p>
+<h4 id="字段的初始化"><a href="#字段的初始化" class="headerlink" title="字段的初始化"></a>字段的初始化</h4><p>还需要考虑的一个问题是，类字段的初始化值在什么时候进行，如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> a = <span class="number">1</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>类字段同普通的变量声明一样，普通的变量声明在运行到声明的位置就直接赋值了。字段在编译期的处理，只是引用消解、进行编号后为运行期创建类实例做准备，字段的值可以是复合表达式，可能产生多个中间临时变量，并且对于普通字段每个实例对象都要进行重新赋值，静态类只用赋值一次，一个办法就是在语法分析阶段生成AST时，创建一个初始化方法声明节点，方法的实际内容就是给成员赋值，这样多少临时变量占用的空间在方法执行完后都被回收了。只需要在类创建实例时先执行这个隐藏的方法。对于编译期处理后实际代码逻辑是这个样<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> a</div><div class="line">    </div><div class="line">    A() &#123;</div><div class="line">        _init_()</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    _init_() &#123;</div><div class="line">        <span class="keyword">this</span>.a = <span class="number">1</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在类的构造方法里调用该init方法即可。对于静态字段，也可以用同样的方式，在第一次引用时进行赋值，让类使用一个标志位判断是否已经初始化过即可。</p>
+<h3 id="函数式编程"><a href="#函数式编程" class="headerlink" title="函数式编程"></a>函数式编程</h3><p>同面向对象，函数式也是一种编程范式，现在很多语言如Python、JavaScript实际都支持多范式的编程风格，至于哪种更好就见仁见智了，这不是讨论的点。</p>
+<p>平时我们写程序一般是命令式编程，<strong>命令式编程关心的主要是解决问题的步骤，而函数式编程关心的是数据的映射关系</strong>。这里所说的函数式编程中的函数其实等同于数学里面的函数。在程序中也有函数这种说法，原因在于最开始搞计算机的那一批人实际也是从搞数学的那里转过来的，于是沿用了这个概念，但程序中的函数说成是子程序更加准确一点，这里来说明一下。</p>
+<p>对于函数f(x)=ax+b，假设把x看作输入，ax+b的结果看成输出。可以知道数学里面的函数有这么两个特点，一是<strong>对于相同的输入一定会得到相同的输出</strong>；二是<strong>输入的值不会在计算过程中改变</strong>，并且输入的x即可以是普通的数值，也可以是一个函数。由这些特点，可以推广到程序语言中。程序语言中的函数可以引用全局、类成员变量等外部的数据，所以如果前面的计算改变了外部环境的数据，那么函数最终的输出就可能发生变化。因此根据数学中的函数，程序语言的函数式编程主要强调以下几点</p>
+<ul>
+<li>1.纯函数，即函数不引用外部数据，也不改变外部环境，无副作用。</li>
+<li>2.不变性，函数计算过程中输入的数据不会发生改变。</li>
+<li>3.函数可作为一等公民，像普通数值一样，即可以作为函数的参数，又可以赋值，还能作为函数的返回值。</li>
+</ul>
+<p>函数式编程的好处在于，因为不需要引用和改变外部的环境，所以对于函数的执行结果实际是可以预测的，并且由于不存在共享变量，因此也不会产生并发的问题。举个简单例子<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> list = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</div><div class="line"><span class="comment">// function f(x) &#123; return x * x&#125;</span></div><div class="line"><span class="keyword">var</span> f = <span class="function"><span class="params">x</span> =&gt;</span> x * x</div><div class="line">list.map(f)</div><div class="line"><span class="comment">// 输出: [1, 4, 9, 16]</span></div></pre></td></tr></table></figure></p>
+<p>注意变量ｆ后面的是lambda表达式，实际就是普通函数定义的语法糖。对比看看，这个就是满足了函数式编程的几点要求。</p>
+<p>前两点实际都是编程规范的遵守，而第三点就是编译器需要实现的。接下来看看如果语言要支持该特性，编译器要做哪些工作。首先，函数应该也作为一种新的类型加入语言的类型系统，函数类型由参数类型、返回值类型组成，声明的函数本身也属于函数类型。对于函数类型的变量可以这样定义与赋值<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">float</span> b)</span> </span>&#123;</div><div class="line">    println(<span class="string">"函数测试: a="</span> + a + <span class="string">", b="</span> + b)</div><div class="line">&#125;</div><div class="line"><span class="function">function <span class="title">void</span><span class="params">(<span class="keyword">int</span>,<span class="keyword">float</span>)</span> a </span>= test</div><div class="line"><span class="comment">// 函数 名称()表示调用该函数 名称表示直接引用该函数本身</span></div></pre></td></tr></table></figure></p>
+<p>表示声明了一个变量a，返回值为void，传入两个参数，类型分别为int、float。对于每个新声明的函数，确定一个函数类型，这里将同样签名的函数test赋值给了变量a。然后在语义分析时，先根据函数名正确的进行引用消解，接着函数类型变量的赋值以及作为函数参数、返回值等都要进行类型检查，也就是分别检查参数与返回值类型是否兼容。</p>
+<p>变量a被赋值函数test了后，可以直接调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a(<span class="number">1</span>, <span class="number">1.0</span>)</div><div class="line"><span class="comment">// 输出: 函数测试: a=1, b=1.0</span></div></pre></td></tr></table></figure></p>
+<p>前面说过，函数是一个子程序，翻译后就是一堆指令的集合。那么这个函数变量赋值的运行时表现是怎样的呢？函数赋值时，直接将函数生成一个不含数据的对象，在对象头部保存原函数的引用即可，在运行期间根据函数对象头部找到函数的具体位置。函数变量之间同样可以相互赋值<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function">function <span class="title">void</span><span class="params">(<span class="keyword">int</span>,<span class="keyword">float</span>)</span> a1 </span>= a</div><div class="line">a1(<span class="number">1</span>, <span class="number">1.0f</span>)</div><div class="line"><span class="comment">// 输出: 函数测试: a=1, b=1.0</span></div></pre></td></tr></table></figure></p>
+<p>变量赋值时实际都是函数对象引用的传递，只有直接将函数直接赋值时才会创建新的函数对象。</p>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>闭包通常是在实现了将函数作为一等公民的情况下，再继续进行扩展的，与前面所说的函数式编程所提的纯函数的概念相反，闭包解决的主要就是内部环境引用外部环境变量的问题。闭包实际就是函数+存放外部变量的环境。看一个简单的示例<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function">function <span class="title">int</span><span class="params">()</span> <span class="title">outer</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> i = <span class="number">0</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">inner</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> a = i + <span class="number">1</span></div><div class="line">        <span class="keyword">return</span> a</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> inner</div><div class="line">&#125;</div><div class="line"><span class="function">function <span class="title">int</span><span class="params">()</span> a </span>= outer()</div></pre></td></tr></table></figure></p>
+<p>上述代码中内部函数inner引用了外部函数的局部变量i，并且外部函数最终返回的值是内部函数。对于函数的局部变量，内存通常分配在栈里，生命周期较短，在函数执行完后就被回收了。函数内部引用的外部变量通常也称为<strong>自由变量</strong>，对于上述示例，如果在outer函数执行完，引用的自由变量i应该也被回收了，但内部函数作为outer执行的返回值赋值给了函数变量a，所以可以直接通过变量a调用该函数。那么执行变量a实际指向的函数inner时，自由变量i从何处来呢？</p>
+<p>这个问题也就是闭包需要解决的，当引用了自由变量的函数被作为返回值或者直接给函数变量进行赋值时，需要打包当前的运行环境，也就是将当前栈内存中自由变量的值一起打包给接收者，接收者再执行该函数时就能正常访问该自由变量。实际上，是原先处于栈内存的自由变量，被拷贝后放到了生命周期更加长的堆内存。</p>
+<p>而编译器需要做的是，在编译期间分析出哪些变量是自由变量，实际就是看函数作用域内引用的哪些变量不是属于当前作用域，并且也不是全局变量或类成员变量。对于一个自由变量，要运行期间在栈中找到正确的位置，然后才能拷贝打包。首先要确定闭包的创建时机，思考一下，能发现创建闭包的指令其实是位于<strong>闭包函数所处的父作用域的指令流中</strong>。这就意味着，实际上是在执行闭包函数父作用域的指令时创建闭包，那么<strong>自由变量实际的位置也就是该变量在当前函数的局部变量所处的位置</strong>。而知道当前局部变量所处的位置，就可以根据当前栈帧中的栈基址来进行偏移得到最终的内存地址。</p>
+<p>因此在进行闭包分析时，肯定要记录自由变量在外部作用域中局部变量所处的位置。另外，上述示例引用的变量就是直接外层，实际上内部函数可以引用外部的任意层的局部变量，就可能出现直接外层没引用该变量，但内部函数又引用了。解决办法是，<strong>对引用的自由变量中间所有层都加上该变量的拷贝</strong>，因为创建闭包是直接外层的指令，所以创建一个闭包时外层的闭包环境肯定已经创建了，所以自由变量从直接外层拿即可。最后同样打包成一个对象，对象头里存放了函数，而内容就是自由变量的环境。</p>
+<p>对于自己实现运行时很灵活，自由变量的查找都可以推迟到运行期。对于Go语言这种直接编译成目标平台汇编指令的语言，也支持闭包。它在编译期会直接将闭包函数+引用的自由变量打包成一个结构体，然后给结构体在堆上分配内存，并从当前运行的栈内存中将值拷贝到新分配的内存(根据栈基址寄存器ebp+局部变量的偏移)。对于闭包函数的调用，直接根据结构体指针的地址+偏移量得到，而对于函数所引用的自由变量同样，执行函数时将该结构体的指针放到寄存器，引用变量时直接根据寄存器存放的地址来获取。</p>
+<h2 id="目标代码生成"><a href="#目标代码生成" class="headerlink" title="目标代码生成"></a>目标代码生成</h2><p>目标代码也就是语言最终要运行的平台所支持的指令集，所以要正确的生成代码需要先清楚目标平台的体系结构。计算机体系结构也是单独的研究领域了，但对于生成可用的目标代码需要的知识并不算多。</p>
+<p>对于目标代码，一种是生成实际的目标平台的汇编指令，如Linux下的AT&amp;T风格的x86汇编、Windows下的Intel风格的x86汇编指令，两种风格的汇编代码最后经过汇编器、链接器生成的都是同样一套机器指令，但程序的运行需要依赖运行时库，而现在程序常见的功能：网络、磁盘IO等实际都是操作系统提供的运行时库来实现的。最后生成的可执行程序文件格式也不一样，但即使在Linux下按照Windows程序的格式来解析装载(wine就是这么做的)，也难以正常运行，还需要解决的是对于同样的功能所依赖的运行时库也需要转换成当前平台的。另一种，就是运行在虚拟机上的，通常包括寄存器式虚拟机和栈式虚拟机，前者典型的有Lua虚拟机、安卓的Dalvik虚拟机，后者有Java虚拟机、Python虚拟机，这里就以生成寄存器式虚拟机上的指令(通常也称字节码)为例。</p>
+<p>首先的问题是如何设计一套字节码将所有源代码(可以是中间代码)的操作正确表达出来。最开始从高级语言生成中间代码的时候也经常需要为后续目标代码的生成作考虑，同样从中间代码生成目标代码时，必须得考虑运行期间数据是如何组织的，硬件之间是怎样协作的，才好针对性的设计需要的指令。对于目标代码，实现同样的功能，可以有多种方式，就有一个问题：对于同样的功能如何使用尽量少的指令或者尽量少的内存访问次数？因此指令选择也是优化的一部分，不过在设计一套自圆其说的系统之初不必考虑这些，用尽量少的指令让系统运行起来再说。所以目标代码可以模仿<strong>RISC</strong>(Reduced Instruction Set Computing)精简指令集来设计，提供基本的指令，复杂一点的功能就用多条指令进行组合。</p>
+<h4 id="设计一套指令集"><a href="#设计一套指令集" class="headerlink" title="设计一套指令集"></a>设计一套指令集</h4><p>对于基于寄存器的虚拟机，一般是先将内存数据加载到寄存器，然后从寄存器里面取值运算，最终结果也存放到寄存器。当然这里的寄存器实际也是内存模拟的，寄存器包括特定目的寄存器与一些通用寄存器。根据指令的功能，一般可以分为这几类</p>
+<ul>
+<li>算术操作: 包括加减乘除、位运算、比较运算等</li>
+<li>内存操作: 包括从内存加载值到寄存器、将寄存器的值存储到内存。</li>
+<li>寄存器复制操作: 从一个寄存器将值复制到另一个寄存器，包括不同数据类型之间的转换指令。</li>
+<li>控制流操作: 包括条件、无条件跳转指令。 </li>
+</ul>
+<p>这里只是列举了基本的几类指令，要支持面向对象等高级特性，通常还要包括面向对象相关的操作指令，如创建实例对象、调用实例方法、获取字段等；数组相关的，如创建新的数组、获取指定位置的数组元素，数组元素赋值、获取数组长度等。当然，也可以不需要上述的指令，对于某些实现了运算符重载的语言，会这样翻译代码<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1 + 2 =&gt; 1.add(2)</div></pre></td></tr></table></figure></p>
+<p>也就是所有的基本运算经过编译器都转换成了函数调用，默认情况下直接通过内建函数来进行运算了。</p>
+<p>还需要考虑的问题，如果运行期希望尽可能少的依赖类、字段等元信息，可以对同一个运算设计不同类型的操作指令，如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 将寄存器r1和r2里的int类型数字进行加法运算，结果存到r3</div><div class="line">iadd r1,r2,r3</div><div class="line">// 将寄存器r1和r2里的float类型数字进行加法运算，结果存到r3</div><div class="line">fadd r1,r2,r3</div></pre></td></tr></table></figure></p>
+<p>生成目标代码时直接根据类型信息生成不同的指令。对于指令的设计还有几个需要考虑的问题，一是每条指令占用的空间是多少？<strong>每条指令包括了操作码和操作数</strong>，操作码表示的是指令具体的含义，如进行加法运算。对于操作码，用1字节来存储，可以包含256类不同的指令，肯定用不到这么多，留作扩展。然后看操作数，操作数通常包括寄存器、立即数、偏移量等，要知道操作数占用多少字节，通常需要考虑<strong>寻址模式</strong>，也就是指令通过怎样的方式访问、存储数据。一般对于所有的指令，可以归类到几种寻址模式。然后对于具体的操作数，寄存器用１字节存储，立即数暂时只支持较小的数，也用1字节存储，偏移量用两字节存储。</p>
+<p>前两者不用多说，这里看看偏移量，在不同的环境下含义不同，举例说明。参考真实的计算机，CPU一般会设置一些寄存器，用作特殊目的，如BP寄存器存放栈基址，SP寄存器存放当前栈顶地址，PC寄存器存放下一要运行的指令，对于局部变量的访问通常就翻译成当前栈基础地址+偏移量；对于不存放在栈中的全局变量或者常量，也同样要有个起始地址+偏移量，小的数可以直接当做立即数编码到指令中，数值较大的数就可以存放到常量池。指令里面存放的是常量池偏移，运行期再从常量池加载到寄存器中，这样做还有一个好处，对于代码中引用的所有常量都只在常量池存放一份，实际减少了最终程序文件的大小；偏移量还可作为发生跳转时，目标指令在代码段中的偏移地址。</p>
+<p>所以根据操作码以及寻址模式，可以确定每条指令占用的字节数。机器执行代码时通常按取指、译码、执行的顺序。在对目标代码译码时，直接根据操作码及寻址模式，去取对应大小的操作数，并可以确定哪几字节的操作数是什么。所以操作码可以这样设计<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Opcode</span> </span>&#123;</div><div class="line">    <span class="comment">// 操作码</span></div><div class="line">    <span class="keyword">byte</span> opcode </div><div class="line">    <span class="comment">// 寻址模式</span></div><div class="line">    <span class="keyword">int</span> addressingMode</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">static</span> Opcode <span class="title">get</span><span class="params">(<span class="keyword">byte</span> opcode)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> opcodeMap.get(opcode)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个只是内存的结构，将程序编译后实际输出外部文件时，只需要1字节操作码。对于一条指令，可以这样表示<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Instruction</span> </span>&#123;</div><div class="line">    <span class="comment">// 操作码对象</span></div><div class="line">    Opcode opcode</div><div class="line">    <span class="comment">// 操作数</span></div><div class="line">    Operand[] operands</div><div class="line"></div><div class="line">    <span class="comment">// 将指令解码</span></div><div class="line">    <span class="function">Instruction <span class="title">decode</span><span class="params">(ByteReader reader)</span> </span>&#123;</div><div class="line">        <span class="keyword">byte</span> code = reader.readByte()</div><div class="line">        Opcode opcode = Opcode.get(code)</div><div class="line">        Operands[] operands</div><div class="line">        <span class="keyword">switch</span>(opcode.addressingMode) &#123;</div><div class="line">            <span class="keyword">case</span> MODE1:</div><div class="line">                operands = Operand[<span class="number">2</span>]</div><div class="line">                operands[<span class="number">0</span>] = Operand(code.readByte())</div><div class="line">                operands[<span class="number">1</span>] = Operand(code.readShort())</div><div class="line">                <span class="keyword">break</span></div><div class="line">            <span class="keyword">case</span> MODE2:</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> Instruction(opcode, operands)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 指令编码</span></div><div class="line">    <span class="keyword">byte</span>[] encode() &#123;</div><div class="line">        <span class="keyword">int</span> len = getInsLength()</div><div class="line">        <span class="keyword">byte</span>[] bytes = <span class="keyword">byte</span>[len]</div><div class="line">        bytes[<span class="number">0</span>] = opcode.opcode</div><div class="line">        <span class="keyword">switch</span>(opcode.addressingMode) &#123;</div><div class="line">            <span class="keyword">case</span> MODE1:</div><div class="line">                bytes[<span class="number">1</span>] = operands[<span class="number">0</span>].getVal()</div><div class="line">                <span class="keyword">int</span> val = operands[<span class="number">1</span>].getVal()</div><div class="line">                bytes[<span class="number">2</span>] = (val &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xff</span></div><div class="line">                bytes[<span class="number">3</span>] = val &amp; <span class="number">0xff</span></div><div class="line">                <span class="keyword">break</span></div><div class="line">            <span class="keyword">case</span> MODE2:</div><div class="line">                ...</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> bytes</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述同样给出了对于指令编解码的伪代码，解码时根据读取的1字节内容去获取到对应的操作码对象，再根据寻址模式继续取操作数；要输出外部文件时直接将所有指令对象编码转换为字节数组并合并。需要注意的是，存储与读取的字节序需要保持一致。这里这样设计是为了同时方便代码生成和运行期虚拟机进行解码执行。</p>
+<h4 id="调用约定"><a href="#调用约定" class="headerlink" title="调用约定"></a>调用约定</h4><p>调用约定描述了当发生函数调用时，参数是怎样传递的、调用如何返回、以及过程中分配的堆栈是由调用方还是被调用方来清理，这些问题是生成目标代码时必须考虑的。</p>
+<p>对于参数传递，现代编译器普遍的做法是优先使用寄存器传递，参数个数较多时改用栈传递，这里不考虑寄存器分配的问题，统一采用栈传递。通常是从右向左将参数入栈，因为对于实际的计算机，栈是从高地址到低地址的方式增长，传递参数时通常还在上一栈的栈帧(内存地址较高的位置)，函数调用时已经位于新的栈帧了(内存较低的位置)，函数内的指令要访问参数，就得根据当前栈帧的起始地址+偏移量得到。</p>
+<p>除了参数传递，发生函数调用时，还有以下几个问题。</p>
+<ul>
+<li>1.函数的局部变量应该分配多少空间？<br>这个在编译期间就能确定，函数调用开始时，直接将栈顶指针向下移动指定大小即可。</li>
+<li>2.函数如何返回以及调用方如何接收返回值?<br>发生函数调用时，将下一条指令的地址放入当前栈帧，函数调用遇到返回指令时直接将栈帧中保存的地址放入PC寄存器；对于返回值，直接使用一个固定的寄存器存放即可。</li>
+<li>3.函数调用返回后参数使用的栈空间的回收<br>这个也是，早生成目标代码时，直接在函数调用指令后面插入回收参数所占用空间的大小的指令即可。</li>
+</ul>
+<p>整个过程举个简单的例子，如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">   <span class="keyword">int</span> c = <span class="number">3</span>, d = <span class="number">4</span></div><div class="line">   <span class="keyword">return</span> a + b </div><div class="line">&#125;</div><div class="line">add(<span class="number">1</span>, <span class="number">2</span>)</div></pre></td></tr></table></figure></p>
+<p>编译器最终会转换成如下形式的代码<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"># function add:</div><div class="line"><span class="comment">// 函数开始序言</span></div><div class="line">push bp</div><div class="line"><span class="keyword">move</span> sp,bp</div><div class="line">dec sp,<span class="number">0</span></div><div class="line"></div><div class="line"><span class="comment">// 给当前函数的局部变量赋值</span></div><div class="line">store <span class="number">3</span>,bp,-<span class="number">1</span></div><div class="line">store <span class="number">4</span>,bp,-<span class="number">2</span></div><div class="line"><span class="comment">// 从当前运行栈加载参数到寄存器</span></div><div class="line">load bp,<span class="number">3</span>,r1</div><div class="line">load bp,<span class="number">4</span>,r2</div><div class="line">iadd r1,r2,r3</div><div class="line"></div><div class="line"><span class="comment">// 函数尾声</span></div><div class="line"><span class="keyword">move</span> bp,sp</div><div class="line">pop bp</div><div class="line"><span class="keyword">move</span> r3,rv</div><div class="line">ret</div><div class="line"></div><div class="line"><span class="comment">// 函数调用</span></div><div class="line">push <span class="number">2</span></div><div class="line">push <span class="number">1</span></div><div class="line">call add</div><div class="line"><span class="comment">// 回收栈空间</span></div><div class="line">inc sp,<span class="number">2</span></div></pre></td></tr></table></figure></p>
+<p>解释一下，bp、sp分别表示栈基址、栈顶指针寄存器，r1、r2、r3都是通用寄存器，rv寄存器专门用来存放函数返回值。push指令表示将值压入当前栈顶，栈顶指针会向下移动，pop指令则将栈顶的值弹出到寄存器，栈顶指针向上移动。call指令表示调用指定的函数(子程序)，call指令会把下一条指令的地址保存到当前栈内存，ret指令会将该地址弹出放入pc寄存器。函数开始时，会将当前栈基址存放到栈中，并把当前的栈顶作为下一帧的栈底。函数调用结束时则将当前栈底又变回栈顶，并从内存中将上一帧的栈底地址取出。内存布局见下图<br><img src="https://s3.ax1x.com/2021/02/16/ycGjj1.png" alt="ycGjj1.png"><br>根据上图，对照代码一目了然，如函数内部访问参数，第一个参数实际上就是当前bp+3, 第二参数是当前bp+4。两个参数，在执行完后需要回收栈空间。r</p>
+<p>可以注意到的是，函数开始和结束的逻辑是固定的，在生成目标代码时需要给每个函数插入序言和尾声。即如下两部分<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 序言</span></div><div class="line">push bp</div><div class="line"><span class="keyword">move</span> sp,bp <span class="comment">// bp=sp</span></div><div class="line">dec sp,函数局部变量占用空间</div><div class="line"></div><div class="line"><span class="comment">// 尾声</span></div><div class="line"><span class="keyword">move</span> bp,sp <span class="comment">// sp=bp</span></div><div class="line">pop bp</div></pre></td></tr></table></figure></p>
+<p>其实对于函数局部变量大小的空间不用考虑，因为函数结束时直接将当前bp变成了栈顶，不过手动清空更好一点，否则可能出现下次函数调用如果使用到这块空间，对于没初始化的变量获取到意外的值。</p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>这篇博客编译器的前端、后端到运行时以及一些语言特性的实现方式均有涉猎，不过编译原理相关的知识点确实多而杂。特别是写后端时发现不怎么好组织，前端部分有比较固定的套路，后端不同的编译器、运行时的实现差别太大。细心的读者能注意到，通篇充满“可以”、“一般”、“通常”这样的词，是因为走出书本的理论，工程上的实现灵活性很大，所以不必拘泥于死的理论，多多实践，这篇博客就先到这里了。</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2021/02/16/漫谈从编译器到运行时/">漫谈从编译器到运行时</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Legend 的个人博客">Legend</a></p>
+        <p><span>发布时间:</span>2021年02月16日 - 15时59分</p>
+        <p><span>最后更新:</span>2021年02月16日 - 16时02分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2021/02/16/漫谈从编译器到运行时/" title="漫谈从编译器到运行时">http://blog.cspojie.cn/2021/02/16/漫谈从编译器到运行时/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.cspojie.cn/2021/02/16/漫谈从编译器到运行时/　　作者: Legend" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2020/06/02/实现一个FC模拟器/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">实现一个FC模拟器</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总览"><span class="toc-number">2.</span> <span class="toc-text">总览</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#程序与语言"><span class="toc-number">2.0.1.</span> <span class="toc-text">程序与语言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#编译器与解释器"><span class="toc-number">2.0.2.</span> <span class="toc-text">编译器与解释器</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#词法分析"><span class="toc-number">3.</span> <span class="toc-text">词法分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#有穷自动机"><span class="toc-number">3.0.1.</span> <span class="toc-text">有穷自动机</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#语法分析"><span class="toc-number">4.</span> <span class="toc-text">语法分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#表达式优先级"><span class="toc-number">4.0.1.</span> <span class="toc-text">表达式优先级</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#语义分析"><span class="toc-number">5.</span> <span class="toc-text">语义分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#类型系统"><span class="toc-number">5.1.</span> <span class="toc-text">类型系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#类型推导"><span class="toc-number">5.1.1.</span> <span class="toc-text">类型推导</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#类型检查"><span class="toc-number">5.1.2.</span> <span class="toc-text">类型检查</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#引用消解"><span class="toc-number">5.2.</span> <span class="toc-text">引用消解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#符号表"><span class="toc-number">5.3.</span> <span class="toc-text">符号表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#中间代码生成"><span class="toc-number">6.</span> <span class="toc-text">中间代码生成</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#循环语句"><span class="toc-number">6.0.1.</span> <span class="toc-text">循环语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分支语句"><span class="toc-number">6.0.2.</span> <span class="toc-text">分支语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#break、continue"><span class="toc-number">6.0.3.</span> <span class="toc-text">break、continue</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行时"><span class="toc-number">7.</span> <span class="toc-text">运行时</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#运行环境"><span class="toc-number">7.0.1.</span> <span class="toc-text">运行环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#运行过程"><span class="toc-number">7.0.2.</span> <span class="toc-text">运行过程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#面向对象"><span class="toc-number">7.1.</span> <span class="toc-text">面向对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#类与对象"><span class="toc-number">7.1.1.</span> <span class="toc-text">类与对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#继承与多态"><span class="toc-number">7.1.2.</span> <span class="toc-text">继承与多态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#this与super"><span class="toc-number">7.1.3.</span> <span class="toc-text">this与super</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#字段的初始化"><span class="toc-number">7.1.4.</span> <span class="toc-text">字段的初始化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数式编程"><span class="toc-number">7.2.</span> <span class="toc-text">函数式编程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#闭包"><span class="toc-number">7.3.</span> <span class="toc-text">闭包</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#目标代码生成"><span class="toc-number">8.</span> <span class="toc-text">目标代码生成</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#设计一套指令集"><span class="toc-number">8.0.1.</span> <span class="toc-text">设计一套指令集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#调用约定"><span class="toc-number">8.0.2.</span> <span class="toc-text">调用约定</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结尾"><span class="toc-number">9.</span> <span class="toc-text">结尾</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.decodeURIComponent(window.location.pathname),
+      owner: 'Xchuanshuo',
+      repo: 'Xchuanshuo.github.io',
+      oauth: {
+        client_id: 'de01fedc8288820e304c',
+        client_secret: '43e3b8d4d8d86864f6611f6e2abcb178bb61479f',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2020/06/02/实现一个FC模拟器/" title="下一篇: 实现一个FC模拟器">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/02/16/漫谈从编译器到运行时/">漫谈从编译器到运行时</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/02/实现一个FC模拟器/">实现一个FC模拟器</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/回首2019/">回首2019</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/12/Tomcat剖析之源码篇-二/">Tomcat剖析之源码篇(二)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/14/Tomcat剖析之架构篇(一)/">Tomcat剖析之架构篇(-)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/回首2018/">回首2018</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/04/JVM运行期优化/">JVM运行期优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/LRU与LFU缓存算法/">LRU与LFU缓存算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/25/平衡查找树之AVL树/">平衡查找树之AVL树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/16/Manacher算法求解最长回文子串/">Manacher算法求解最长回文子串</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/15/Java内存模型/">Java内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/02/Linux也可以这样美——Ubuntu18-04安装、配置、美化-踩坑记/">Linux也可以这样美——Ubuntu18.04安装、配置、美化-踩坑记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/15/JVM中的类加载机制/">JVM中的类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/坦白说解密/">坦白说解密</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/Java内存区域与内存溢出/">Java内存区域与内存溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/13/仿MIUI实现带弹性的ScrollView/">仿MIUI实现带弹性的ScrollView</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/09/机器学习起步－k-最近邻算法/">机器学习起步－k-最近邻算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/14/Okhttp3的封装-搞定常用的请求/">Okhttp3的封装 搞定常用的请求</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/10/实现安卓无限轮播组件Banner/">实现安卓无限轮播组件Banner</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/31/浅谈Android中的MVP架构/">浅谈Android中的MVP架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/随机模拟算法求解圆周率/">随机模拟算法求解圆周率</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/21/Android第三方登录与服务器端验证过程/">Android第三方登录与服务器端验证过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/10/Django查错配置/">Django查错配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/04/Ubuntu16-04下Nginx-uwsgi部署Django项目/">Ubuntu16.04下Nginx+uwsgi部署Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/31/回首2017-展望未来/">回首2017 展望未来</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/25/Pycahrm远程调试Django项目/">Pycahrm远程调试Django项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/14/Python中的策略模式/">Python中的策略模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/04/图论-应用篇/">图论 应用篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/22/MySQL性能优化-一/">MySQL性能优化(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/20/图论-基础篇/">图论 基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/13/二叉堆与优先队列/">二叉堆与优先队列</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/06/Ubuntu下常用命令汇总/">Ubuntu下常用命令汇总</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/02/分治思想之排序算法/">分治思想之排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/27/灵活-高效的符号表-二叉查找树/">灵活&&高效的符号表--二叉查找树</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/Python3爬取百科词条-导入MySQL数据库/">Python3爬取百科词条+导入MySQL数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/常用的正则表达式整理/">常用的正则表达式整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/26/面向对象思想/">面向对象思想</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/25/玩转Python装饰器/">玩转Python装饰器</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+
+ </div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2021 Legend
+            </div>
+            <div class="footer-right">
+                
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >到访人数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+                    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
